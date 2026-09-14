@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#315FD6">
+    <meta name="description" content="Pratique digitação em português, descubra seus pontos de melhoria e acompanhe sua evolução com a WaveType.">
+    <meta property="og:title" content="WaveType — aprenda no seu ritmo">
+    <meta property="og:description" content="Pratique digitação, entenda seu resultado e evolua a cada tecla.">
+    <meta property="og:image" content="https://wavetype.com.br/assets/images/brand/wavetype-og.png">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://wavetype.com.br/">
+    <meta property="og:site_name" content="WaveType">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="WaveType — aprenda no seu ritmo">
+    <meta name="twitter:description" content="Pratique digitação, entenda seu resultado e evolua a cada tecla.">
+    <meta name="twitter:image" content="https://wavetype.com.br/assets/images/brand/wavetype-og.png">
+    <link rel="canonical" href="https://wavetype.com.br/">
+    <title>Digitação | WaveType</title>
+    <link rel="icon" type="image/svg+xml" href="assets/images/icons/favicon.svg">
+    <link rel="icon" type="image/png" sizes="96x96" href="assets/images/icons/favicon-96x96.png">
+    <link rel="shortcut icon" href="assets/images/icons/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/images/icons/apple-touch-icon.png">
+    <link rel="manifest" href="site.webmanifest">
+    <script>document.documentElement.dataset.theme = localStorage.getItem('wavetype_theme') || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');</script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="typing-page">
+    <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+
+    <header class="site-header" id="inicio">
+        <div class="container header-inner">
+            <a class="brand" href="index.html" aria-label="WaveType, página de digitação">
+                <img class="brand-logo brand-logo-light" src="assets/images/brand/wavetype-logo.svg" alt="WaveType">
+                <img class="brand-logo brand-logo-dark" src="assets/images/brand/wavetype-logo-dark.svg" alt="">
+            </a>
+            <nav class="desktop-nav" aria-label="Navegação principal">
+                <a href="index.html" aria-current="page">Digitação</a>
+                <a href="como-funciona.html">Como funciona</a>
+                <a href="escolas.html">Para escolas</a>
+                <a href="sobre.html">Sobre</a>
+            </nav>
+            <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Ativar tema escuro" aria-pressed="false"><span aria-hidden="true"></span></button>
+            <a class="button button-small header-cta" href="#teste">Digitar agora</a>
+            <button class="menu-button" id="menu-button" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="mobile-nav"><span></span><span></span><span></span></button>
+        </div>
+        <nav class="mobile-nav" id="mobile-nav" aria-label="Navegação móvel" hidden>
+            <a href="index.html" aria-current="page">Digitação</a>
+            <a href="como-funciona.html">Como funciona</a>
+            <a href="escolas.html">Para escolas</a>
+            <a href="sobre.html">Sobre</a>
+        </nav>
+    </header>
+
+    <main id="conteudo">
+        <section class="typing-section" id="teste" aria-labelledby="test-title">
+            <div class="typing-rhythm" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+            <div class="container">
+                <div class="section-heading compact-heading">
+                    <div><span class="section-kicker">Prática gratuita · sem cadastro</span><h1 id="test-title">Digite agora.<br><span>Veja onde evoluir.</span></h1></div>
+                    <p>A experiência começa aqui: pressione a primeira tecla no computador ou toque no texto pelo celular.</p>
+                </div>
+
+                <div class="typing-shell" id="typing-shell">
+                    <div class="typing-toolbar" id="test-config" aria-label="Configurações do teste">
+                        <fieldset class="segmented-control" data-control="mode"><legend>Conteúdo</legend><button type="button" class="segment active" data-value="words" aria-pressed="true">Palavras</button><button type="button" class="segment" data-value="sentences" aria-pressed="false">Frases</button></fieldset>
+                        <fieldset class="segmented-control" data-control="time"><legend>Tempo</legend><button type="button" class="segment" data-value="15" aria-pressed="false">15s</button><button type="button" class="segment active" data-value="30" aria-pressed="true">30s</button><button type="button" class="segment" data-value="60" aria-pressed="false">60s</button></fieldset>
+                        <fieldset class="segmented-control" data-control="level"><legend>Nível</legend><button type="button" class="segment" data-value="easy" aria-pressed="false">Fácil</button><button type="button" class="segment active" data-value="medium" aria-pressed="true">Médio</button><button type="button" class="segment" data-value="advanced" aria-pressed="false">Avançado</button></fieldset>
+                        <details class="accessibility-menu">
+                            <summary>Acessibilidade</summary>
+                            <div class="accessibility-panel">
+                                <button type="button" class="preference-toggle" data-preference="large-text" aria-pressed="false"><span>Texto maior</span><i aria-hidden="true"></i></button>
+                                <button type="button" class="preference-toggle" data-preference="high-contrast" aria-pressed="false"><span>Alto contraste</span><i aria-hidden="true"></i></button>
+                                <button type="button" class="preference-toggle" data-preference="reduce-motion" aria-pressed="false"><span>Reduzir movimentos</span><i aria-hidden="true"></i></button>
+                            </div>
+                        </details>
+                    </div>
+
+                    <div class="live-row" aria-label="Métricas ao vivo"><div class="live-primary"><strong id="live-wpm">0</strong><span>WPM</span></div><div><strong id="live-accuracy">100%</strong><span>precisão</span></div><div><strong id="live-time">30</strong><span>segundos</span></div><button type="button" class="restart-button" id="restart-button" aria-label="Reiniciar teste">↻ <span>Reiniciar</span></button></div>
+
+                    <div class="typing-stage" id="typing-stage">
+                        <p class="sr-only" id="typing-instructions">Digite as palavras mostradas. Use espaço para avançar e Backspace para corrigir. Pressione Escape para reiniciar.</p>
+                        <textarea class="typing-input" id="typing-input" rows="1" autocapitalize="none" autocomplete="off" autocorrect="off" spellcheck="false" aria-label="Campo do teste de digitação" aria-describedby="typing-instructions"></textarea>
+                        <div class="words-viewport" id="words-viewport" aria-hidden="true"><div class="words-wrapper" id="words-wrapper"></div></div>
+                        <button type="button" class="focus-prompt" id="focus-prompt"><strong>Comece a digitar</strong><span>Pressione qualquer tecla ou toque aqui</span></button>
+                    </div>
+
+                    <div class="test-footnote"><span><kbd>Esc</kbd> reinicia o teste</span><span>Sem conta · nenhum dado pessoal solicitado</span></div>
+                    <p class="sr-only" id="test-status" role="status" aria-live="polite" aria-atomic="true"></p>
+
+                    <section class="result-panel" id="result-panel" aria-labelledby="result-title" hidden>
+                        <div class="result-heading"><div><span class="section-kicker">Leitura do teste</span><h3 id="result-title" tabindex="-1">Seu resultado, explicado</h3><p id="result-summary">Veja o que manter e o que praticar no próximo teste.</p></div><button type="button" class="button button-secondary" id="result-restart">Fazer outro teste</button></div>
+                        <div class="result-metrics">
+                            <article class="result-metric featured"><span>Velocidade líquida</span><strong><b id="result-wpm">0</b> WPM</strong><small>ritmo com penalidade de erros</small></article>
+                            <article class="result-metric"><span>Velocidade bruta</span><strong><b id="result-raw">0</b> WPM</strong><small>todas as teclas digitadas</small></article>
+                            <article class="result-metric"><span>Precisão</span><strong id="result-accuracy">0%</strong><small>acertos entre tentativas</small></article>
+                            <article class="result-metric"><span>Consistência</span><strong id="result-consistency">0%</strong><small>estabilidade do ritmo</small></article>
+                        </div>
+                        <div class="result-grid">
+                            <article class="analysis-card chart-card">
+                                <div class="card-heading"><div><span>Ritmo durante o teste</span><strong id="result-comparison">Primeiro resultado neste dispositivo</strong></div><span class="legend"><i></i> WPM bruto</span></div>
+                                <svg id="result-chart" viewBox="0 0 640 210" role="img" aria-label="Gráfico de velocidade ao longo do teste"><g class="chart-grid"><line x1="20" y1="40" x2="620" y2="40"></line><line x1="20" y1="100" x2="620" y2="100"></line><line x1="20" y1="160" x2="620" y2="160"></line></g><path id="chart-area" class="result-chart-area" d=""></path><path id="chart-line" class="result-chart-line" d=""></path></svg>
+                                <div class="chart-axis"><span>início</span><span id="chart-duration">30 segundos</span></div>
+                            </article>
+                            <article class="analysis-card diagnosis-card"><span class="card-label">Próximo foco</span><h4 id="diagnosis-title">Continue construindo ritmo</h4><p id="diagnosis-text">Complete o teste para receber uma recomendação personalizada.</p><div class="practice-box"><span>Letras para praticar</span><div id="problem-keys" class="key-list"><kbd>—</kbd></div></div></article>
+                        </div>
+                        <div class="detail-row">
+                            <article class="detail-card"><span>Caracteres</span><div class="character-stats" aria-label="Resumo dos caracteres"><span><i class="correct-dot"></i><b id="chars-correct">0</b> corretos</span><span><i class="error-dot"></i><b id="chars-wrong">0</b> incorretos</span><span><i class="missed-dot"></i><b id="chars-missed">0</b> omitidos</span><span><i class="extra-dot"></i><b id="chars-extra">0</b> extras</span></div></article>
+                            <article class="detail-card"><span>Palavras para revisar</span><p id="problem-words">Nenhuma palavra problemática identificada.</p></article>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-inner"><a class="brand" href="index.html" aria-label="WaveType, página de digitação"><img class="brand-logo footer-logo" src="assets/images/brand/wavetype-logo-dark.svg" alt="WaveType"></a><p>Aprenda no seu ritmo. Evolua a cada tecla.</p><div class="footer-links"><a href="index.html">Digitação</a><a href="como-funciona.html">Como funciona</a><a href="escolas.html">Escolas</a><a href="sobre.html">Sobre</a></div></div>
+        <div class="container footer-bottom"><span>© 2026 WaveType</span><span>Fluidez · clareza · evolução</span></div>
+    </footer>
+
+    <script src="js/site.js"></script>
+    <script src="js/script.js"></script>
+</body>
+</html>
