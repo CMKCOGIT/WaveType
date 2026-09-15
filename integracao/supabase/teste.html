@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>WaveType - Teste de Funcionalidades</title>
+</head>
+<body>
+
+<h1>WaveType — Página de teste (sem estilo, só funcionalidade)</h1>
+
+<!-- ============================================================ -->
+<!-- 1. CONEXÃO COM O SUPABASE                                     -->
+<!-- ============================================================ -->
+<h2>1. Conexão</h2>
+<p>
+  URL do projeto: <input id="cfg-url" size="50" placeholder="https://xxxx.supabase.co"><br>
+  Anon key: <input id="cfg-key" size="50" placeholder="chave anon (pública)"><br>
+  <button id="btn-conectar">Conectar</button>
+  <span id="status-conexao">(não conectado)</span>
+</p>
+
+<hr>
+
+<!-- ============================================================ -->
+<!-- 2. AUTENTICAÇÃO                                               -->
+<!-- ============================================================ -->
+<h2>2. Autenticação</h2>
+
+<h3>Cadastro</h3>
+<input id="cad-nome" placeholder="nome"><br>
+<input id="cad-email" placeholder="email"><br>
+<input id="cad-senha" type="password" placeholder="senha (min 8, letra+numero)"><br>
+<select id="cad-tipo">
+  <option value="aluno">aluno</option>
+  <option value="professor">professor</option>
+</select><br>
+<button id="btn-cadastrar">Cadastrar</button>
+
+<h3>Login com e-mail/senha</h3>
+<input id="login-email" placeholder="email"><br>
+<input id="login-senha" type="password" placeholder="senha"><br>
+<button id="btn-login">Entrar</button>
+
+<h3>Login com Google</h3>
+<button id="btn-login-google">Entrar com Google</button>
+
+<h3>Sessão</h3>
+<button id="btn-usuario-atual">Ver usuário atual</button>
+<button id="btn-logout">Sair</button>
+
+<hr>
+
+<!-- ============================================================ -->
+<!-- 3. TURMAS                                                     -->
+<!-- ============================================================ -->
+<h2>3. Turmas (professor cria, aluno entra com código)</h2>
+
+<h3>Criar turma (professor)</h3>
+<input id="turma-nome" placeholder="nome da turma"><br>
+<button id="btn-criar-turma">Criar turma</button>
+
+<h3>Entrar em turma (aluno)</h3>
+<input id="turma-codigo" placeholder="código de convite"><br>
+<button id="btn-entrar-turma">Entrar</button>
+
+<h3>Minhas turmas</h3>
+<button id="btn-listar-turmas">Listar minhas turmas</button>
+
+<hr>
+
+<!-- ============================================================ -->
+<!-- 4. EXERCÍCIOS                                                 -->
+<!-- ============================================================ -->
+<h2>4. Exercícios</h2>
+
+<h3>Criar exercício (professor)</h3>
+<input id="ex-titulo" placeholder="título"><br>
+<textarea id="ex-texto" placeholder="texto de referência" rows="4" cols="50"></textarea><br>
+<input id="ex-tempo" type="number" placeholder="tempo limite (segundos)"><br>
+<input id="ex-turma-id" type="number" placeholder="turma_id (opcional)"><br>
+<button id="btn-criar-exercicio">Criar exercício</button>
+
+<h3>Listar exercícios</h3>
+<input id="listar-ex-turma-id" type="number" placeholder="turma_id (opcional, deixe vazio p/ todos)"><br>
+<button id="btn-listar-exercicios">Listar</button>
+
+<hr>
+
+<!-- ============================================================ -->
+<!-- 5. RESULTADOS                                                 -->
+<!-- ============================================================ -->
+<h2>5. Resultados</h2>
+
+<h3>Salvar resultado (aluno, após um treino)</h3>
+<input id="res-exercicio-id" type="number" placeholder="exercicio_id"><br>
+<input id="res-ppm" type="number" placeholder="ppm"><br>
+<input id="res-precisao" type="number" placeholder="precisão (0-100)"><br>
+<input id="res-acertos" type="number" placeholder="acertos"><br>
+<input id="res-erros" type="number" placeholder="erros"><br>
+<input id="res-tempo" type="number" placeholder="tempo (segundos)"><br>
+<button id="btn-salvar-resultado">Salvar resultado</button>
+
+<h3>Meus resultados</h3>
+<input id="listar-res-exercicio-id" type="number" placeholder="exercicio_id (opcional)"><br>
+<button id="btn-listar-resultados">Listar meus resultados</button>
+
+<h3>Ranking de um exercício</h3>
+<input id="ranking-exercicio-id" type="number" placeholder="exercicio_id"><br>
+<button id="btn-ranking">Ver ranking</button>
+
+<hr>
+
+<!-- ============================================================ -->
+<!-- LOG                                                           -->
+<!-- ============================================================ -->
+<h2>Resultado / Log</h2>
+<pre id="log" style="border:1px solid #000; padding:8px; height:300px; overflow:auto;"></pre>
+
+<script type="module">
+// ============================================================
+// Import do supabase-js direto via CDN (sem precisar de build/bundler
+// para essa página de teste). Em produção real, use o pacote npm
+// instalado (@supabase/supabase-js) como nos arquivos js/*.js.
+// ============================================================
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
+let supabase = null;
+
+// ---------- util de log ----------
+function log(titulo, dado) {
+  const el = document.getElementById('log');
+  const hora = new Date().toLocaleTimeString();
+  const texto = typeof dado === 'string' ? dado : JSON.stringify(dado, null, 2);
+  el.textContent = `[${hora}] ${titulo}\n${texto}\n\n` + el.textContent;
+}
+
+function logErro(titulo, erro) {
+  log(`ERRO - ${titulo}`, erro.message || String(erro));
+}
+
+function exigirConexao() {
+  if (!supabase) throw new Error('Conecte ao Supabase primeiro (seção 1).');
+}
+
+// ---------- 1. conexão ----------
+document.getElementById('btn-conectar').addEventListener('click', () => {
+  try {
+    const url = document.getElementById('cfg-url').value.trim();
+    const key = document.getElementById('cfg-key').value.trim();
+    if (!url || !key) throw new Error('Preencha URL e anon key.');
+
+    supabase = createClient(url, key, {
+      auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true },
+    });
+
+    document.getElementById('status-conexao').textContent = '(conectado)';
+    log('Conexão', 'Cliente Supabase criado com sucesso.');
+  } catch (e) {
+    logErro('Conexão', e);
+  }
+});
+
+// ============================================================
+// 2. AUTENTICAÇÃO (mesma lógica de js/auth.js)
+// ============================================================
+function validarEmail(email) {
+  return typeof email === 'string' && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && email.length <= 190;
+}
+function validarSenha(senha) {
+  return typeof senha === 'string' && senha.length >= 8 && /[A-Za-z]/.test(senha) && /[0-9]/.test(senha);
+}
+
+document.getElementById('btn-cadastrar').addEventListener('click', async () => {
+  try {
+    exigirConexao();
+    const nome = document.getElementById('cad-nome').value;
+    const email = document.getElementById('cad-email').value;
+    const senha = document.getElementById('cad-senha').value;
+    const tipo = document.getElementById('cad-tipo').value;
+
+    if (!nome || nome.trim().length < 2 || nome.length > 120) throw new Error('Nome inválido.');
+    if (!validarEmail(email)) throw new Error('E-mail inválido.');
+    if (!validarSenha(senha)) throw new Error('Senha deve ter 8+ caracteres, com letra e número.');
+
+    const { data, error } = await supabase.auth.signUp({
+      email, password: senha,
+      options: { data: { nome: nome.trim(), tipo } },
+    });
+    if (error) throw new Error(error.message);
+    log('Cadastro', data);
+  } catch (e) { logErro('Cadastro', e); }
+});
+
+document.getElementById('btn-login').addEventListener('click', async () => {
+  try {
+    exigirConexao();
+    const email = document.getElementById('login-email').value;
+    const senha = document.getElementById('login-senha').value;
+    if (!validarEmail(email) || !senha) throw new Error('E-mail ou senha incorretos.');
+
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password: senha });
+    if (error) throw new Error('E-mail ou senha incorretos.');
+    log('Login', data);
+  } catch (e) { logErro('Login', e); }
+});
+
+document.getElementById('btn-login-google').addEventListener('click', async () => {
+  try {
+    exigirConexao();
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: { redirectTo: window.location.href },
+    });
+    if (error) throw new Error(error.message);
+    log('Login Google', 'Redirecionando...');
+  } catch (e) { logErro('Login Google', e); }
+});
+
+document.getElementById('btn-usuario-atual').addEventListener('click', async () => {
+  try {
+    exigirConexao();
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) { log('Usuário atual', 'Nenhuma sessão ativa.'); return; }
+
+    const { data, error } = await supabase
+      .from('usuarios')
+      .select('id, nome, email, tipo, ativo')
+      .eq('id', session.user.id)
+      .single();
+    if (error) throw new Error(error.message);
+    log('Usuário atual', data);
+  } catch (e) { logErro('Usuário atual', e); }
+});
+
+document.getElementById('btn-logout').addEventListener('click', async () => {
+  try {
+    exigirConexao();
+    const { error } = await supabase.auth.signOut();
+    if (error) throw new Error(error.message);
+    log('Logout', 'Sessão encerrada.');
+  } catch (e) { logErro('Logout', e); }
+});
+
+async function exigirSessao() {
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session) throw new Error('É necessário estar autenticado (faça login primeiro).');
+  return session;
+}
+
+// ============================================================
+// 3. TURMAS (mesma lógica de js/turmas.js)
+// ============================================================
+function gerarCodigoConvite(tamanho = 8) {
+  const alfabeto = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  const valores = crypto.getRandomValues(new Uint32Array(tamanho));
+  let codigo = '';
+  for (let i = 0; i < tamanho; i++) codigo += alfabeto[valores[i] % alfabeto.length];
+  return codigo;
+}
+
+document.getElementById('btn-criar-turma').addEventListener('click', async () => {
+  try {
+    exigirConexao();
+    const nome = document.getElementById('turma-nome').value;
+    if (!nome || nome.trim().length < 2 || nome.length > 120) throw new Error('Nome da turma inválido.');
+    const session = await exigirSessao();
+
+    let ultimoErro;
+    for (let tentativa = 0; tentativa < 5; tentativa++) {
+      const codigo = gerarCodigoConvite();
+      const { data, error } = await supabase
+        .from('turmas')
+        .insert({ nome: nome.trim(), codigo_convite: codigo, professor_id: session.user.id })
+        .select()
+        .single();
+      if (!error) { log('Turma criada', data); return; }
+      if (error.code !== '23505') throw new Error(error.message);
+      ultimoErro = error;
+    }
+    throw new Error('Não foi possível gerar código único: ' + ultimoErro.message);
+  } catch (e) { logErro('Criar turma', e); }
+});
+
+document.getElementById('btn-entrar-turma').addEventListener('click', async () => {
+  try {
+    exigirConexao();
+    const codigoConvite = document.getElementById('turma-codigo').value;
+    if (!codigoConvite || codigoConvite.length > 20) throw new Error('Código inválido.');
+    const session = await exigirSessao();
+    const codigo = codigoConvite.trim().toUpperCase();
+
+    const { data: turma, error: erroTurma } = await supabase
+      .from('turmas').select('id').eq('codigo_convite', codigo).single();
+    if (erroTurma || !turma) throw new Error('Código de convite não encontrado.');
+
+    const { data, error } = await supabase
+      .from('matriculas')
+      .insert({ aluno_id: session.user.id, turma_id: turma.id })
+      .select()
+      .single();
+    if (error) {
+      if (error.code === '23505') throw new Error('Você já está matriculado nessa turma.');
+      throw new Error(error.message);
+    }
+    log('Matrícula criada', data);
+  } catch (e) { logErro('Entrar em turma', e); }
+});
+
+document.getElementById('btn-listar-turmas').addEventListener('click', async () => {
+  try {
+    exigirConexao();
+    await exigirSessao();
+    const { data, error } = await supabase
+      .from('turmas').select('id, nome, codigo_convite, criado_em').order('criado_em', { ascending: false });
+    if (error) throw new Error(error.message);
+    log('Minhas turmas', data);
+  } catch (e) { logErro('Listar turmas', e); }
+});
+
+// ============================================================
+// 4. EXERCÍCIOS (mesma lógica de js/exercicios.js)
+// ============================================================
+document.getElementById('btn-criar-exercicio').addEventListener('click', async () => {
+  try {
+    exigirConexao();
+    const titulo = document.getElementById('ex-titulo').value;
+    const textoReferencia = document.getElementById('ex-texto').value;
+    const tempoLimiteSeg = parseInt(document.getElementById('ex-tempo').value, 10);
+    const turmaIdRaw = document.getElementById('ex-turma-id').value;
+    const turmaId = turmaIdRaw ? parseInt(turmaIdRaw, 10) : null;
+
+    if (!titulo || titulo.trim().length < 2 || titulo.length > 150) throw new Error('Título inválido.');
+    if (!textoReferencia || textoReferencia.trim().length < 10) throw new Error('Texto de referência muito curto.');
+    if (!Number.isInteger(tempoLimiteSeg) || tempoLimiteSeg <= 0 || tempoLimiteSeg > 3600) throw new Error('Tempo limite inválido.');
+
+    const session = await exigirSessao();
+    const { data, error } = await supabase
+      .from('exercicios')
+      .insert({
+        titulo: titulo.trim(), texto_referencia: textoReferencia,
+        tempo_limite_seg: tempoLimiteSeg, criado_por: session.user.id, turma_id: turmaId,
+      })
+      .select().single();
+    if (error) throw new Error(error.message);
+    log('Exercício criado', data);
+  } catch (e) { logErro('Criar exercício', e); }
+});
+
+document.getElementById('btn-listar-exercicios').addEventListener('click', async () => {
+  try {
+    exigirConexao();
+    await exigirSessao();
+    const turmaIdRaw = document.getElementById('listar-ex-turma-id').value;
+
+    let query = supabase.from('exercicios')
+      .select('id, titulo, texto_referencia, tempo_limite_seg, turma_id, criado_em');
+    if (turmaIdRaw) query = query.eq('turma_id', parseInt(turmaIdRaw, 10));
+
+    const { data, error } = await query.order('criado_em', { ascending: false });
+    if (error) throw new Error(error.message);
+    log('Exercícios', data);
+  } catch (e) { logErro('Listar exercícios', e); }
+});
+
+// ============================================================
+// 5. RESULTADOS (mesma lógica de js/resultados.js)
+// ============================================================
+document.getElementById('btn-salvar-resultado').addEventListener('click', async () => {
+  try {
+    exigirConexao();
+    const exercicioId = parseInt(document.getElementById('res-exercicio-id').value, 10);
+    const ppm = parseFloat(document.getElementById('res-ppm').value);
+    const precisao = parseFloat(document.getElementById('res-precisao').value);
+    const acertos = parseInt(document.getElementById('res-acertos').value, 10);
+    const erros = parseInt(document.getElementById('res-erros').value, 10);
+    const tempoSeg = parseInt(document.getElementById('res-tempo').value, 10);
+
+    if (!Number.isInteger(exercicioId)) throw new Error('exercicio_id inválido.');
+    if (!Number.isFinite(ppm) || ppm < 0 || ppm > 1000) throw new Error('PPM inválido.');
+    if (!Number.isFinite(precisao) || precisao < 0 || precisao > 100) throw new Error('Precisão inválida.');
+    if (!Number.isInteger(acertos) || acertos < 0) throw new Error('Acertos inválido.');
+    if (!Number.isInteger(erros) || erros < 0) throw new Error('Erros inválido.');
+    if (!Number.isInteger(tempoSeg) || tempoSeg < 0 || tempoSeg > 3600) throw new Error('Tempo inválido.');
+
+    const session = await exigirSessao();
+    const { data, error } = await supabase
+      .from('resultados')
+      .insert({ aluno_id: session.user.id, exercicio_id: exercicioId, ppm, precisao, acertos, erros, tempo_seg: tempoSeg })
+      .select().single();
+    if (error) throw new Error(error.message);
+    log('Resultado salvo', data);
+  } catch (e) { logErro('Salvar resultado', e); }
+});
+
+document.getElementById('btn-listar-resultados').addEventListener('click', async () => {
+  try {
+    exigirConexao();
+    const session = await exigirSessao();
+    const exercicioIdRaw = document.getElementById('listar-res-exercicio-id').value;
+
+    let query = supabase.from('resultados')
+      .select('id, exercicio_id, ppm, precisao, acertos, erros, tempo_seg, criado_em')
+      .eq('aluno_id', session.user.id);
+    if (exercicioIdRaw) query = query.eq('exercicio_id', parseInt(exercicioIdRaw, 10));
+
+    const { data, error } = await query.order('criado_em', { ascending: false });
+    if (error) throw new Error(error.message);
+    log('Meus resultados', data);
+  } catch (e) { logErro('Listar resultados', e); }
+});
+
+document.getElementById('btn-ranking').addEventListener('click', async () => {
+  try {
+    exigirConexao();
+    await exigirSessao();
+    const exercicioId = parseInt(document.getElementById('ranking-exercicio-id').value, 10);
+    if (!Number.isInteger(exercicioId)) throw new Error('exercicio_id inválido.');
+
+    const { data, error } = await supabase.rpc('ranking_exercicio', { p_exercicio_id: exercicioId });
+    if (error) throw new Error(error.message);
+    log('Ranking', data);
+  } catch (e) { logErro('Ranking', e); }
+});
+</script>
+
+</body>
+</html>

@@ -20,19 +20,19 @@
     <link rel="apple-touch-icon" sizes="180x180" href="assets/images/icons/apple-touch-icon.png">
     <link rel="manifest" href="site.webmanifest">
     <script>document.documentElement.dataset.theme = localStorage.getItem('wavetype_theme') || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');</script>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/platform.css"><link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
     <header class="site-header" id="inicio">
         <div class="container header-inner">
             <a class="brand" href="index.html" aria-label="WaveType, página de digitação"><img class="brand-logo brand-logo-light" src="assets/images/brand/wavetype-logo.svg" alt="WaveType"><img class="brand-logo brand-logo-dark" src="assets/images/brand/wavetype-logo-dark.svg" alt=""></a>
-            <nav class="desktop-nav" aria-label="Navegação principal"><a href="index.html">Digitação</a><a href="como-funciona.html">Como funciona</a><a href="escolas.html">Para escolas</a><a href="sobre.html" aria-current="page">Sobre</a></nav>
+            <nav class="desktop-nav" aria-label="Navegação principal"><a href="index.html">Página inicial</a><a href="escolas.html">Para as escolas</a><a href="como-funciona.html">Como funciona</a><a href="sobre.html" aria-current="page">Sobre</a></nav>
             <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Ativar tema escuro" aria-pressed="false"><span aria-hidden="true"></span></button>
-            <a class="button button-small header-cta" href="index.html#teste">Digitar agora</a>
+            <div class="header-auth"><a class="button button-small button-secondary header-login" href="login.html">Entrar</a><a class="button button-small header-cta" href="cadastro.html">Criar conta</a></div>
             <button class="menu-button" id="menu-button" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="mobile-nav"><span></span><span></span><span></span></button>
         </div>
-        <nav class="mobile-nav" id="mobile-nav" aria-label="Navegação móvel" hidden><a href="index.html">Digitação</a><a href="como-funciona.html">Como funciona</a><a href="escolas.html">Para escolas</a><a href="sobre.html" aria-current="page">Sobre</a></nav>
+        <nav class="mobile-nav" id="mobile-nav" aria-label="Navegação móvel" hidden><a href="index.html">Página inicial</a><a href="escolas.html">Para as escolas</a><a href="como-funciona.html">Como funciona</a><a href="sobre.html" aria-current="page">Sobre</a><a href="login.html">Entrar</a><a href="cadastro.html">Criar conta</a></nav>
     </header>
 
     <main id="conteudo">
@@ -96,7 +96,7 @@
         <section class="plain-cta" aria-labelledby="cta-title"><div class="container plain-cta-inner"><div><span class="section-kicker">Fluxo que evolui</span><h2 id="cta-title">Conheça a WaveType pela experiência.</h2></div><a class="button button-light" href="index.html#teste">Começar a digitar</a></div></section>
     </main>
 
-    <footer class="site-footer"><div class="container footer-inner"><a class="brand" href="index.html"><img class="brand-logo footer-logo" src="assets/images/brand/wavetype-logo-dark.svg" alt="WaveType"></a><p>Aprenda no seu ritmo. Evolua a cada tecla.</p><div class="footer-links"><a href="index.html">Digitação</a><a href="como-funciona.html">Como funciona</a><a href="escolas.html">Escolas</a><a href="sobre.html">Sobre</a></div></div><div class="container footer-bottom"><span>© 2026 WaveType</span><span>Fluidez · clareza · evolução</span></div></footer>
+    <footer class="site-footer"><div class="container footer-inner"><a class="brand" href="index.html"><img class="brand-logo brand-logo-light footer-logo" src="assets/images/brand/wavetype-logo.svg" alt="WaveType"><img class="brand-logo brand-logo-dark footer-logo" src="assets/images/brand/wavetype-logo-dark.svg" alt=""></a><p>Aprenda no seu ritmo. Evolua a cada tecla.</p><div class="footer-links"><a href="index.html">Página inicial</a><a href="escolas.html">Para as escolas</a><a href="como-funciona.html">Como funciona</a><a href="sobre.html">Sobre</a><a href="login.html">Entrar</a></div></div><div class="container footer-bottom"><span>© 2026 WaveType</span><span>Fluidez · clareza · evolução</span></div></footer>
     <script src="js/site.js"></script>
 </body>
 </html>

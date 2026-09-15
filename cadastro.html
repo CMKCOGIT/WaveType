@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#315FD6">
+    <meta name="description" content="Crie sua conta de aluno ou professor na WaveType.">
+    <title>Criar conta | WaveType</title>
+    <link rel="icon" type="image/svg+xml" href="assets/images/icons/favicon.svg">
+    <link rel="stylesheet" href="css/platform.css">
+    <script>document.documentElement.dataset.theme = localStorage.getItem('wavetype_theme') || 'light';</script>
+</head>
+<body>
+    <main class="auth-page">
+        <aside class="auth-aside">
+            <a href="index.html"><img class="auth-logo" src="assets/images/brand/wavetype-logo-dark.svg" alt="WaveType"></a>
+            <div class="auth-copy">
+                <span class="eyebrow">Aprenda no seu ritmo</span>
+                <h1>Comece leve.<br>Evolua com<br>clareza.</h1>
+                <p>Escolha como você usará a plataforma. O conteúdo e a navegação se adaptam ao seu papel.</p>
+                <ul class="auth-points"><li><i></i>Aluno: prática, resultados e conquistas</li><li><i></i>Professor: turmas, exercícios e relatórios</li><li><i></i>Acesso simples e seguro pelo Supabase Auth</li></ul>
+            </div>
+        </aside>
+        <section class="auth-main" aria-labelledby="signup-title">
+            <div class="auth-card">
+                <a class="eyebrow" href="index.html">← Voltar ao teste</a>
+                <h2 id="signup-title">Crie sua conta</h2>
+                <p>Leva menos de um minuto. Depois, a prática continua de onde você parou.</p>
+                <form class="auth-form" data-auth-form="cadastro">
+                    <fieldset class="field" style="border:0;padding:0;margin:0"><span>Quero usar como</span><div class="role-picker">
+                        <label class="role-option"><input type="radio" name="tipo" value="aluno" checked><span><strong>Aluno</strong><small>Praticar e acompanhar</small></span></label>
+                        <label class="role-option"><input type="radio" name="tipo" value="professor"><span><strong>Professor</strong><small>Ensinar e gerenciar</small></span></label>
+                    </div></fieldset>
+                    <label class="field"><span>Nome completo</span><input name="nome" autocomplete="name" minlength="2" maxlength="120" required></label>
+                    <label class="field"><span>E-mail</span><input type="email" name="email" autocomplete="email" maxlength="190" required></label>
+                    <label class="field"><span>Senha</span><input type="password" name="senha" autocomplete="new-password" minlength="8" placeholder="8+ caracteres, com letra e número" required></label>
+                    <button class="button auth-submit" type="submit">Criar minha conta</button>
+                    <p class="auth-demo" data-form-feedback hidden role="status"></p>
+                </form>
+                <p class="auth-foot">Já tem uma conta? <a href="login.html">Entrar</a></p>
+                <p class="auth-demo">Esta entrega contém apenas o front-end. O envio real será ligado à função <span class="mono">cadastrarUsuario()</span>.</p>
+            </div>
+        </section>
+    </main>
+    <script src="js/auth-ui.js"></script>
+</body>
+</html>

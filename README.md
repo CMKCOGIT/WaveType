@@ -1,58 +1,76 @@
-# WaveType — site institucional e experiência de digitação
+# WaveType — plataforma front-end
 
-Esta entrega aplica a identidade visual oficial ao protótipo público e organiza o conteúdo em páginas independentes. A página inicial é dedicada à digitação e pode ser usada imediatamente. Cadastro, login e backend não fazem parte deste pacote.
+Protótipo navegável da nova WaveType. A entrega une a experiência pública de digitação, a apresentação comercial do produto e as áreas de aluno e professor. Não existe gravação real no Supabase nesta versão; as ações demonstram o fluxo e deixam os pontos de integração explícitos.
 
-## Estrutura de páginas
+## Como visualizar
 
-- `index.html`: experiência principal de digitação.
-- `como-funciona.html`: método, métricas, configurações, acessibilidade e dúvidas.
-- `escolas.html`: proposta em desenvolvimento para professores e instituições.
-- `sobre.html`: origem, missão, visão, propósito, valores e públicos da WaveType.
+Sirva esta pasta por HTTP e abra `index.html`. A página inicial mantém o teste de digitação funcional. Para revisar as áreas internas sem autenticação real:
 
-## Principais melhorias
+- Área do aluno: `app/aluno/index.html`
+- Área do professor: `app/professor/index.html`
+- Login: `login.html`
+- Cadastro: `cadastro.html`
 
-- Logotipo, símbolo, favicon e ícones de aplicativo oficiais.
-- Imagens organizadas em `assets/images`, separadas entre `brand` e `icons`.
-- Paleta WaveType aplicada por tokens, com temas claro e escuro.
-- Manrope para interface e IBM Plex Mono para digitação e métricas; ambas carregadas localmente.
-- Nova direção visual clara, leve, responsiva e coerente com o território “Fluxo que evolui”.
-- Teste posicionado na primeira tela, antes de qualquer apresentação comercial.
-- Início imediato pelo teclado no computador, sem clique obrigatório.
-- Mensagem principal e chamadas para ação voltadas a usuários e escolas.
-- Conteúdo comercial sem alegações de recursos que ainda não existem.
-- Teste de digitação diretamente sobre as palavras, com cursor e rolagem fluidos.
-- Modos de palavras e frases, três tempos e três níveis de dificuldade.
-- Resultado com velocidade líquida, velocidade bruta, precisão e consistência.
-- Gráfico do ritmo, caracteres corretos/incorretos/omitidos/extras, letras difíceis e palavras para revisar.
-- Recomendação automática para o próximo treino e comparação com o histórico do dispositivo.
-- Navegação multipágina consistente, com estado ativo, menu móvel e tema compartilhado.
-- Sem dependências externas de fontes ou ícones em tempo de execução.
+## Páginas entregues
+
+### Público
+
+- `index.html`: digitação imediata, resultado, apresentação do produto e demonstrações.
+- `como-funciona.html`: método e explicação das métricas.
+- `escolas.html`: proposta para professores e instituições.
+- `sobre.html`: origem, missão, visão, propósito e valores.
+- `login.html` e `cadastro.html`: interfaces prontas para receber Supabase Auth.
+
+### Aluno
+
+- Visão geral, prática, resultados, conquistas e ranking.
+- Entrada em turma por código.
+- Métricas e histórico em estados demonstrativos.
+
+### Professor
+
+- Visão geral, turmas, alunos, exercícios e relatórios.
+- Modais de nova turma, novo exercício e novo aluno.
+- Busca visual de alunos e estados de acompanhamento.
+
+## Organização
+
+```text
+assets/                 fontes, logos, favicons e imagens oficiais
+css/
+  style.css             experiência pública e teste de digitação
+  platform.css          design system e interfaces autenticadas
+app/
+  aluno/                páginas do aluno
+  professor/            páginas do professor
+js/
+  script.js             lógica original do teste de digitação
+  site.js               navegação e tema do site público
+  public-gate.js        convite de login em recursos protegidos
+  auth-ui.js            validações visuais de login/cadastro
+  platform-shell.js     sidebar, topbar, tema, modais e avisos
+integracao/supabase/    módulos e schema recebidos do Kauan, preservados
+docs/                   contrato de dados e guia de integração
+```
 
 ## Identidade aplicada
 
-- Action Blue: `#315FD6`
-- Wave Blue: `#4F7CFF`
-- Flow Violet: `#6B5CE7`
-- Evolution Aqua: `#2ECAB6`
-- Deep Ink: `#17233F`
-- Soft Mist: `#F5F8FF`
-- Tema escuro: `#0E1730`, `#16213A`, `#F1F5FF`, `#7898FF`, `#56DDCA` e `#9488FF`
+- Tipografia de interface: Manrope.
+- Tipografia de digitação e métricas: IBM Plex Mono.
+- Paleta: Action Blue, Wave Blue, Flow Violet, Evolution Aqua, Deep Ink e Soft Mist; o modo escuro usa apenas as extensões oficiais do kit.
+- Marca oficial em SVG e favicons do brand kit.
 
-Não introduza novas cores ou famílias tipográficas sem atualizar previamente o manual de identidade.
+Não adicione outra fonte ou cor sem revisar o manual da marca.
 
-## Acessibilidade
+## O que está funcional agora
 
-- HTML semântico e link para pular ao conteúdo.
-- Navegação por teclado e indicador de foco visível.
-- Controles com áreas de toque amplas.
-- Contraste revisado e conteúdo que não depende apenas de cor.
-- Preferências de texto maior, alto contraste e redução de movimentos.
-- Respeito automático a `prefers-reduced-motion` do sistema.
-- Mensagens de início e conclusão compatíveis com tecnologias assistivas.
-- Layout testado de 320 px a 1440 px, sem rolagem horizontal.
+- Teste de digitação completo, com níveis, tempos, frases/palavras, métricas, gráfico e histórico local.
+- Tema claro/escuro.
+- Navegação responsiva de todas as páginas.
+- Busca local na tabela de alunos.
+- Modais e estados de retorno para ações do professor.
+- Validação visual dos formulários de login e cadastro.
 
-## Como testar
+## Antes de ligar o backend
 
-Sirva esta pasta com qualquer servidor HTTP local e abra `index.html`. No computador, comece a digitar imediatamente; no celular, toque na área de palavras para abrir o teclado. Pressione `Esc` para reiniciar.
-
-O histórico utilizado para comparação é salvo somente no `localStorage` do navegador.
+Leia `docs/INTEGRACAO-SUPABASE.md` e `docs/CONTRATO-DE-DADOS.md`. Existem decisões de banco necessárias para recursos que aparecem no protótipo, mas ainda não existem no schema atual, como XP, conquistas, sequência de dias, semestre/status de turma e notificações.

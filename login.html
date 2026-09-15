@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#315FD6">
+    <meta name="description" content="Entre na WaveType para acompanhar sua evolução ou gerenciar suas turmas.">
+    <title>Entrar | WaveType</title>
+    <link rel="icon" type="image/svg+xml" href="assets/images/icons/favicon.svg">
+    <link rel="stylesheet" href="css/platform.css">
+    <script>document.documentElement.dataset.theme = localStorage.getItem('wavetype_theme') || 'light';</script>
+</head>
+<body>
+    <main class="auth-page">
+        <aside class="auth-aside">
+            <a href="index.html"><img class="auth-logo" src="assets/images/brand/wavetype-logo-dark.svg" alt="WaveType"></a>
+            <div class="auth-copy">
+                <span class="eyebrow">Seu ritmo continua aqui</span>
+                <h1>Pratique.<br>Entenda.<br>Evolua.</h1>
+                <p>Uma experiência clara para quem aprende e uma visão objetiva para quem ensina.</p>
+                <ul class="auth-points"><li><i></i>Resultados organizados por sessão</li><li><i></i>Exercícios da sua turma</li><li><i></i>Evolução visível, sem distrações</li></ul>
+            </div>
+        </aside>
+        <section class="auth-main" aria-labelledby="login-title">
+            <div class="auth-card">
+                <a class="eyebrow" href="index.html">← Voltar ao teste</a>
+                <h2 id="login-title">Bem-vindo de volta</h2>
+                <p>Entre para retomar seu progresso na WaveType.</p>
+                <form class="auth-form" data-auth-form="login">
+                    <label class="field"><span>E-mail</span><input type="email" name="email" autocomplete="email" maxlength="190" placeholder="voce@exemplo.com" required></label>
+                    <label class="field"><span>Senha</span><input type="password" name="senha" autocomplete="current-password" minlength="8" placeholder="Sua senha" required></label>
+                    <input type="hidden" name="tipo" value="aluno">
+                    <button class="button auth-submit" type="submit">Entrar na WaveType</button>
+                    <p class="auth-demo" data-form-feedback hidden role="status"></p>
+                </form>
+                <div class="auth-separator">ou</div>
+                <button class="button secondary auth-submit" type="button" data-google-login>Continuar com Google</button>
+                <p class="auth-foot">Ainda não tem uma conta? <a href="cadastro.html">Criar conta</a></p>
+                <p class="auth-demo">Protótipo de interface: para explorar agora, <a href="app/aluno/index.html">abra a área do aluno</a> ou <a href="app/professor/index.html">a área do professor</a>.</p>
+            </div>
+        </section>
+    </main>
+    <script src="js/auth-ui.js"></script>
+</body>
+</html>

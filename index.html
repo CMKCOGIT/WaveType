@@ -23,6 +23,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="assets/images/icons/apple-touch-icon.png">
     <link rel="manifest" href="site.webmanifest">
     <script>document.documentElement.dataset.theme = localStorage.getItem('wavetype_theme') || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');</script>
+    <link rel="stylesheet" href="css/platform.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="typing-page">
@@ -35,20 +36,22 @@
                 <img class="brand-logo brand-logo-dark" src="assets/images/brand/wavetype-logo-dark.svg" alt="">
             </a>
             <nav class="desktop-nav" aria-label="Navegação principal">
-                <a href="index.html" aria-current="page">Digitação</a>
+                <a href="index.html" aria-current="page">Página inicial</a>
+                <a href="escolas.html">Para as escolas</a>
                 <a href="como-funciona.html">Como funciona</a>
-                <a href="escolas.html">Para escolas</a>
                 <a href="sobre.html">Sobre</a>
             </nav>
             <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Ativar tema escuro" aria-pressed="false"><span aria-hidden="true"></span></button>
-            <a class="button button-small header-cta" href="#teste">Digitar agora</a>
+            <div class="header-auth"><a class="button button-small button-secondary header-login" href="login.html">Entrar</a><a class="button button-small header-cta" href="cadastro.html">Criar conta</a></div>
             <button class="menu-button" id="menu-button" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="mobile-nav"><span></span><span></span><span></span></button>
         </div>
         <nav class="mobile-nav" id="mobile-nav" aria-label="Navegação móvel" hidden>
-            <a href="index.html" aria-current="page">Digitação</a>
+            <a href="index.html" aria-current="page">Página inicial</a>
+            <a href="escolas.html">Para as escolas</a>
             <a href="como-funciona.html">Como funciona</a>
-            <a href="escolas.html">Para escolas</a>
             <a href="sobre.html">Sobre</a>
+            <a href="login.html">Entrar</a>
+            <a href="cadastro.html">Criar conta</a>
         </nav>
     </header>
 
@@ -108,18 +111,45 @@
                             <article class="detail-card"><span>Caracteres</span><div class="character-stats" aria-label="Resumo dos caracteres"><span><i class="correct-dot"></i><b id="chars-correct">0</b> corretos</span><span><i class="error-dot"></i><b id="chars-wrong">0</b> incorretos</span><span><i class="missed-dot"></i><b id="chars-missed">0</b> omitidos</span><span><i class="extra-dot"></i><b id="chars-extra">0</b> extras</span></div></article>
                             <article class="detail-card"><span>Palavras para revisar</span><p id="problem-words">Nenhuma palavra problemática identificada.</p></article>
                         </div>
+                        <div class="result-save"><div><h4>Quer acompanhar este resultado?</h4><p>Entre para salvar sua evolução, liberar conquistas e participar da sua turma.</p></div><a class="button" href="login.html" data-auth-required>Salvar meu progresso</a></div>
                     </section>
                 </div>
             </div>
         </section>
+
+        <section class="public-product" id="plataforma" aria-labelledby="product-title">
+            <div class="container">
+                <div class="public-intro"><div><span class="eyebrow">Uma plataforma, experiências certas</span><h2 id="product-title">Tudo o que importa, no lugar certo.</h2></div><p>A WaveType não é apenas um cronômetro de digitação. Ela conecta prática imediata, acompanhamento individual e gestão de turmas em uma experiência leve — sem transformar o aprendizado em um painel complicado.</p></div>
+                <div class="experience-grid">
+                    <a class="experience-card" href="#teste"><span class="experience-index">01 · VISITANTE</span><h3>Pratique agora</h3><p>Entre, digite e entenda seu resultado sem criar uma conta.</p><strong>Voltar ao teste ↑</strong></a>
+                    <a class="experience-card" href="app/aluno/index.html"><span class="experience-index">02 · ALUNO</span><h3>Veja sua evolução</h3><p>Exercícios, histórico, conquistas e ranking em uma sequência clara.</p><strong>Explorar demonstração →</strong></a>
+                    <a class="experience-card" href="app/professor/index.html"><span class="experience-index">03 · PROFESSOR</span><h3>Conduza sua turma</h3><p>Organize alunos, publique exercícios e identifique quem precisa de apoio.</p><strong>Explorar demonstração →</strong></a>
+                </div>
+            </div>
+        </section>
+
+        <section class="product-preview-section" aria-labelledby="preview-title">
+            <div class="container">
+                <span class="eyebrow">A plataforma antes do login</span>
+                <div class="public-intro" style="margin-bottom:28px"><h2 id="preview-title">Você sabe o que vai encontrar.</h2><p>O produto se apresenta com transparência. Explore as demonstrações completas ou crie uma conta quando quiser manter seu histórico.</p></div>
+                <div class="preview-tabs" role="tablist" aria-label="Interfaces da plataforma"><button type="button" aria-selected="true">Visão do aluno</button><button type="button" data-auth-required>Resultados</button><button type="button" data-auth-required>Gestão do professor</button></div>
+                <div class="product-browser" aria-label="Prévia da área do aluno">
+                    <div class="browser-bar"><i></i><i></i><i></i></div>
+                    <div class="preview-canvas"><aside class="preview-side"><img src="assets/images/brand/wavetype-logo.svg" alt="WaveType"><span>Visão geral</span><span>Praticar</span><span>Resultados</span><span>Conquistas</span><span>Ranking</span></aside><div class="preview-main"><h3>Olá, Lucas.</h3><p>Continue sua sequência de treino.</p><div class="preview-metrics"><div class="preview-metric"><span>WPM atual</span><strong>56</strong></div><div class="preview-metric"><span>Precisão</span><strong>98,2%</strong></div><div class="preview-metric"><span>Sequência</span><strong>7 dias</strong></div></div><div class="preview-feature"><div class="preview-card"><h4>Evolução recente</h4><div class="mini-bars"><i style="--h:38%"></i><i style="--h:48%"></i><i style="--h:57%"></i><i style="--h:68%"></i><i style="--h:82%"></i></div></div><div class="preview-card"><h4>Próximo foco</h4><div class="mini-list"><span>Acentuação</span><span>Pontuação</span><span>Ritmo consistente</span></div></div></div></div></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="public-steps" aria-labelledby="steps-title"><div class="container"><span class="eyebrow">Do primeiro teste à evolução real</span><h2 id="steps-title">Uma jornada simples para aprender melhor.</h2><div class="step-line"><article class="step-item"><b>01</b><h3>Digite</h3><p>Comece imediatamente com palavras ou frases, no seu nível e tempo.</p></article><article class="step-item"><b>02</b><h3>Entenda</h3><p>Receba uma leitura clara de velocidade, precisão, consistência e pontos de atenção.</p></article><article class="step-item"><b>03</b><h3>Evolua</h3><p>Salve resultados, cumpra exercícios e acompanhe a mudança ao longo do tempo.</p></article></div></div></section>
     </main>
 
     <footer class="site-footer">
-        <div class="container footer-inner"><a class="brand" href="index.html" aria-label="WaveType, página de digitação"><img class="brand-logo footer-logo" src="assets/images/brand/wavetype-logo-dark.svg" alt="WaveType"></a><p>Aprenda no seu ritmo. Evolua a cada tecla.</p><div class="footer-links"><a href="index.html">Digitação</a><a href="como-funciona.html">Como funciona</a><a href="escolas.html">Escolas</a><a href="sobre.html">Sobre</a></div></div>
+        <div class="container footer-inner"><a class="brand" href="index.html" aria-label="WaveType, página inicial"><img class="brand-logo brand-logo-light footer-logo" src="assets/images/brand/wavetype-logo.svg" alt="WaveType"><img class="brand-logo brand-logo-dark footer-logo" src="assets/images/brand/wavetype-logo-dark.svg" alt=""></a><p>Aprenda no seu ritmo. Evolua a cada tecla.</p><div class="footer-links"><a href="index.html">Página inicial</a><a href="escolas.html">Para as escolas</a><a href="como-funciona.html">Como funciona</a><a href="sobre.html">Sobre</a><a href="login.html">Entrar</a></div></div>
         <div class="container footer-bottom"><span>© 2026 WaveType</span><span>Fluidez · clareza · evolução</span></div>
     </footer>
 
     <script src="js/site.js"></script>
     <script src="js/script.js"></script>
+    <script src="js/public-gate.js"></script>
 </body>
 </html>

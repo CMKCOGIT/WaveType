@@ -2,7 +2,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="520" height="140" viewBox="0 0 520 140" role="img" aria-labelledby="title desc">
   <title id="title">Logotipo colorido em fundo escuro</title>
   <desc id="desc">Ativo oficial da identidade visual WaveType.</desc>
-  <rect width="520" height="140" rx="20" fill="#0E1730"/>
   <g transform="translate(28 32) scale(1.32)">
   <path d="M8 8 L22 49 L36 11 L50 48" fill="none" stroke="#315FD6" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
   <path d="M50 48 L65 7" fill="none" stroke="#2ECAB6" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>

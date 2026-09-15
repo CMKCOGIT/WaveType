@@ -1,0 +1,20 @@
+:root {
+  --wt-action: #315FD6;
+  --wt-wave: #4F7CFF;
+  --wt-violet: #6B5CE7;
+  --wt-aqua: #2ECAB6;
+  --wt-ink: #17233F;
+  --wt-mist: #F5F8FF;
+  --wt-night: #0E1730;
+  --wt-surface: #16213A;
+  --wt-dark-text: #F1F5FF;
+  --wt-dark-blue: #7898FF;
+  --wt-dark-aqua: #56DDCA;
+  --wt-dark-violet: #9488FF;
+}
+
+[data-theme="dark"] {
+  --wt-background: var(--wt-night);
+  --wt-text: var(--wt-dark-text);
+  --wt-accent: var(--wt-dark-blue);
+}
