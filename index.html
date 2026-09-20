@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="WaveType: pratique digitação, acompanhe sua evolução e conecte professores e alunos.">
+  <meta name="theme-color" content="#315FD6">
+  <title>WaveType — pratique, entenda, evolua</title>
+  <link rel="icon" href="assets/images/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/css/wavetype.css">
+</head>
+<body data-page="landing" data-auth-state="guest">
+  <a class="skip-link" href="#conteudo">Ir para o conteúdo</a>
+
+  <header class="site-header" data-component="public-header">
+    <nav class="site-nav container" aria-label="Navegação principal">
+      <a class="brand" href="index.html" aria-label="WaveType — página inicial">
+        <img src="assets/images/wavetype-logo.svg" alt="WaveType">
+      </a>
+      <div class="nav-links">
+        <a href="#teste">Teste de digitação</a>
+        <a href="#plataforma">Plataforma</a>
+        <a href="#perfis">Para quem é</a>
+        <a href="login.html">Entrar</a>
+        <a class="button small" href="cadastro.html">Criar conta</a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="conteudo">
+    <section class="hero" id="teste" aria-labelledby="hero-title">
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <span class="eyebrow">Digitação que mostra evolução</span>
+          <h1 id="hero-title">Seu ritmo vira <span>progresso visível.</span></h1>
+          <p>A WaveType reúne prática de digitação, resultados claros e gestão educacional. Comece agora sem cadastro e salve sua evolução quando estiver pronto.</p>
+          <div class="cluster hero-actions">
+            <a class="button" href="#typing-demo">Começar teste</a>
+            <a class="button secondary" href="#plataforma">Conhecer a plataforma</a>
+          </div>
+          <p class="trust-line"><strong>Sem distrações.</strong> Uma experiência leve para quem aprende e objetiva para quem ensina.</p>
+        </div>
+
+        <article class="typing-card" id="typing-demo" data-component="typing-test" data-auth-required="false">
+          <div class="typing-toolbar">
+            <span data-bind="typing.mode">Palavras · 30 segundos</span>
+            <span class="mono" data-bind="typing.timer">00:30</span>
+          </div>
+          <div class="typing-sample" id="typing-text" tabindex="0" aria-label="Área do teste de digitação" data-field="texto_referencia">
+            <p><strong>Aprender</strong> exige ritmo, atenção e constância. <mark>Digite</mark> para transformar cada tentativa em evolução.</p>
+          </div>
+          <div class="typing-footer">
+            <div class="cluster" aria-label="Métricas do teste">
+              <span class="typing-stat"><small>PPM</small><strong data-bind="resultado.ppm">—</strong></span>
+              <span class="typing-stat"><small>Precisão</small><strong data-bind="resultado.precisao">—%</strong></span>
+              <span class="typing-stat"><small>Erros</small><strong data-bind="resultado.erros">—</strong></span>
+            </div>
+            <button class="button" type="button" data-action="start-typing-test">Iniciar teste</button>
+          </div>
+          <input type="hidden" name="tempo_limite_seg" value="30" data-field="tempo_limite_seg">
+        </article>
+      </div>
+    </section>
+
+    <section class="section alt" id="plataforma" aria-labelledby="platform-title">
+      <div class="container">
+        <div class="section-heading">
+          <span class="eyebrow">Uma plataforma, três experiências</span>
+          <h2 id="platform-title">Tudo o que a WaveType oferece, apresentado de forma direta.</h2>
+          <p>O acesso muda conforme o objetivo de cada pessoa, mas o sistema visual, as métricas e o foco na aprendizagem permanecem consistentes.</p>
+        </div>
+        <div class="grid-4">
+          <article class="feature-card"><b>01</b><h3>Prática imediata</h3><p>Teste livre logo na entrada, sem impedir quem só quer começar a digitar.</p></article>
+          <article class="feature-card"><b>02</b><h3>Resultados claros</h3><p>PPM, precisão, erros e tempo organizados para facilitar a leitura da evolução.</p></article>
+          <article class="feature-card"><b>03</b><h3>Turmas conectadas</h3><p>Professores criam turmas, distribuem exercícios e acompanham seus alunos.</p></article>
+          <article class="feature-card"><b>04</b><h3>Motivação equilibrada</h3><p>Conquistas, níveis e rankings sem transformar a aprendizagem em distração.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="perfis" aria-labelledby="profiles-title">
+      <div class="container">
+        <div class="section-heading">
+          <span class="eyebrow">Escolha seu caminho</span>
+          <h2 id="profiles-title">Uma interface adequada para cada forma de aprender.</h2>
+          <p>As três áreas abaixo são independentes no front-end e possuem seletores próprios para facilitar a futura integração de autenticação e autorização.</p>
+        </div>
+        <div class="grid-3">
+          <article class="path-card user" data-role-card="usuario">
+            <b>USUÁRIO COMUM</b>
+            <h3>Pratique no seu tempo</h3>
+            <p>Treinos livres, histórico pessoal e metas sem vínculo obrigatório com uma turma.</p>
+            <a class="button secondary small" href="app/usuario/index.html">Ver experiência</a>
+          </article>
+          <article class="path-card student" data-role-card="aluno">
+            <b>ALUNO</b>
+            <h3>Aprenda com acompanhamento</h3>
+            <p>Exercícios da turma, desempenho, sequência, conquistas e ranking educacional.</p>
+            <a class="button secondary small" href="app/aluno/index.html">Ver experiência</a>
+          </article>
+          <article class="path-card teacher" data-role-card="professor">
+            <b>PROFESSOR</b>
+            <h3>Ensine com visão objetiva</h3>
+            <p>Gestão de turmas, exercícios, alunos e relatórios em uma estrutura organizada.</p>
+            <a class="button secondary small" href="app/professor/index.html">Ver experiência</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section alt" aria-labelledby="save-title">
+      <div class="container grid-2" style="align-items:center">
+        <div class="section-heading" style="margin:0">
+          <span class="eyebrow">Salve seu progresso</span>
+          <h2 id="save-title">Terminou o teste? Continue de onde parou.</h2>
+          <p>Quando a autenticação for conectada, este bloco receberá o resultado atual e encaminhará o usuário para a área correspondente.</p>
+        </div>
+        <div class="panel" data-component="auth-gate" data-trigger="save-progress">
+          <h3>Crie sua conta para guardar o resultado</h3>
+          <p class="muted">O teste permanece livre. Login é solicitado apenas para salvar e acompanhar a evolução.</p>
+          <div class="cluster">
+            <a class="button" href="cadastro.html?origem=resultado">Criar conta</a>
+            <a class="button secondary" href="login.html?origem=resultado">Já tenho conta</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <img src="assets/images/wavetype-logo-dark.svg" alt="WaveType">
+      <p style="margin:0">Pratique. Entenda. Evolua.</p>
+      <small>Produto educacional da Cogito.</small>
+    </div>
+  </footer>
+</body>
+</html>

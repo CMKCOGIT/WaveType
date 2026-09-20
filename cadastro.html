@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#315FD6">
+  <title>Criar conta | WaveType</title>
+  <link rel="icon" href="assets/images/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/css/wavetype.css">
+</head>
+<body data-page="cadastro" data-auth-state="guest">
+  <main class="auth-page">
+    <aside class="auth-aside" aria-labelledby="signup-message">
+      <a class="brand" href="index.html"><img src="assets/images/wavetype-logo-dark.svg" alt="WaveType"></a>
+      <div>
+        <span class="eyebrow" style="color:#56DDCA">Comece no seu ritmo</span>
+        <h1 id="signup-message">Uma conta. Três formas de evoluir.</h1>
+        <p>Escolha a experiência inicial. A estrutura já está preparada para o backend direcionar cada perfil após o cadastro.</p>
+      </div>
+      <ul class="auth-benefits">
+        <li>Usuário comum: prática e histórico pessoal</li>
+        <li>Aluno: turma, exercícios e conquistas</li>
+        <li>Professor: gestão e relatórios</li>
+      </ul>
+    </aside>
+
+    <section class="auth-main" aria-labelledby="signup-title">
+      <div class="auth-card">
+        <a class="muted" href="index.html">← Voltar à página inicial</a>
+        <h2 id="signup-title" style="margin-top:24px">Crie sua conta</h2>
+        <p>Campos e valores seguem nomes previsíveis para a integração.</p>
+
+        <form class="auth-form" id="form-cadastro" name="cadastro" method="post" data-form="cadastro" data-endpoint="supabase.auth.signUp">
+          <fieldset class="fieldset" data-field-group="tipo_interface">
+            <legend>Como você usará a WaveType?</legend>
+            <div class="role-grid">
+              <label class="role-option">
+                <input name="tipo_interface" type="radio" value="usuario" checked data-role="usuario" data-db-mapping="aluno-sem-matricula">
+                <span><strong>Usuário comum</strong><small>Prática independente</small></span>
+              </label>
+              <label class="role-option">
+                <input name="tipo_interface" type="radio" value="aluno" data-role="aluno" data-db-mapping="aluno">
+                <span><strong>Aluno</strong><small>Entrar em uma turma</small></span>
+              </label>
+              <label class="role-option">
+                <input name="tipo_interface" type="radio" value="professor" data-role="professor" data-db-mapping="professor">
+                <span><strong>Professor</strong><small>Criar e gerenciar</small></span>
+              </label>
+            </div>
+          </fieldset>
+          <label class="field" for="signup-name">
+            <span>Nome completo</span>
+            <input id="signup-name" name="nome" autocomplete="name" minlength="2" maxlength="120" placeholder="Como devemos chamar você?" required data-field="usuarios.nome">
+          </label>
+          <label class="field" for="signup-email">
+            <span>E-mail</span>
+            <input id="signup-email" name="email" type="email" autocomplete="email" maxlength="190" placeholder="voce@exemplo.com" required data-field="usuarios.email">
+          </label>
+          <div class="grid-2">
+            <label class="field" for="signup-password">
+              <span>Senha</span>
+              <input id="signup-password" name="senha" type="password" autocomplete="new-password" minlength="8" maxlength="72" placeholder="8 caracteres ou mais" required data-field="auth.password">
+            </label>
+            <label class="field" for="signup-password-confirmation">
+              <span>Confirmar senha</span>
+              <input id="signup-password-confirmation" name="confirmar_senha" type="password" autocomplete="new-password" minlength="8" maxlength="72" placeholder="Repita a senha" required data-validation="matches:senha">
+            </label>
+          </div>
+          <label class="field" for="invite-code">
+            <span>Código da turma <small>(opcional para alunos)</small></span>
+            <input id="invite-code" name="codigo_convite" maxlength="20" placeholder="Ex.: WT-3A-2026" data-field="turmas.codigo_convite" data-visible-for="aluno">
+          </label>
+          <label class="checkbox">
+            <input name="aceite" type="checkbox" value="1" required>
+            <span>Confirmo que os dados são meus e concordo com a criação da conta.</span>
+          </label>
+          <input name="tipo" type="hidden" value="aluno" data-field="usuarios.tipo" data-derived-from="tipo_interface">
+          <p id="signup-feedback" class="sr-only" role="status" aria-live="polite" data-feedback="cadastro"></p>
+          <button class="button block" type="submit" data-action="submit-signup">Criar minha conta</button>
+          <div class="form-separator">ou</div>
+          <button class="button secondary block" type="button" data-action="signup-google" data-provider="google">Cadastrar com Google</button>
+        </form>
+
+        <p class="auth-foot">Já tem conta? <a href="login.html">Entrar</a></p>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

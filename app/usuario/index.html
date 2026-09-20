@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#315FD6">
+  <title>Minha evolução | WaveType</title>
+  <link rel="icon" href="../../assets/images/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../assets/css/wavetype.css">
+</head>
+<body data-page="usuario-home" data-role="usuario" data-auth-required="true">
+  <div class="app-layout">
+    <aside class="sidebar" data-component="sidebar">
+      <a class="brand" href="../../index.html"><img src="../../assets/images/wavetype-logo.svg" alt="WaveType"></a>
+      <nav class="sidebar-nav" aria-label="Área do usuário">
+        <a href="index.html" aria-current="page" data-icon="01"><span>Início</span></a>
+        <a href="treinamento.html" data-icon="02"><span>Treinamento</span></a>
+        <a href="resultados.html" data-icon="03"><span>Resultados</span></a>
+        <a href="../aluno/index.html" data-icon="04"><span>Entrar em turma</span></a>
+      </nav>
+      <div class="sidebar-profile">
+        <strong data-bind="usuario.nome">Marina Alves</strong>
+        <small>Usuário comum</small>
+        <a href="../../login.html" data-action="logout">Sair</a>
+      </div>
+    </aside>
+
+    <div class="app-main">
+      <header class="app-topbar"><span class="profile-pill"><span class="avatar" data-bind="usuario.iniciais">MA</span><span data-bind="usuario.nome">Marina Alves</span></span></header>
+      <main class="app-content" id="conteudo">
+        <header class="page-heading">
+          <div><span class="eyebrow">Prática independente</span><h1>Olá, <span data-bind="usuario.primeiro_nome">Marina</span>!</h1><p>Continue no seu ritmo e acompanhe cada melhora.</p></div>
+          <a class="button" href="treinamento.html" data-action="start-free-training">Iniciar treino</a>
+        </header>
+
+        <section class="grid-4" aria-label="Resumo de desempenho">
+          <article class="metric-card"><span>PPM atual</span><strong data-bind="resumo.ppm_atual">42,8</strong></article>
+          <article class="metric-card aqua"><span>Precisão</span><strong data-bind="resumo.precisao">96,4%</strong></article>
+          <article class="metric-card violet"><span>Sessões</span><strong data-bind="resumo.sessoes">12</strong></article>
+          <article class="metric-card"><span>Tempo praticado</span><strong data-bind="resumo.tempo_total">48 min</strong></article>
+        </section>
+
+        <section class="dashboard-grid">
+          <article class="panel">
+            <div class="panel-header"><div><h2>Seu próximo treino</h2><p>Recomendação baseada nos resultados mais recentes.</p></div><span class="status">Livre</span></div>
+            <div class="recommendation" data-resource="recommended-training">
+              <span data-bind="recomendacao.categoria">Ritmo e precisão</span>
+              <h3 data-bind="recomendacao.titulo">Palavras frequentes</h3>
+              <p class="muted" data-bind="recomendacao.descricao">Treino curto para ganhar fluidez sem perder a precisão.</p>
+              <a class="button small" href="treinamento.html" data-action="open-recommended-training">Praticar agora</a>
+            </div>
+          </article>
+          <aside class="panel">
+            <div class="panel-header"><div><h2>Últimas sessões</h2><p>Seu histórico recente.</p></div></div>
+            <ul class="activity-list" data-list="resultados">
+              <li data-result-id="101"><span class="mono">01</span><span>Palavras · 60s<small>18/09/2026</small></span><strong class="mono">42 PPM</strong></li>
+              <li data-result-id="100"><span class="mono">02</span><span>Frases · 30s<small>17/09/2026</small></span><strong class="mono">39 PPM</strong></li>
+              <li data-result-id="99"><span class="mono">03</span><span>Pontuação · 60s<small>15/09/2026</small></span><strong class="mono">37 PPM</strong></li>
+            </ul>
+          </aside>
+        </section>
+      </main>
+    </div>
+  </div>
+</body>
+</html>

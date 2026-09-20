@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#315FD6">
+  <title>Treinamento livre | WaveType</title><link rel="icon" href="../../assets/images/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="../../assets/css/wavetype.css">
+</head>
+<body data-page="usuario-treinamento" data-role="usuario" data-auth-required="true">
+  <div class="app-layout">
+    <aside class="sidebar"><a class="brand" href="../../index.html"><img src="../../assets/images/wavetype-logo.svg" alt="WaveType"></a><nav class="sidebar-nav" aria-label="Área do usuário"><a href="index.html" data-icon="01"><span>Início</span></a><a href="treinamento.html" aria-current="page" data-icon="02"><span>Treinamento</span></a><a href="resultados.html" data-icon="03"><span>Resultados</span></a><a href="../aluno/index.html" data-icon="04"><span>Entrar em turma</span></a></nav><div class="sidebar-profile"><strong data-bind="usuario.nome">Marina Alves</strong><small>Usuário comum</small><a href="../../login.html" data-action="logout">Sair</a></div></aside>
+    <div class="app-main"><header class="app-topbar"><span class="profile-pill"><span class="avatar">MA</span><span data-bind="usuario.nome">Marina Alves</span></span></header>
+      <main class="app-content"><header class="page-heading"><div><h1>Treinamento livre</h1><p>Configure seu exercício e pratique sem vínculo com turma.</p></div></header>
+        <form class="panel stack" id="form-treino-livre" name="treino_livre" data-form="treino-livre" data-resource="exercicios">
+          <div class="grid-3">
+            <label class="field"><span>Modo</span><select name="modo" data-field="treino.modo"><option value="palavras">Palavras</option><option value="frases">Frases</option><option value="pontuacao">Pontuação</option><option value="numeros">Números</option></select></label>
+            <label class="field"><span>Duração</span><select name="tempo_limite_seg" data-field="exercicios.tempo_limite_seg"><option value="30">30 segundos</option><option value="60">60 segundos</option><option value="120">2 minutos</option></select></label>
+            <label class="field"><span>Dificuldade</span><select name="dificuldade" data-field="treino.dificuldade"><option value="iniciante">Iniciante</option><option value="intermediario">Intermediário</option><option value="avancado">Avançado</option></select></label>
+          </div>
+          <article class="typing-card" data-component="typing-test"><div class="typing-toolbar"><span data-bind="typing.mode">Palavras · 60 segundos</span><span class="mono" data-bind="typing.timer">01:00</span></div><div class="typing-sample" id="typing-text" tabindex="0" data-field="exercicios.texto_referencia"><p><strong>Praticar</strong> com constância deixa cada movimento mais natural e cada resultado mais claro.</p></div><div class="typing-footer"><div class="cluster"><span class="typing-stat"><small>PPM</small><strong data-bind="resultado.ppm">—</strong></span><span class="typing-stat"><small>Precisão</small><strong data-bind="resultado.precisao">—%</strong></span><span class="typing-stat"><small>Erros</small><strong data-bind="resultado.erros">—</strong></span></div><button class="button" type="button" data-action="start-typing-test">Iniciar</button></div></article>
+          <input type="hidden" name="aluno_id" data-field="resultados.aluno_id"><input type="hidden" name="exercicio_id" data-field="resultados.exercicio_id"><input type="hidden" name="acertos" data-field="resultados.acertos"><input type="hidden" name="erros" data-field="resultados.erros"><input type="hidden" name="tempo_seg" data-field="resultados.tempo_seg">
+        </form>
+      </main>
+    </div>
+  </div>
+</body>
+</html>
