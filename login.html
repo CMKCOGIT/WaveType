@@ -1,57 +1,43 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#315FD6">
-  <title>Entrar | WaveType</title>
-  <link rel="icon" href="assets/images/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="assets/css/wavetype.css">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#315FD6">
+    <meta name="description" content="Entre na WaveType para acompanhar sua evolução ou gerenciar suas turmas.">
+    <title>Entrar | WaveType</title>
+    <link rel="icon" type="image/svg+xml" href="assets/images/icons/favicon.svg">
+    <link rel="stylesheet" href="css/platform.css">
+    <script>document.documentElement.dataset.theme = localStorage.getItem('wavetype_theme') || 'light';</script>
 </head>
-<body data-page="login" data-auth-state="guest">
-  <main class="auth-page">
-    <aside class="auth-aside" aria-labelledby="auth-message">
-      <a class="brand" href="index.html"><img src="assets/images/wavetype-logo-dark.svg" alt="WaveType"></a>
-      <div>
-        <span class="eyebrow" style="color:#56DDCA">Seu ritmo continua aqui</span>
-        <h1 id="auth-message">Pratique. Entenda. Evolua.</h1>
-        <p>Entre para recuperar seus treinos, sua turma e o histórico que transforma prática em evolução.</p>
-      </div>
-      <ul class="auth-benefits">
-        <li>Resultados organizados por sessão</li>
-        <li>Exercícios e metas do seu perfil</li>
-        <li>Acesso preparado para Supabase Auth</li>
-      </ul>
-    </aside>
-
-    <section class="auth-main" aria-labelledby="login-title">
-      <div class="auth-card">
-        <a class="muted" href="index.html">← Voltar à página inicial</a>
-        <h2 id="login-title" style="margin-top:24px">Bem-vindo de volta</h2>
-        <p>Entre para continuar sua experiência na WaveType.</p>
-
-        <form class="auth-form" id="form-login" name="login" method="post" data-form="login" data-endpoint="supabase.auth.signInWithPassword">
-          <label class="field" for="login-email">
-            <span>E-mail</span>
-            <input id="login-email" name="email" type="email" autocomplete="email" maxlength="190" placeholder="voce@exemplo.com" required data-field="usuarios.email">
-          </label>
-          <label class="field" for="login-password">
-            <span>Senha</span>
-            <input id="login-password" name="senha" type="password" autocomplete="current-password" minlength="8" maxlength="72" placeholder="Sua senha" required data-field="auth.password">
-          </label>
-          <div class="cluster" style="justify-content:space-between">
-            <label class="checkbox"><input name="lembrar" type="checkbox" value="1"><span>Manter sessão ativa</span></label>
-            <a href="recuperar-senha.html" style="color:#315FD6;font-size:.78rem;font-weight:750">Esqueci minha senha</a>
-          </div>
-          <p id="login-feedback" class="sr-only" role="status" aria-live="polite" data-feedback="login"></p>
-          <button class="button block" type="submit" data-action="submit-login">Entrar na WaveType</button>
-          <div class="form-separator">ou</div>
-          <button class="button secondary block" type="button" data-action="login-google" data-provider="google">Continuar com Google</button>
-        </form>
-
-        <p class="auth-foot">Ainda não tem conta? <a href="cadastro.html">Criar conta</a></p>
-      </div>
-    </section>
-  </main>
+<body>
+    <main class="auth-page">
+        <aside class="auth-aside">
+            <a href="index.html"><img class="auth-logo" src="assets/images/brand/wavetype-logo-white.svg" alt="WaveType"></a>
+            <div class="auth-copy">
+                <span class="eyebrow">Seu ritmo continua aqui</span>
+                <h1>Pratique.<br>Entenda.<br>Evolua.</h1>
+                <p>Uma experiência clara para quem aprende e uma visão objetiva para quem ensina.</p>
+                <ul class="auth-points"><li><i></i>Resultados organizados por sessão</li><li><i></i>Exercícios da sua turma</li><li><i></i>Evolução visível, sem distrações</li></ul>
+            </div>
+        </aside>
+        <section class="auth-main" aria-labelledby="login-title">
+            <div class="auth-card">
+                <a class="eyebrow" href="index.html">← Voltar ao teste</a>
+                <h2 id="login-title">Bem-vindo de volta</h2>
+                <p>Entre para retomar seu progresso na WaveType.</p>
+                <form class="auth-form" data-auth-form="login" novalidate>
+                    <label class="field"><span>E-mail</span><input type="email" name="email" autocomplete="email" maxlength="190" placeholder="voce@exemplo.com" required></label>
+                    <label class="field"><span>Senha</span><input type="password" name="senha" autocomplete="current-password" minlength="8" placeholder="Sua senha" required></label>
+                    <button class="button auth-submit" type="submit">Entrar na WaveType</button>
+                    <p class="auth-demo" data-form-feedback hidden role="status"></p>
+                </form>
+                <div class="auth-separator">ou</div>
+                <button class="button auth-google" type="button" data-google-auth="login">Continuar com o Google</button>
+                <p class="auth-foot">Ainda não tem uma conta? <a href="cadastro.html">Criar conta</a></p>
+            </div>
+        </section>
+    </main>
+    <script type="module" src="js/pages/login.js"></script>
 </body>
 </html>
