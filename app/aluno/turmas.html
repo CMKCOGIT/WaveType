@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="#315FD6">
+    <title>Praticar | WaveType</title>
+    <link rel="icon" href="../../assets/images/icons/favicon.svg">
+    <link rel="stylesheet" href="../../css/platform.css">
+    <script>document.documentElement.dataset.theme = localStorage.getItem('wavetype_theme') || 'light';</script>
+</head>
+
+<body data-root="../../" data-role="aluno" data-page="treinamento">
+    <div class="app-layout">
+        <aside id="app-sidebar" class="app-sidebar"><a class="app-brand" href="../../index.html"
+                aria-label="WaveType, página inicial"><img class="logo-light"
+                    src="../../assets/images/brand/wavetype-logo.svg" alt="WaveType"><img class="logo-dark"
+                    src="../../assets/images/brand/wavetype-logo-dark.svg" alt=""></a>
+            <p class="app-role">Área do aluno</p>
+            <nav class="app-nav" aria-label="Navegação da área do aluno"><a href="index.html"
+                    data-index="01"><span>Início</span></a><a href="turmas.html" data-index="02"
+                    aria-current="page"><span>Turmas</span></a><a href="resultados.html"
+                    data-index="03"><span>Resultados</span></a><a href="conquistas.html"
+                    data-index="04"><span>Conquistas</span></a><a href="ranking.html"
+                    data-index="05"><span>Ranking</span></a></nav>
+            <div class="app-sidebar-foot"><strong>Seu espaço</strong><small>Prática, clareza e evolução</small><a
+                    href="../../index.html">Ir ao site público →</a></div>
+        </aside>
+        <div class="app-workspace">
+            <header id="app-topbar" class="app-topbar"><span class="topbar-context">Aprenda no seu ritmo. Evolua a cada
+                    tecla.</span><span class="topbar-profile"><span class="topbar-avatar">AL</span><span><strong>Área do
+                            aluno</strong><small>WaveType</small></span></span></header>
+            <main class="app-main">
+                <header class="page-heading">
+                    <div><span class="eyebrow">Prática orientada</span>
+                        <h1>O próximo treino está claro.</h1>
+                        <p>Exercícios da turma e práticas livres reunidos em uma sequência simples.</p>
+                    </div>
+                    <div class="heading-actions"><a class="button secondary" href="../../index.html#teste">Prática
+                            livre</a></div>
+                </header>
+                <section class="panel panel-pad" style="margin-bottom:18px">
+                    <div class="panel-title">
+                        <div>
+                            <h2>Entrar em uma turma</h2>
+                            <p>Use o código enviado pelo professor.</p>
+                        </div>
+                    </div>
+                    <form class="toolbar" data-form-entrar-turma><label class="field"><span>Código de
+                                convite</span><input class="mono" name="codigoConvite" maxlength="20"
+                                placeholder="Ex.: WAVE8K2P" required></label><button class="button" type="submit"
+                            style="align-self:end">Entrar na turma</button></form>
+                    <p data-feedback-turma hidden role="status" style="margin-top:8px"></p>
+                </section>
+                <section>
+                    <div class="panel-title">
+                        <div>
+                            <h2>Exercícios da sua turma</h2>
+                            <p>Ordenados do mais recente para o mais antigo.</p>
+                        </div>
+                    </div>
+                    <div class="practice-list" data-lista-exercicios>
+                        <article class="practice-row">
+                            <p>Carregando…</p>
+                        </article>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+    <script type="module" src="../../js/pages/aluno-treinamento.js"></script>
+</body>
+
+</html>

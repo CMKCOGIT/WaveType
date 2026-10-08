@@ -2,87 +2,116 @@
 <html lang="pt-BR">
 
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#315FD6">
-  <title>Visão geral do aluno | WaveType</title>
-  <link rel="icon" href="../../assets/images/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="../../assets/css/wavetype.css">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="#315FD6">
+    <title>Visão geral do aluno | WaveType</title>
+    <link rel="icon" href="../../assets/images/icons/favicon.svg">
+    <link rel="stylesheet" href="../../css/platform.css">
+    <script>document.documentElement.dataset.theme = localStorage.getItem('wavetype_theme') || 'light';</script>
 </head>
 
-<body data-page="aluno-home" data-role="aluno" data-auth-required="true">
-  <div class="app-layout">
-    <aside class="sidebar"><a class="brand" href="../../index.html"><img src="../../assets/images/wavetype-logo.svg"
-          alt="WaveType"></a>
-      <nav class="sidebar-nav" aria-label="Área do aluno"><a href="index.html" aria-current="page"
-          data-icon="01"><span>Início</span></a><a href="treinamento.html" data-icon="02"><span>Treinamento</span></a><a
-          href="resultados.html" data-icon="03"><span>Resultados</span></a><a href="conquistas.html"
-          data-icon="04"><span>Conquistas</span></a><a href="ranking.html" data-icon="05"><span>Ranking</span></a></nav>
-      <div class="sidebar-profile"><strong data-bind="usuario.nome">Lucas Ferreira</strong><small
-          data-bind="turma.nome">3º Ano A</small><a href="../../login.html" data-action="logout">Sair</a></div>
-    </aside>
-    <div class="app-main">
-      <header class="app-topbar"><span class="profile-pill"><span class="avatar"
-            data-bind="usuario.iniciais">LF</span><span data-bind="usuario.nome">Lucas Ferreira</span></span></header>
-      <main class="app-content">
-        <header class="page-heading">
-          <div><span class="eyebrow">Área do aluno</span>
-            <h1>Olá, <span data-bind="usuario.primeiro_nome">Lucas</span>!</h1>
-            <p><span data-bind="turma.nome">3º Ano A</span> · continue sua sequência de treino.</p>
-          </div><a class="button" href="treinamento.html">Praticar agora</a>
-        </header>
-        <section class="grid-4" aria-label="Resumo do aluno">
-          <article class="metric-card"><span>PPM atual</span><strong data-bind="resumo.ppm_atual">56,0</strong>
-          </article>
-          <article class="metric-card aqua"><span>Precisão</span><strong data-bind="resumo.precisao">98,2%</strong>
-          </article>
-          <article class="metric-card violet"><span>Sessões</span><strong data-bind="resumo.sessoes">7</strong>
-          </article>
-          <article class="metric-card"><span>Sequência</span><strong data-bind="resumo.sequencia_dias">7 dias</strong>
-          </article>
-        </section>
-        <section class="dashboard-grid">
-          <article class="panel">
-            <div class="panel-header">
-              <div>
-                <h2>Nível e experiência</h2>
-                <p>Progresso acumulado nas atividades.</p>
-              </div><span class="mono" data-bind="nivel.xp">420/800 XP</span>
-            </div>
-            <div class="progress-row"><span class="level-badge" data-bind="nivel.numero">5</span>
-              <div>
-                <div class="progress-track"><span class="progress-fill" style="width:53%"
-                    data-bind-style="nivel.percentual"></span></div>
-                <p class="muted" style="margin:8px 0 0">Faltam <span data-bind="nivel.xp_restante">380 XP</span> para o
-                  nível 6.</p>
-              </div>
-            </div>
-            <div class="recommendation" data-resource="recommended-exercise"><span>Próxima lição recomendada</span>
-              <h3 data-bind="exercicio.titulo">Acentuação e pontuação</h3>
-              <p class="muted"><span data-bind="exercicio.categoria">Ortografia</span> · <span
-                  data-bind="exercicio.tempo_limite_seg">120s</span></p><a class="button small" href="treinamento.html"
-                data-action="open-exercise" data-exercise-id="12">Iniciar treino</a>
-            </div>
-          </article>
-          <aside class="panel">
-            <div class="panel-header">
-              <div>
-                <h2>Ranking da turma</h2>
-                <p>Melhores resultados recentes.</p>
-              </div>
-            </div>
-            <ol class="rank-list" data-list="ranking_exercicio">
-              <li><b>1</b><span>Lucas Ferreira</span><strong class="mono">76,1</strong></li>
-              <li><b>2</b><span>Bianca Souza</span><strong class="mono">72,9</strong></li>
-              <li><b>3</b><span>Otávio Lima</span><strong class="mono">61,4</strong></li>
-              <li><b>4</b><span>Carla Nunes</span><strong class="mono">58,2</strong></li>
-              <li><b>5</b><span>Igor Tavares</span><strong class="mono">51,9</strong></li>
-            </ol>
-          </aside>
-        </section>
-      </main>
+<body data-root="../../" data-role="aluno" data-page="inicio">
+    <div class="app-layout">
+        <aside id="app-sidebar" class="app-sidebar"><a class="app-brand" href="../../index.html"
+                aria-label="WaveType, página inicial"><img class="logo-light"
+                    src="../../assets/images/brand/wavetype-logo.svg" alt="WaveType"><img class="logo-dark"
+                    src="../../assets/images/brand/wavetype-logo-dark.svg" alt=""></a>
+            <p class="app-role">Área do aluno</p>
+            <nav class="app-nav" aria-label="Navegação da área do aluno"><a href="index.html" data-index="01"
+                    aria-current="page"><span>Início</span></a><a href="turmas.html"
+                    data-index="02"><span>Turmas</span></a><a href="resultados.html"
+                    data-index="03"><span>Resultados</span></a><a href="conquistas.html"
+                    data-index="04"><span>Conquistas</span></a><a href="ranking.html"
+                    data-index="05"><span>Ranking</span></a></nav>
+            <div class="app-sidebar-foot"><strong>Seu espaço</strong><small>Prática, clareza e evolução</small><a
+                    href="../../index.html">Ir ao site público →</a></div>
+        </aside>
+        <div class="app-workspace">
+            <header id="app-topbar" class="app-topbar"><span class="topbar-context">Aprenda no seu ritmo. Evolua a cada
+                    tecla.</span><span class="topbar-profile"><span class="topbar-avatar">AL</span><span><strong>Área do
+                            aluno</strong><small>WaveType</small></span></span></header>
+            <main class="app-main">
+                <header class="page-heading">
+                    <div><span class="eyebrow">Visão geral</span>
+                        <h1 id="saudacao">Olá!</h1>
+                        <p id="linha-turma">&nbsp;</p>
+                    </div>
+                    <div class="heading-actions"><a class="button" href="treinamento.html">Começar treino</a></div>
+                </header>
+                <section class="metric-grid" aria-label="Resumo do desempenho">
+                    <article class="metric-card"><span>WPM atual</span><strong data-metric="wpm-atual">—</strong><small
+                            data-metric="wpm-delta">&nbsp;</small></article>
+                    <article class="metric-card aqua"><span>Precisão média</span><strong
+                            data-metric="precisao-media">—</strong><small>Meta recomendada: 96%</small></article>
+                    <article class="metric-card violet"><span>Sessões concluídas</span><strong
+                            data-metric="sessoes-total">—</strong><small data-metric="sessoes-semana">&nbsp;</small>
+                    </article>
+                    <article class="metric-card aqua"><span>Sequência</span><strong
+                            data-metric="sequencia">—</strong><small>Dias seguidos praticando</small></article>
+                </section>
+                <div class="dashboard-grid">
+                    <section class="panel panel-pad">
+                        <div class="panel-title">
+                            <div>
+                                <h2>Nível e experiência</h2>
+                                <p>Seu avanço considera prática, precisão e regularidade.</p>
+                            </div><span class="mono" data-metric="xp-fracao">.../... XP</span>
+                        </div>
+                        <div class="level-row">
+                            <div class="level-badge" data-metric="nivel">–</div>
+                            <div>
+                                <div class="level-meta"><strong data-metric="nivel-label">Nível</strong><span
+                                        data-metric="xp-faltam">Faltam ... XP</span></div>
+                                <div class="progress-track">
+                                    <div class="progress-fill" data-metric="progresso-nivel" style="width:0%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <aside class="panel panel-pad">
+                        <div class="panel-title">
+                            <div>
+                                <h2>Ranking da turma</h2>
+                                <p>Melhores resultados recentes.</p>
+                            </div>
+                        </div>
+                        <ol class="ranking-list" data-ranking-list>
+                            <li>Carregando…</li>
+                        </ol><a class="button ghost small" href="ranking.html" style="margin-top:14px">Ver ranking
+                            completo →</a>
+                    </aside>
+                </div>
+                <section class="panel panel-pad" style="margin-top:18px">
+                    <div class="panel-title">
+                        <div>
+                            <h2>Atividade recente</h2>
+                            <p>Suas últimas sessões.</p>
+                        </div><a class="button secondary small" href="resultados.html">Ver histórico</a>
+                    </div>
+                    <div class="table-wrap" style="box-shadow:none">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Exercício</th>
+                                    <th>Data</th>
+                                    <th>WPM</th>
+                                    <th>Precisão</th>
+                                    <th>Tempo</th>
+                                </tr>
+                            </thead>
+                            <tbody data-tabela-recentes>
+                                <tr>
+                                    <td colspan="5">Carregando…</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </main>
+        </div>
     </div>
-  </div>
+    <script type="module" src="../../js/pages/aluno-inicio.js"></script>
 </body>
 
 </html>

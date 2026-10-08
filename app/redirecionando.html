@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Entrando… | WaveType</title>
+</head>
+<body>
+  <p id="msg" role="status">Entrando na sua conta…</p>
+  <div id="escolha" hidden>
+    <p>Como você quer usar o WaveType?</p>
+    <button type="button" data-tipo="usuario">Usuário</button>
+    <button type="button" data-tipo="aluno">Aluno</button>
+    <button type="button" data-tipo="professor">Professor</button>
+  </div>
+
+  <script type="module">
+    import { supabase } from '/js/supabaseClient.js';
+    import { obterSessao, obterPerfil } from '/js/auth.js';
+
+    const DESTINOS = {
+      usuario: '/app/usuario/index.html',
+      aluno: '/app/aluno/index.html',
+      professor: '/app/professor/index.html',
+    };
+    const msg = document.getElementById('msg');
+    const escolha = document.getElementById('escolha');
+
+    async function definirTipo(tipo) {
+      const { error } = await supabase.rpc('definir_tipo', { novo_tipo: tipo });
+      if (error) throw error;
+    }
+
+    async function seguir() {
+      try {
+        if (!(await obterSessao())) return window.location.replace('/login.html');
+
+        let perfil = await obterPerfil();
+        const pendente = localStorage.getItem('wavetype_tipo_pendente');
+        localStorage.removeItem('wavetype_tipo_pendente');
+
+        if (!perfil.tipo_definido) {
+          if (pendente) {
+            await definirTipo(pendente);
+            perfil = await obterPerfil();
+          } else {
+            msg.hidden = true;
+            escolha.hidden = false;
+            escolha.addEventListener('click', async (e) => {
+              const tipo = e.target.dataset?.tipo;
+              if (!tipo) return;
+              try {
+                await definirTipo(tipo);
+                window.location.replace(DESTINOS[tipo]);
+              } catch (erro) {
+                console.error(erro);
+                msg.hidden = false;
+                msg.textContent = 'Não foi possível salvar sua escolha. Tente novamente.';
+              }
+            });
+            return;
+          }
+        }
+
+        window.location.replace(DESTINOS[perfil.tipo]);
+      } catch (e) {
+        console.error(e);
+        msg.hidden = false;
+        msg.textContent = 'Erro: ' + (e.message || JSON.stringify(e));
+      }
+    }
+
+    seguir();
+  </script>
+</body>
+</html>

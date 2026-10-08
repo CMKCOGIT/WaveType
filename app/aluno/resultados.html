@@ -1,13 +1,85 @@
 <!doctype html>
 <html lang="pt-BR">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#315FD6"><title>Meus resultados | WaveType</title><link rel="icon" href="../../assets/images/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="../../assets/css/wavetype.css"></head>
-<body data-page="aluno-resultados" data-role="aluno" data-auth-required="true">
-  <div class="app-layout"><aside class="sidebar"><a class="brand" href="../../index.html"><img src="../../assets/images/wavetype-logo.svg" alt="WaveType"></a><nav class="sidebar-nav" aria-label="Área do aluno"><a href="index.html" data-icon="01"><span>Início</span></a><a href="treinamento.html" data-icon="02"><span>Treinamento</span></a><a href="resultados.html" aria-current="page" data-icon="03"><span>Resultados</span></a><a href="conquistas.html" data-icon="04"><span>Conquistas</span></a><a href="ranking.html" data-icon="05"><span>Ranking</span></a></nav><div class="sidebar-profile"><strong data-bind="usuario.nome">Lucas Ferreira</strong><small data-bind="turma.nome">3º Ano A</small><a href="../../login.html" data-action="logout">Sair</a></div></aside>
-    <div class="app-main"><header class="app-topbar"><span class="profile-pill"><span class="avatar">LF</span><span data-bind="usuario.nome">Lucas Ferreira</span></span></header><main class="app-content"><header class="page-heading"><div><h1>Meus resultados</h1><p>Histórico de sessões e evolução dos indicadores.</p></div></header>
-      <section class="grid-3"><article class="metric-card"><span>PPM médio</span><strong data-bind="resumo.ppm_medio">44,9</strong></article><article class="metric-card aqua"><span>Melhor PPM</span><strong data-bind="resumo.melhor_ppm">56,0</strong></article><article class="metric-card violet"><span>Precisão média</span><strong data-bind="resumo.precisao_media">95,0%</strong></article></section>
-      <section class="grid-2" style="margin-top:20px"><article class="panel"><div class="panel-header"><div><h2>Evolução de PPM</h2><p>Últimas sete sessões.</p></div></div><div class="chart-placeholder" aria-label="Gráfico ilustrativo de PPM"><i style="--height:42%"></i><i style="--height:50%"></i><i style="--height:61%"></i><i style="--height:76%"></i></div></article><article class="panel"><div class="panel-header"><div><h2>Evolução da precisão</h2><p>Consistência ao longo do tempo.</p></div></div><div class="chart-placeholder" aria-label="Gráfico ilustrativo de precisão"><i style="--height:64%"></i><i style="--height:72%"></i><i style="--height:81%"></i><i style="--height:92%"></i></div></article></section>
-      <section class="panel" style="margin-top:20px"><div class="panel-header"><div><h2>Histórico de sessões</h2><p>Dados vindos de <span class="mono">resultados</span>.</p></div></div><div class="data-table-wrap"><table class="data-table" data-table="resultados"><thead><tr><th>Exercício</th><th>Data</th><th>PPM</th><th>Precisão</th><th>Erros</th><th>Tempo</th></tr></thead><tbody><tr data-result-id="77"><td>Acentuação e pontuação</td><td>18/09/2026</td><td class="mono">56,0</td><td>98,2%</td><td>3</td><td>120s</td></tr><tr data-result-id="75"><td>Palavras frequentes</td><td>16/09/2026</td><td class="mono">49,1</td><td>96,7%</td><td>5</td><td>60s</td></tr></tbody></table></div></section>
-    </main></div>
-  </div>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="#315FD6">
+    <title>Meus resultados | WaveType</title>
+    <link rel="icon" href="../../assets/images/icons/favicon.svg">
+    <link rel="stylesheet" href="../../css/platform.css">
+    <script>document.documentElement.dataset.theme = localStorage.getItem('wavetype_theme') || 'light';</script>
+</head>
+
+<body data-root="../../" data-role="aluno" data-page="resultados">
+    <div class="app-layout">
+        <aside id="app-sidebar" class="app-sidebar"><a class="app-brand" href="../../index.html"
+                aria-label="WaveType, página inicial"><img class="logo-light"
+                    src="../../assets/images/brand/wavetype-logo.svg" alt="WaveType"><img class="logo-dark"
+                    src="../../assets/images/brand/wavetype-logo-dark.svg" alt=""></a>
+            <p class="app-role">Área do aluno</p>
+            <nav class="app-nav" aria-label="Navegação da área do aluno"><a href="index.html"
+                    data-index="01"><span>Início</span></a><a href="turmas.html"
+                    data-index="02"><span>Turmas</span></a><a href="resultados.html" data-index="03"
+                    aria-current="page"><span>Resultados</span></a><a href="conquistas.html"
+                    data-index="04"><span>Conquistas</span></a><a href="ranking.html"
+                    data-index="05"><span>Ranking</span></a></nav>
+            <div class="app-sidebar-foot"><strong>Seu espaço</strong><small>Prática, clareza e evolução</small><a
+                    href="../../index.html">Ir ao site público →</a></div>
+        </aside>
+        <div class="app-workspace">
+            <header id="app-topbar" class="app-topbar"><span class="topbar-context">Aprenda no seu ritmo. Evolua a cada
+                    tecla.</span><span class="topbar-profile"><span class="topbar-avatar">AL</span><span><strong>Área do
+                            aluno</strong><small>WaveType</small></span></span></header>
+            <main class="app-main">
+                <header class="page-heading">
+                    <div><span class="eyebrow">Desempenho</span>
+                        <h1>Seus resultados, sem mistério.</h1>
+                        <p>Histórico de sessões e sinais concretos de evolução.</p>
+                    </div>
+                    <div class="heading-actions"><a class="button" href="treinamento.html">Praticar agora</a></div>
+                </header>
+                <section class="metric-grid">
+                    <article class="metric-card"><span>WPM médio</span><strong
+                            data-metric="wpm-medio">—</strong><small>Últimas sessões</small></article>
+                    <article class="metric-card aqua"><span>Melhor WPM</span><strong
+                            data-metric="melhor-wpm">—</strong><small data-metric="melhor-wpm-data">&nbsp;</small>
+                    </article>
+                    <article class="metric-card violet"><span>Precisão média</span><strong
+                            data-metric="precisao-media">—</strong><small>&nbsp;</small></article>
+                    <article class="metric-card aqua"><span>Sessões</span><strong
+                            data-metric="total-sessoes">—</strong><small>No período exibido</small></article>
+                </section>
+                <section class="panel panel-pad" style="margin-top:18px">
+                    <div class="panel-title">
+                        <div>
+                            <h2>Histórico de sessões</h2>
+                        </div>
+                    </div>
+                    <div class="table-wrap" style="box-shadow:none">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Exercício</th>
+                                    <th>Data</th>
+                                    <th>WPM</th>
+                                    <th>Precisão</th>
+                                    <th>Acertos / erros</th>
+                                    <th>Tempo</th>
+                                </tr>
+                            </thead>
+                            <tbody data-tabela-historico>
+                                <tr>
+                                    <td colspan="6">Carregando…</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+    <script type="module" src="../../js/pages/aluno-resultados.js"></script>
 </body>
+
 </html>
