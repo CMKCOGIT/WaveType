@@ -89,6 +89,7 @@ export async function exigirPapel(papelEsperado) {
     if (window.location.pathname !== destino) window.location.href = destino;
     return null;
   }
+  return perfil;
 }
 
 function traduzErro(error) {

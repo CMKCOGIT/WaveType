@@ -1,0 +1,140 @@
+
+/* Cabeçalho do nível */
+.nivel-cabecalho {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.nivel-titulo h2 {
+  margin-bottom: 4px;
+}
+
+.nivel-titulo p {
+  margin-top: 0;
+}
+
+.nivel-percentual {
+  font-size: 1.25rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.nivel-resumo {
+  font-size: 0.82rem;
+  opacity: 0.75;
+  margin-top: 6px;
+  margin-bottom: 14px;
+}
+
+/* Lista compacta de etapas */
+.etapas-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.etapa-linha {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--borda, #dedede);
+  border-radius: 10px;
+}
+
+.etapa-numero {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  background: var(--superficie-secundaria, #eeeeee);
+  font-weight: 700;
+}
+
+.etapa-conteudo {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.etapa-conteudo strong {
+  font-size: 0.92rem;
+}
+
+.etapa-conteudo small {
+  font-size: 0.8rem;
+  opacity: 0.75;
+}
+
+.etapa-barra {
+  width: 100%;
+  max-width: 260px;
+  height: 4px;
+  overflow: hidden;
+  border-radius: 10px;
+  background: var(--fundo-barra, #e5e5e5);
+}
+
+.etapa-barra-preenchida {
+  height: 100%;
+  border-radius: inherit;
+  background: var(--cor-sucesso, #16a34a);
+  transition: width 0.3s ease;
+}
+
+.etapa-percentual {
+  font-size: 0.75rem;
+  opacity: 0.75;
+}
+
+.etapa-iniciar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: 8px 14px;
+  border-radius: 8px;
+  background: var(--cor-primaria, #2563eb);
+  color: white;
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: opacity 0.2s;
+}
+
+.etapa-iniciar:hover {
+  opacity: 0.85;
+}
+
+.etapa-indisponivel {
+  font-size: 0.8rem;
+  opacity: 0.65;
+}
+
+/* Adaptação para celulares */
+@media (max-width: 520px) {
+  .etapa-linha {
+    gap: 8px;
+    padding: 9px;
+  }
+
+  .etapa-conteudo strong {
+    font-size: 0.84rem;
+  }
+
+  .etapa-conteudo small {
+    font-size: 0.74rem;
+  }
+
+  .etapa-iniciar {
+    padding: 7px 10px;
+  }
+}
