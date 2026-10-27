@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="#315FD6">
+    <title>Exercícios | WaveType</title>
+    <link rel="icon" href="../../assets/images/icons/favicon.svg">
+    <link rel="stylesheet" href="../../css/platform.css">
+    <link rel="stylesheet" href="../../css/exercicios.css">
+    <script>document.documentElement.dataset.theme = localStorage.getItem('wavetype_theme') || 'light';</script>
+</head>
+
+<body data-root="../../" data-role="aluno" data-page="exercicios">
+    <div class="app-layout">
+        <aside id="app-sidebar" class="app-sidebar"><a class="app-brand" href="../../index.html"
+                aria-label="WaveType, página inicial"><img class="logo-light"
+                    src="../../assets/images/brand/wavetype-logo.svg" alt="WaveType"><img class="logo-dark"
+                    src="../../assets/images/brand/wavetype-logo-dark.svg" alt=""></a>
+            <p class="app-role">Área do usuário</p>
+            <nav class="app-nav" aria-label="Navegação da área do usuário"><a href="index.html"
+                    data-index="01"><span>Início</span></a><a href="resultados.html"
+                    data-index="02"><span>Resultados</span></a><a href="conquistas.html"
+                    data-index="03"><span>Conquistas</span></a><a href="exercicios.html" data-index="04"
+                    aria-current="page"><span>Exercícios</span></a><a href="treinar.html"
+                    data-index="05"><span>Treinar</span></a></nav>
+            <div class="app-sidebar-foot"><strong>Seu espaço</strong><small>Prática, clareza e evolução</small><a
+                    href="../../index.html">Ir ao site público →</a></div>
+        </aside>
+        <div class="app-workspace">
+            <header id="app-topbar" class="app-topbar"><span class="topbar-context">Aprenda no seu ritmo. Evolua a cada
+                    tecla.</span><span class="topbar-profile"><span class="topbar-avatar">US</span><span><strong>Área do
+                            usuário</strong><small>WaveType</small></span></span></header>
+            <main class="app-main">
+                <header class="page-heading">
+                    <div><span class="eyebrow">Treino guiado</span>
+                        <h1>Exercícios</h1>
+                        <p data-resumo>Carregando…</p>
+                        
+                    </div>
+                </header>
+                <div data-niveis></div>
+            </main>
+        </div>
+    </div>
+    <p>niveis</p>
+    <script type="module" src="../../js/pages/usuario-exercicios.js"></script>
+</body>
+
+</html>

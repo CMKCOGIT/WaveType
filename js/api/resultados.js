@@ -26,7 +26,7 @@ export async function registrarResultado({ exercicio_id, ppm, precisao, acertos,
 export async function listarMeusResultados({ limite = 20 } = {}) {
   const { data, error } = await supabase
     .from('resultados')
-    .select('id, ppm, precisao, acertos, erros, tempo_seg, criado_em, exercicios(titulo, turma_id)')
+    .select('id, exercicio_id, ppm, precisao, acertos, erros, tempo_seg, criado_em, exercicios(titulo, turma_id)')
     .order('criado_em', { ascending: false })
     .limit(limite);
   if (error) throw error;
@@ -49,6 +49,10 @@ async function verificarNovasConquistas({ ppm, precisao, erros }) {
   if (ppm >= 80) candidatas.push('mestre_80wpm');
 
   for (const codigo of candidatas) {
-    await supabase.rpc('liberar_conquista', { p_codigo: codigo }).catch(() => {});
+  try {
+    await supabase.rpc('liberar_conquista', { p_codigo: codigo });
+  } catch {
+    // conquista é best-effort, não deve quebrar o salvamento
+  }
   }
 }

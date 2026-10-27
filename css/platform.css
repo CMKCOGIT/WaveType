@@ -1180,3 +1180,33 @@ h3 {
     transition: none !important;
   }
 }
+
+
+
+/* Impede que o texto largo estique o card ou a página */
+#typing-shell,
+#typing-stage,
+#words-viewport {
+  min-width: 0;
+  max-width: 100%;
+}
+
+body.single-line #words-viewport {
+  width: 100%;
+  overflow: hidden;
+  contain: inline-size; /* a largura não depende do texto de dentro */
+  display: flex;
+  align-items: center;  /* centraliza a linha na altura original do bloco */
+}
+
+body.single-line #words-wrapper {
+  position: relative;
+  flex: 0 0 auto;
+  white-space: nowrap;
+  width: max-content;
+  transition: transform 0.15s ease;
+}
+#teste,
+#typing-shell {
+  width: 100%;
+}
