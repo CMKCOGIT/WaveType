@@ -5,6 +5,7 @@ import { exigirPapel } from '../auth.js';
 import { listarMeusResultados } from '../api/resultados.js';
 import { listarExercicios, listarMinhasAtividades } from '../api/exercicios.js';
 import { desenharTrilha, exerciciosConcluidos } from './trilha.js';
+import { formatarTempo } from '../regras.js';
 
 const SITUACOES = {
   pendente: { rotulo: 'Pendente', classe: 'pendente' },
@@ -72,7 +73,8 @@ function linhaAtividade(a, indice) {
     .join(' · ');
   const extras = [];
   if (a.prazo) extras.push(`Prazo: ${formatarData(a.prazo)}`);
-  if (a.meta_precisao != null) extras.push(`Meta: ${formatarNumero(a.meta_precisao)}% de precisão`);
+  if (a.tempo_limite_seg) extras.push(`Tempo máximo: ${formatarTempo(a.tempo_limite_seg)}`);
+  if (a.meta_precisao != null) extras.push(`Precisão mínima: ${formatarNumero(a.meta_precisao)}%`);
   if (Number(a.tentativas) > 0) extras.push(`Melhor: ${formatarNumero(a.melhor_ppm)} WPM · ${formatarNumero(a.melhor_precisao)}%`);
 
   const href = `treinar.html?id=${encodeURIComponent(a.id)}${a.turma_id ? `&turma=${encodeURIComponent(a.turma_id)}` : ''}`;

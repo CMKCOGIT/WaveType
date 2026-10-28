@@ -10,6 +10,7 @@ Rode os arquivos de `supabase/migrations/` **nesta ordem**, um por vez (cada um 
 2. `20261027000002_turmas_atividades_rls.sql`
 3. `20261027000003_trilha_nivel_extremo.sql`
 4. `20261027000004_conquistas_gamificacao.sql`
+5. `20261028000005_tempo_maximo_e_precisao.sql` (tempo máximo e precisão acima de 85% em toda a trilha; tempo e precisão definidos pelo professor nas atividades)
 
 Depois rode `supabase/verificacao.sql`. Cada nível (1 a 6) deve mostrar 20 exercícios e as demais consultas devem voltar vazias.
 

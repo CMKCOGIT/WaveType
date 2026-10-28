@@ -4,20 +4,20 @@ import { supabase } from '../supabaseClient.js';
 /**
  * Chamado ao final de uma sessão de digitação (treinar.html).
  * O banco decide sozinho, no trigger resultados_validar, se o resultado
- * conclui o exercício (ex.: Nível 6 exige precisão acima de 85%) e em
+ * conclui o exercício (precisão mínima e tempo máximo) e em
  * qual turma uma atividade é registrada. Os gatilhos seguintes atualizam
  * XP, sequência de dias e conquistas. Nada disso é confiado ao navegador.
  *
  * Devolve { resultado, novasConquistas }.
  */
-export async function registrarResultado({ exercicio_id, turma_id = null, ppm, precisao, acertos, erros, tempo_seg }) {
+export async function registrarResultado({ exercicio_id, turma_id = null, ppm, precisao, acertos, erros, tempo_seg, concluiu_texto = true }) {
   const { data: sessao } = await supabase.auth.getSession();
   const alunoId = sessao.session?.user.id;
   if (!alunoId) throw new Error('Sessão expirada. Entre novamente.');
 
   const { data, error } = await supabase
     .from('resultados')
-    .insert({ aluno_id: alunoId, exercicio_id, turma_id, ppm, precisao, acertos, erros, tempo_seg })
+    .insert({ aluno_id: alunoId, exercicio_id, turma_id, ppm, precisao, acertos, erros, tempo_seg, concluiu_texto })
     .select()
     .single();
   if (error) throw new Error(error.message);

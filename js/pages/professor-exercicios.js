@@ -2,6 +2,7 @@
 import { exigirPapel } from '../auth.js';
 import { listarMinhasTurmas } from '../api/turmas.js';
 import { listarAtividadesDoProfessor, salvarAtividade, excluirAtividade } from '../api/exercicios.js';
+import { formatarTempo } from '../regras.js';
 
 const botaoAbrir = document.querySelector('[data-abrir-form]');
 const form = document.querySelector('[data-form-exercicio]');
@@ -50,7 +51,7 @@ function abrirFormulario(atividade = null) {
   campos.nivel.value = atividade?.nivel ?? 'medio';
   campos.tempo_limite_seg.value = atividade?.tempo_limite_seg ?? 120;
   campos.prazo.value = atividade?.prazo ? paraDatetimeLocal(atividade.prazo) : '';
-  campos.meta_precisao.value = atividade?.meta_precisao ?? '';
+  campos.meta_precisao.value = atividade?.meta_precisao ?? 85;
   campos.publicado.value = String(atividade?.publicado ?? true);
   const selecionadas = new Set((atividade?.turmas ?? []).map((t) => String(t.id)));
   form.querySelectorAll('input[name="turmas"]').forEach((c) => (c.checked = selecionadas.has(c.value)));
@@ -81,8 +82,11 @@ form.addEventListener('submit', async (evento) => {
 
   if (atividade.titulo.length < 3) return erroFormulario('Informe um título com pelo menos 3 caracteres.');
   if (atividade.texto_referencia.length < 5) return erroFormulario('Informe o texto que o aluno deverá digitar.');
-  if (atividade.meta_precisao != null && (atividade.meta_precisao < 0 || atividade.meta_precisao > 100)) {
-    return erroFormulario('A meta de precisão deve ficar entre 0 e 100.');
+  if (!Number.isFinite(atividade.tempo_limite_seg) || atividade.tempo_limite_seg < 10 || atividade.tempo_limite_seg > 3600) {
+    return erroFormulario('Defina o tempo máximo entre 10 e 3600 segundos.');
+  }
+  if (atividade.meta_precisao == null || atividade.meta_precisao < 0 || atividade.meta_precisao > 100) {
+    return erroFormulario('Defina a precisão mínima entre 0 e 100%.');
   }
   if (atividade.publicado && !atividade.turmas.length) {
     return erroFormulario('Marque pelo menos uma turma ou salve como rascunho.');
@@ -123,7 +127,12 @@ function renderizar() {
     ? filtradas
         .map((a, i) => {
           const turmasTexto = a.turmas.length ? a.turmas.map((t) => t.nome).join(', ') : 'Sem turma';
-          const detalhes = [DIFICULDADES[a.nivel], a.prazo ? `Prazo: ${formatarData(a.prazo)}` : null, a.meta_precisao != null ? `Meta: ${Number(a.meta_precisao)}%` : null]
+          const detalhes = [
+            DIFICULDADES[a.nivel],
+            a.tempo_limite_seg ? `Tempo máximo: ${formatarTempo(a.tempo_limite_seg)}` : null,
+            a.meta_precisao != null ? `Precisão mínima: ${Number(a.meta_precisao)}%` : null,
+            a.prazo ? `Prazo: ${formatarData(a.prazo)}` : null,
+          ]
             .filter(Boolean)
             .join(' · ');
           return `

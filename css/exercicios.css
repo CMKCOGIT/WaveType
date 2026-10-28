@@ -145,7 +145,7 @@
   }
 }
 
-/* Regra especial do nível (ex.: Nível 6 exige precisão acima de 85%) */
+/* Regra de conclusão da trilha (precisão mínima e tempo máximo) */
 .nivel-regra {
   display: inline-flex;
   align-items: center;

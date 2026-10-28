@@ -9,7 +9,7 @@ import { exigirPapel } from '../auth.js';
 import { registrarResultado } from '../api/resultados.js';
 import { buscarExercicio, listarExercicios } from '../api/exercicios.js';
 import { NIVEIS } from '../exercicios-dados.js';
-import { precisaoMinimaDoNivel, resultadoConcluiu } from '../regras.js';
+import { PRECISAO_MINIMA_TRILHA, resultadoConcluiu, motivoNaoConcluiu, formatarTempo } from '../regras.js';
 import { avisarConquistas } from '../ui/toast-conquista.js';
 
 export function iniciarTreino(papel) {
@@ -71,19 +71,17 @@ async function carregarExercicio(id) {
     definirTexto('[data-treino-titulo]', exercicio.titulo);
     const partes = [];
     if (exercicio.instrucoes) partes.push(exercicio.instrucoes);
-    if (exercicio.meta_precisao != null) partes.push(`Meta: ${formatar(exercicio.meta_precisao)}% de precisão.`);
+    if (exercicio.tempo_limite_seg) partes.push(`Tempo máximo: ${formatarTempo(exercicio.tempo_limite_seg)}.`);
+    if (exercicio.meta_precisao != null) partes.push(`Precisão mínima: ${formatar(exercicio.meta_precisao)}%.`);
     if (exercicio.prazo) partes.push(`Prazo: ${new Date(exercicio.prazo).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' })}.`);
     definirTexto('[data-treino-descricao]', partes.join(' ') || 'Digite o texto abaixo. Seu resultado vai para o professor.');
   } else {
     const nivel = NIVEIS.find((n) => n.nivel === exercicio.nivel);
-    const minima = precisaoMinimaDoNivel(exercicio.nivel);
     definirTexto('[data-treino-eyebrow]', `Nível ${exercicio.nivel}${nivel ? ` · ${nivel.titulo}` : ''} · exercício ${exercicio.ordem}`);
     definirTexto('[data-treino-titulo]', exercicio.titulo);
     definirTexto(
       '[data-treino-descricao]',
-      minima != null
-        ? `Neste nível, o exercício só é concluído com precisão acima de ${minima}%. Vá com calma.`
-        : 'Digite o texto abaixo. Ao terminar, o resultado entra no seu progresso.'
+      `Para concluir: termine o texto em até ${formatarTempo(exercicio.tempo_limite_seg)} com precisão acima de ${PRECISAO_MINIMA_TRILHA}%. O tempo começa na primeira tecla.`
     );
   }
 
@@ -109,8 +107,8 @@ async function explicarResultado(aviso, exercicio, resultado) {
     return preencherAviso(aviso, {
       tipo: concluiu ? 'sucesso' : 'erro',
       texto: concluiu
-        ? 'Atividade concluída e enviada ao professor.'
-        : `Precisão de ${precisao}%. A meta desta atividade é ${formatar(exercicio.meta_precisao)}%. Tente novamente.`,
+        ? `Atividade concluída em ${formatarTempo(resultado.tempo_seg)} com ${precisao}% de precisão e enviada ao professor.`
+        : `${motivoNaoConcluiu(resultado, exercicio)} Seu resultado foi enviado, mas a atividade ainda não conta como concluída. Tente novamente.`,
       acoes: [
         ...(concluiu ? [] : [{ texto: 'Tentar novamente', recomecar: true }]),
         { texto: 'Voltar às atividades', href: 'exercicios.html#atividades', secundario: !concluiu },
@@ -118,12 +116,11 @@ async function explicarResultado(aviso, exercicio, resultado) {
     });
   }
 
-  const concluiu = resultadoConcluiu(resultado, exercicio.nivel);
+  const concluiu = resultadoConcluiu(resultado);
   if (!concluiu) {
-    const minima = precisaoMinimaDoNivel(exercicio.nivel);
     return preencherAviso(aviso, {
       tipo: 'erro',
-      texto: `Precisão de ${precisao}%. No Nível ${exercicio.nivel}, é preciso mais de ${minima}% para concluir. Respire e tente novamente.`,
+      texto: `${motivoNaoConcluiu(resultado, exercicio)} Respire e tente novamente.`,
       acoes: [
         { texto: 'Tentar novamente', recomecar: true },
         { texto: 'Voltar aos exercícios', href: 'exercicios.html', secundario: true },
@@ -134,7 +131,7 @@ async function explicarResultado(aviso, exercicio, resultado) {
   const destino = await descobrirProximo(exercicio);
   preencherAviso(aviso, {
     tipo: 'sucesso',
-    texto: `Exercício concluído com ${precisao}% de precisão.`,
+    texto: `Exercício concluído em ${formatarTempo(resultado.tempo_seg)} com ${precisao}% de precisão.`,
     acoes: [destino],
   });
 }

@@ -2,7 +2,7 @@
 // Desenha a trilha oficial (níveis → etapas → exercícios) com o progresso.
 // Usado pela área do usuário e pela área do aluno.
 import { NIVEIS } from '../exercicios-dados.js';
-import { precisaoMinimaDoNivel } from '../regras.js';
+import { PRECISAO_MINIMA_TRILHA } from '../regras.js';
 
 const ETAPAS_PADRAO = [
   { inicio: 1, fim: 5, titulo: 'Etapa 1', descricao: 'Pratique as primeiras teclas.' },
@@ -13,7 +13,7 @@ const ETAPAS_PADRAO = [
 
 /**
  * Conjunto de ids de exercícios concluídos a partir dos resultados.
- * O banco já marca "concluido" (ex.: Nível 6 só com precisão > 85%).
+ * O banco já marca "concluido" (precisão acima de 85% e dentro do tempo máximo).
  */
 export function exerciciosConcluidos(resultados) {
   const concluidos = new Set();
@@ -33,14 +33,15 @@ export function desenharTrilha({ container, resumo, exercicios, concluidos, tent
       : 'Ainda não há exercícios cadastrados.';
   }
 
-  container.innerHTML = NIVEIS.map((n) => {
+  const regra = `<p class="nivel-regra" style="margin:0 0 16px">Para concluir um exercício: termine o texto dentro do tempo máximo, com precisão acima de ${PRECISAO_MINIMA_TRILHA}%.</p>`;
+
+  container.innerHTML = regra + NIVEIS.map((n) => {
     const doNivel = exercicios
       .filter((e) => Number(e.nivel) === Number(n.nivel))
       .sort((a, b) => Number(a.ordem) - Number(b.ordem));
 
     const feitos = doNivel.filter((e) => concluidos.has(e.id)).length;
     const pct = doNivel.length ? Math.round((feitos / doNivel.length) * 100) : 0;
-    const minima = precisaoMinimaDoNivel(n.nivel);
 
     const etapasHTML = (n.etapas ?? ETAPAS_PADRAO)
       .map((etapa, indice) => {
@@ -76,7 +77,6 @@ export function desenharTrilha({ container, resumo, exercicios, concluidos, tent
           <div class="nivel-titulo">
             <h2>Nível ${n.nivel}: ${escapar(n.titulo)}</h2>
             <p>${escapar(n.descricao)}</p>
-            ${minima != null ? `<span class="nivel-regra">Conclui só com precisão acima de ${minima}%</span>` : ''}
           </div>
           <div class="nivel-percentual">${pct}%</div>
         </div>

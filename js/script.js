@@ -46,6 +46,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let state;
     let exercicioTexto = null; // texto do exercício vindo do banco (null = prática livre)
+    let exercicioLimite = null; // tempo máximo do exercício em segundos (null = sem limite)
+    let exercicioRepete = true; // trilha repete textos curtos; atividade de professor não
 
     function freshState(settings = {}) {
         return {
@@ -94,7 +96,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!palavras.length) return;
         // Repete o exercício inteiro quantas vezes forem necessárias para atingir o mínimo
         const tamanhoCiclo = palavras.join(' ').length + 1;
-        const vezes = Math.max(1, Math.ceil(MIN_CHARS_EXERCICIO / tamanhoCiclo));
+        // O tempo máximo da trilha (função tempo_limite_trilha no banco) considera esta repetição.
+        const vezes = exercicioRepete ? Math.max(1, Math.ceil(MIN_CHARS_EXERCICIO / tamanhoCiclo)) : 1;
         for (let i = 0; i < vezes; i += 1) palavras.forEach(createWord);
     }
 
@@ -177,8 +180,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function tick() {
         const elapsed = (performance.now() - state.startTime) / 1000;
-        // Exercício do banco: o cronômetro conta para cima, sem limite de tempo.
-        const remaining = exercicioTexto ? Math.floor(elapsed) : Math.max(0, Math.ceil(state.duration - elapsed));
+        // Exercício do banco: contagem regressiva do tempo máximo (ou cronômetro, se não houver limite).
+        const remaining = !exercicioTexto
+            ? Math.max(0, Math.ceil(state.duration - elapsed))
+            : exercicioLimite
+                ? Math.max(0, Math.ceil(exercicioLimite - elapsed))
+                : Math.floor(elapsed);
         state.timeLeft = remaining;
         elements.liveTime.textContent = String(remaining);
         setLiveMetrics(elapsed);
@@ -192,6 +199,7 @@ document.addEventListener('DOMContentLoaded', () => {
             state.lastSampleKeypresses = state.keypresses;
         }
         if (!exercicioTexto && elapsed >= state.duration) endTest();
+        if (exercicioTexto && exercicioLimite && elapsed >= exercicioLimite) endTest({ tempoEsgotado: true });
     }
 
     function addErrorKey(key) {
@@ -394,13 +402,13 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    function endTest() {
+    function endTest({ tempoEsgotado = false } = {}) {
         if (state.finished) return;
         window.clearInterval(state.timer);
         state.finished = true;
         state.timeLeft = 0;
         const elapsedSeconds = exercicioTexto
-            ? Math.max((performance.now() - state.startTime) / 1000, 1)
+            ? Math.max(Math.min((performance.now() - state.startTime) / 1000, exercicioLimite || Infinity), 1)
             : state.duration;
         const elapsedMinutes = elapsedSeconds / 60;
         const netWpm = Math.max(0, Math.round((state.correct / 5) / elapsedMinutes));
@@ -421,7 +429,9 @@ document.addEventListener('DOMContentLoaded', () => {
         elements.charsMissed.textContent = String(state.missed);
         elements.charsExtra.textContent = String(state.extra);
         elements.chartDuration.textContent = `${Math.round(elapsedSeconds)} segundos`;
-        elements.resultSummary.textContent = state.corrected
+        elements.resultSummary.textContent = tempoEsgotado
+            ? 'O tempo máximo acabou antes do fim do texto. Respire e tente de novo.'
+            : state.corrected
             ? `Você corrigiu ${state.corrected} ${state.corrected === 1 ? 'erro durante' : 'erros durante'} o teste. Isso também faz parte da precisão.`
             : 'Veja o que manter e o que praticar no próximo teste.';
 
@@ -451,7 +461,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 precisao: accuracy,
                 acertos: state.correct,
                 erros: state.wrong + state.missed + state.extra,
-                tempo_seg: Math.round(elapsedSeconds)
+                tempo_seg: Math.round(elapsedSeconds),
+                concluiu_texto: !tempoEsgotado
             }
         }));
 
@@ -471,7 +482,7 @@ document.addEventListener('DOMContentLoaded', () => {
         elements.wrapper.style.transform = 'translateY(0)';
         elements.liveWpm.textContent = '0';
         elements.liveAccuracy.textContent = '100%';
-        elements.liveTime.textContent = exercicioTexto ? '0' : String(state.duration);
+        elements.liveTime.textContent = exercicioTexto ? String(exercicioLimite || 0) : String(state.duration);
         elements.input.value = '';
         elements.resultPanel.hidden = true;
         elements.shell.classList.remove('started', 'finished', 'focused');
@@ -570,6 +581,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const conteudo = exercicio?.texto_referencia ?? exercicio?.texto;
         if (!conteudo) return;
         exercicioTexto = String(conteudo).trim();
+        exercicioLimite = Number(exercicio.tempo_limite_seg) > 0 ? Number(exercicio.tempo_limite_seg) : null;
+        exercicioRepete = !exercicio.atividade;
 
         // Exercício do banco: esconde modo, tempo e nível (não se aplicam aqui)
         document.querySelectorAll('.segmented-control').forEach((control) => {
