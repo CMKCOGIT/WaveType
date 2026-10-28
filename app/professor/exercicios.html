@@ -1,17 +1,25 @@
 <!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#315FD6"><title>Exercícios | WaveType</title><link rel="icon" href="../../assets/images/icons/favicon.svg"><link rel="stylesheet" href="../../css/platform.css"><script>document.documentElement.dataset.theme=localStorage.getItem('wavetype_theme')||'light';</script></head>
 <body data-root="../../" data-role="professor" data-page="exercicios"><div class="app-layout"><aside id="app-sidebar" class="app-sidebar"><a class="app-brand" href="../../index.html" aria-label="WaveType, página inicial"><img class="logo-light" src="../../assets/images/brand/wavetype-logo.svg" alt="WaveType"><img class="logo-dark" src="../../assets/images/brand/wavetype-logo-dark.svg" alt=""></a><p class="app-role">Área do professor</p><nav class="app-nav" aria-label="Navegação da área do professor"><a href="index.html" data-index="01"><span>Início</span></a><a href="turmas.html" data-index="02"><span>Turmas</span></a><a href="alunos.html" data-index="03"><span>Alunos</span></a><a href="exercicios.html" data-index="04" aria-current="page"><span>Exercícios</span></a><a href="relatorios.html" data-index="05"><span>Relatórios</span></a></nav><div class="app-sidebar-foot"><strong>Gestão que orienta</strong><small>Turmas, exercícios e resultados</small><a href="../../index.html">Ir ao site público →</a></div></aside><div class="app-workspace"><header id="app-topbar" class="app-topbar"><span class="topbar-context">Aprenda no seu ritmo. Evolua a cada tecla.</span><span class="topbar-profile"><span class="topbar-avatar">PR</span><span><strong>Área do professor</strong><small>WaveType</small></span></span></header><main class="app-main">
-    <header class="page-heading"><div><span class="eyebrow">Conteúdo pedagógico</span><h1>Exercícios</h1><p>Crie textos, defina o tempo e associe cada prática à turma certa.</p></div><div class="heading-actions"><button class="button" data-abrir-form>+ Novo exercício</button></div></header>
-    <form class="panel panel-pad" data-form-exercicio hidden style="margin-bottom:18px;display:grid;gap:12px">
-        <label class="field"><span>Título</span><input name="titulo" maxlength="150" required></label>
-        <label class="field"><span>Texto de referência</span><textarea name="texto_referencia" rows="4" required></textarea></label>
-        <div class="toolbar">
-            <label class="field"><span>Tempo (segundos)</span><input type="number" name="tempo_limite_seg" min="15" max="3600" value="120" required></label>
-            <label class="field"><span>Nível</span><select name="nivel"><option value="facil">Fácil</option><option value="medio" selected>Médio</option><option value="avancado">Avançado</option></select></label>
-            <label class="field"><span>Turma</span><select name="turma_id" data-select-turma><option value="">Rascunho (sem turma)</option></select></label>
+    <header class="page-heading"><div><span class="eyebrow">Conteúdo pedagógico</span><h1>Exercícios</h1><p>Crie atividades com instruções, prazo e meta, e envie para uma ou mais turmas.</p></div><div class="heading-actions"><button class="button" type="button" data-abrir-form>+ Nova atividade</button></div></header>
+    <form class="panel panel-pad" data-form-exercicio hidden style="margin-bottom:18px">
+        <div class="panel-title"><div><h2 data-form-titulo>Nova atividade</h2><p>Os alunos das turmas marcadas veem a atividade na área de exercícios deles.</p></div></div>
+        <input type="hidden" name="id">
+        <div class="form-grid">
+            <label class="field full"><span>Título</span><input name="titulo" maxlength="150" required></label>
+            <label class="field full"><span>Instruções</span><textarea name="instrucoes" rows="2" maxlength="1000" placeholder="Ex.: Mantenha a postura e não olhe para o teclado."></textarea></label>
+            <label class="field full"><span>Texto que o aluno deverá digitar</span><textarea name="texto_referencia" rows="4" required></textarea></label>
+            <label class="field"><span>Dificuldade</span><select name="nivel"><option value="facil">Fácil</option><option value="medio" selected>Médio</option><option value="avancado">Avançado</option></select></label>
+            <label class="field"><span>Tempo de referência (segundos)</span><input type="number" name="tempo_limite_seg" min="15" max="3600" value="120" required></label>
+            <label class="field"><span>Prazo de entrega (opcional)</span><input type="datetime-local" name="prazo"></label>
+            <label class="field"><span>Meta de precisão % (opcional)</span><input type="number" name="meta_precisao" min="0" max="100" step="0.5" placeholder="Ex.: 90"></label>
+            <fieldset class="field full" style="border:0;padding:0;margin:0"><span>Turmas destinatárias</span><div class="check-list" data-turmas-opcoes></div></fieldset>
+            <label class="field"><span>Situação</span><select name="publicado"><option value="true">Publicada para os alunos</option><option value="false">Rascunho / arquivada</option></select></label>
         </div>
-        <button class="button" type="submit" style="justify-self:start">Salvar exercício</button>
+        <div class="form-actions" style="margin-top:14px"><button class="button" type="submit" data-salvar>Salvar atividade</button><button class="button secondary" type="button" data-cancelar>Cancelar</button></div>
+        <p class="feedback is-erro" data-feedback-form hidden role="alert"></p>
     </form>
-    <div class="toolbar"><label class="field"><span>Turma</span><select data-filtro-turma><option value="">Todas as turmas</option></select></label><label class="field"><span>Buscar</span><input type="search" placeholder="Título do exercício" data-filtro-busca></label></div>
+    <p class="feedback" data-feedback hidden role="status" style="margin-bottom:14px"></p>
+    <div class="toolbar"><label class="field"><span>Turma</span><select data-filtro-turma><option value="">Todas as turmas</option></select></label><label class="field"><span>Buscar</span><input type="search" placeholder="Título da atividade" data-filtro-busca></label></div>
     <div class="practice-list" data-lista-exercicios><article class="practice-row"><p>Carregando…</p></article></div>
 </main></div></div>
 <script type="module" src="../../js/pages/professor-exercicios.js"></script>

@@ -13,10 +13,12 @@
 
 </head>
 
-<body data-root="../../" data-role="aluno" data-page="treinar">
+<body data-root="../../" data-role="usuario" data-page="treinar">
     <div class="app-layout">
-        <aside id="app-sidebar" class="app-sidebar"><img class="logo-light" src="../../assets/images/brand/wavetype-logo.svg" alt="WaveType">
-            <!-- <img class="logo-dark" src="../../assets/images/brand/wavetype-logo-dark.svg" alt=""> -->
+        <aside id="app-sidebar" class="app-sidebar"><a class="app-brand" href="../../index.html"
+                aria-label="WaveType, página inicial"><img class="logo-light"
+                    src="../../assets/images/brand/wavetype-logo.svg" alt="WaveType"><img class="logo-dark"
+                    src="../../assets/images/brand/wavetype-logo-dark.svg" alt=""></a>
             <p class="app-role">Área do usuário</p>
             <nav class="app-nav" aria-label="Navegação da área do usuário"><a href="index.html"
                     data-index="01"><span>Início</span></a><a href="resultados.html"
@@ -33,9 +35,9 @@
                             usuário</strong><small>WaveType</small></span></span></header>
             <main class="app-main">
                 <header class="page-heading">
-                    <div><span class="eyebrow">Prática livre</span>
-                        <h1>Digite agora. Veja onde evoluir.</h1>
-                        <p>Pressione qualquer tecla para começar. Seus resultados entram no seu histórico.</p>
+                    <div><span class="eyebrow" data-treino-eyebrow>Prática livre</span>
+                        <h1 data-treino-titulo>Digite agora. Veja onde evoluir.</h1>
+                        <p data-treino-descricao>Pressione qualquer tecla para começar. Seus resultados entram no seu histórico.</p>
                         <p data-exercicio-info hidden></p>
                     </div>
                 </header>

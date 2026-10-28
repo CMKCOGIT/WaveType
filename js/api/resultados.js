@@ -2,57 +2,57 @@
 import { supabase } from '../supabaseClient.js';
 
 /**
- * Chamado ao final de uma sessão de digitação (treinamento.html).
- * O gatilho handle_novo_resultado (schema.sql) já atualiza XP, nível
- * e sequência de dias sozinho — não precisa fazer isso aqui.
+ * Chamado ao final de uma sessão de digitação (treinar.html).
+ * O banco decide sozinho, no trigger resultados_validar, se o resultado
+ * conclui o exercício (ex.: Nível 6 exige precisão acima de 85%) e em
+ * qual turma uma atividade é registrada. Os gatilhos seguintes atualizam
+ * XP, sequência de dias e conquistas. Nada disso é confiado ao navegador.
+ *
+ * Devolve { resultado, novasConquistas }.
  */
-export async function registrarResultado({ exercicio_id, ppm, precisao, acertos, erros, tempo_seg }) {
+export async function registrarResultado({ exercicio_id, turma_id = null, ppm, precisao, acertos, erros, tempo_seg }) {
   const { data: sessao } = await supabase.auth.getSession();
   const alunoId = sessao.session?.user.id;
   if (!alunoId) throw new Error('Sessão expirada. Entre novamente.');
 
   const { data, error } = await supabase
     .from('resultados')
-    .insert({ aluno_id: alunoId, exercicio_id, ppm, precisao, acertos, erros, tempo_seg })
+    .insert({ aluno_id: alunoId, exercicio_id, turma_id, ppm, precisao, acertos, erros, tempo_seg })
     .select()
     .single();
-  if (error) throw error;
+  if (error) throw new Error(error.message);
 
-  await verificarNovasConquistas({ ppm, precisao, erros });
-  return data;
+  return { resultado: data, novasConquistas: await conquistasLiberadasEm(alunoId, data.criado_em) };
 }
 
-/** Aluno: histórico de sessões (resultados.html). */
+// As conquistas liberadas pelo trigger têm o mesmo horário da transação do resultado.
+async function conquistasLiberadasEm(usuarioId, momento) {
+  try {
+    const { data, error } = await supabase
+      .from('usuario_conquistas')
+      .select('desbloqueada_em, conquistas(codigo, titulo, descricao, icone)')
+      .eq('usuario_id', usuarioId)
+      .gte('desbloqueada_em', momento);
+    if (error) throw error;
+    return (data ?? []).map((d) => d.conquistas).filter(Boolean);
+  } catch (erro) {
+    console.error('Falha ao buscar conquistas novas:', erro);
+    return [];
+  }
+}
+
+/** Histórico de sessões (resultados.html e progresso dos exercícios). */
 export async function listarMeusResultados({ limite = 20 } = {}) {
+  const { data: sessao } = await supabase.auth.getSession();
+  const alunoId = sessao.session?.user.id;
+  if (!alunoId) throw new Error('Sessão expirada. Entre novamente.');
+
   const { data, error } = await supabase
     .from('resultados')
-    .select('id, exercicio_id, ppm, precisao, acertos, erros, tempo_seg, criado_em, exercicios(titulo, turma_id)')
+    .select('id, exercicio_id, turma_id, ppm, precisao, acertos, erros, tempo_seg, concluido, criado_em, exercicios(titulo, nivel_trilha)')
+    .eq('aluno_id', alunoId)
     .order('criado_em', { ascending: false })
     .limit(limite);
   if (error) throw error;
   return data;
-}
-
-/**
- * Confere condições simples de conquista no cliente e chama a RPC de
- * liberação (a tabela usuario_conquistas não aceita insert direto do
- * front — só leitura, por segurança).
- * Isso é best-effort de UX; a fonte da verdade de "quantas sessões",
- * "total de caracteres" etc. deveria virar uma function no banco se
- * o critério ficar mais complexo do que os exemplos abaixo.
- */
-async function verificarNovasConquistas({ ppm, precisao, erros }) {
-  const candidatas = [];
-  if (ppm >= 40) candidatas.push('digitador_veloz');
-  if (precisao >= 98) candidatas.push('precisao_em_foco');
-  if (erros === 0) candidatas.push('sem_erros');
-  if (ppm >= 80) candidatas.push('mestre_80wpm');
-
-  for (const codigo of candidatas) {
-  try {
-    await supabase.rpc('liberar_conquista', { p_codigo: codigo });
-  } catch {
-    // conquista é best-effort, não deve quebrar o salvamento
-  }
-  }
 }

@@ -1,9 +1,41 @@
 // js/pages/login.js
-import { entrarComEmailSenha, entrarComGoogle, obterPerfil } from '../auth.js';
+import {
+  entrarComEmailSenha,
+  entrarComGoogle,
+  obterSessao,
+  obterPerfil,
+  destinoDoPerfil,
+  lerErroDoRetornoOAuth,
+  limparUrlDoOAuth,
+  TIPO_PENDENTE,
+} from '../auth.js';
 
 const form = document.querySelector('[data-auth-form="login"]');
 const botaoGoogle = document.querySelector('[data-google-auth]');
 const feedback = document.querySelector('[data-form-feedback]');
+
+iniciar();
+
+// Ao voltar do Google (ou se já houver sessão), segue direto para a área certa.
+async function iniciar() {
+  const erroOAuth = lerErroDoRetornoOAuth();
+  if (erroOAuth) {
+    limparUrlDoOAuth();
+    pararCarregamento();
+    return mostrarFeedback(erroOAuth, 'erro');
+  }
+  try {
+    if (await obterSessao()) {
+      mostrarCarregamento();
+      await redirecionarConformePapel();
+      return;
+    }
+  } catch (erro) {
+    console.error('Falha ao confirmar a sessão:', erro);
+    mostrarFeedback('Não foi possível confirmar sua sessão. Tente entrar novamente.', 'erro');
+  }
+  pararCarregamento();
+}
 
 form.addEventListener('submit', async (evento) => {
   evento.preventDefault();
@@ -25,26 +57,28 @@ form.addEventListener('submit', async (evento) => {
 
 botaoGoogle.addEventListener('click', async () => {
   esconderFeedback();
-  localStorage.removeItem('wavetype_tipo_pendente'); // evita sobra de um cadastro abandonado
-  travarBotao(botaoGoogle, true, 'Redirecionando...');
+  localStorage.removeItem(TIPO_PENDENTE); // evita sobra de um cadastro abandonado
+  travarBotao(botaoGoogle, true, 'Abrindo o Google...');
   try {
-    await entrarComGoogle(); // o próprio Supabase redireciona a página
+    await entrarComGoogle({ origem: 'login' }); // o Supabase redireciona a página
   } catch (erro) {
     mostrarFeedback(erro.message, 'erro');
     travarBotao(botaoGoogle, false, 'Continuar com o Google');
   }
 });
 
-const DESTINOS = {
-  usuario: '/app/usuario/index.html',
-  aluno: '/app/aluno/index.html',
-  professor: '/app/professor/index.html',
-};
-
 async function redirecionarConformePapel() {
   const perfil = await obterPerfil();
-  window.location.href = DESTINOS[perfil?.tipo] ?? DESTINOS.aluno;
+  window.location.replace(destinoDoPerfil(perfil));
 }
+
+function mostrarCarregamento() {
+  document.documentElement.dataset.autenticando = '1';
+}
+function pararCarregamento() {
+  delete document.documentElement.dataset.autenticando;
+}
+
 function mostrarFeedback(mensagem, tipo) {
   feedback.textContent = mensagem;
   feedback.hidden = false;
