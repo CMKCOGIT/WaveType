@@ -9,6 +9,39 @@
 -- ------------------------------------------------------------
 -- Integridade da trilha
 -- ------------------------------------------------------------
+
+-- O banco pode ter uma regra antiga limitando nivel_trilha a 1..5
+-- (ex.: exercicios_nivel_trilha_check). Ela é trocada por 1..6.
+do $$
+declare c record;
+begin
+  for c in
+    select conname from pg_constraint
+    where conrelid = 'public.exercicios'::regclass
+      and contype = 'c'
+      and pg_get_constraintdef(oid) ilike '%nivel_trilha%'
+      and conname not in ('exercicios_trilha_ordem_check', 'exercicios_nivel_trilha_check')
+  loop
+    execute format('alter table public.exercicios drop constraint %I', c.conname);
+  end loop;
+
+  if exists (
+    select 1 from pg_constraint
+    where conrelid = 'public.exercicios'::regclass and conname = 'exercicios_nivel_trilha_check'
+      and pg_get_constraintdef(oid) not ilike '%6%'
+  ) then
+    alter table public.exercicios drop constraint exercicios_nivel_trilha_check;
+  end if;
+
+  if not exists (
+    select 1 from pg_constraint
+    where conrelid = 'public.exercicios'::regclass and conname = 'exercicios_nivel_trilha_check'
+  ) then
+    alter table public.exercicios
+      add constraint exercicios_nivel_trilha_check check (nivel_trilha is null or nivel_trilha between 1 and 6);
+  end if;
+end $$;
+
 do $$
 begin
   if not exists (select 1 from pg_constraint where conname = 'exercicios_trilha_ordem_check') then
