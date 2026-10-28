@@ -15,7 +15,7 @@ async function iniciar() {
   const exercicios = await listarExerciciosDisponiveis();
   if (!exercicios.length) {
     select.innerHTML = '<option>Nenhum exercício disponível</option>';
-    lista.innerHTML = '<li>Entre em uma turma para ver rankings.</li>';
+    lista.innerHTML = '<li>Entre em uma turma para ver rankings. <a href="turmas.html">Entrar com código</a></li>';
     return;
   }
 
@@ -27,7 +27,7 @@ async function iniciar() {
 async function carregarRanking(exercicios, exercicioId) {
   const exercicio = exercicios.find((e) => e.id === exercicioId);
   document.querySelector('[data-exercicio-titulo]').textContent = exercicio?.titulo ?? '';
-  document.querySelector('[data-exercicio-info]').textContent = exercicio?.turmas?.nome ?? 'Prática geral';
+  document.querySelector('[data-exercicio-info]').textContent = exercicio?.turma_nome ?? 'Prática geral';
 
   lista.innerHTML = '<li>Carregando…</li>';
   const ranking = await buscarRankingExercicio(exercicioId);

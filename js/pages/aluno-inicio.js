@@ -26,7 +26,7 @@ function preencherMetricas(d) {
   const ultima = d.sessoesRecentes[0];
   set('[data-metric="wpm-atual"]', ultima ? formatarNumero(ultima.ppm) : '—');
   set('[data-metric="precisao-media"]', ultima ? `${formatarNumero(ultima.precisao)}%` : '—');
-  set('[data-metric="sessoes-total"]', d.sessoesRecentes.length);
+  set('[data-metric="sessoes-total"]', d.totalSessoes);
   set('[data-metric="sequencia"]', `${d.sequencia_dias} dia${d.sequencia_dias === 1 ? '' : 's'}`);
   set('[data-metric="nivel"]', d.nivel);
   set('[data-metric="nivel-label"]', `Nível ${d.nivel}`);
@@ -39,7 +39,7 @@ function preencherMetricas(d) {
 function preencherTabelaRecentes(sessoes) {
   const corpo = document.querySelector('[data-tabela-recentes]');
   if (!sessoes.length) {
-    corpo.innerHTML = '<tr><td colspan="5">Você ainda não praticou. <a href="treinamento.html">Comece agora</a>.</td></tr>';
+    corpo.innerHTML = '<tr><td colspan="5">Você ainda não praticou. <a href="exercicios.html">Comece agora</a>.</td></tr>';
     return;
   }
   corpo.innerHTML = sessoes
@@ -60,7 +60,7 @@ async function preencherAmostraRanking() {
   const lista = document.querySelector('[data-ranking-list]');
   const exercicios = await listarExerciciosDisponiveis();
   if (!exercicios.length) {
-    lista.innerHTML = '<li>Nenhum exercício de turma disponível ainda.</li>';
+    lista.innerHTML = '<li>Nenhuma atividade de turma disponível ainda.</li>';
     return;
   }
   const ranking = await buscarRankingExercicio(exercicios[0].id);

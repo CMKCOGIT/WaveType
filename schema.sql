@@ -1,4 +1,7 @@
 -- ============================================================
+-- ATENÇÃO: este é o esquema original. As mudanças posteriores (cadastro com
+-- Google, turmas, atividades, Nível 6, conquistas e RLS) estão em
+-- supabase/migrations/, que devem ser rodadas depois deste arquivo.
 -- WaveType (Type Master Pro) - Schema Supabase/Postgres
 -- ============================================================
 -- IMPORTANTE:

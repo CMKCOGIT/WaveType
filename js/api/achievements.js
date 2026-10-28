@@ -2,27 +2,21 @@
 import { supabase } from '../supabaseClient.js';
 
 /**
- * Retorna todas as conquistas do catálogo já marcadas com
- * { desbloqueada: boolean, desbloqueada_em } para renderizar
- * conquistas.html sem lógica extra na página.
+ * Todas as conquistas disponíveis para o tipo de conta, com o progresso
+ * real (atual x alvo) calculado no banco a partir dos resultados.
+ * Antes de ler, pede ao banco para liberar o que já foi alcançado
+ * (cobre resultados anteriores à gamificação). Nada é liberado só por
+ * abrir a tela: o banco confere os números de verdade.
  */
 export async function listarConquistasComProgresso() {
-  const { data: sessao } = await supabase.auth.getSession();
-  const usuarioId = sessao.session?.user.id;
+  const sincronizacao = await supabase.rpc('sincronizar_conquistas');
+  if (sincronizacao.error) console.error('Falha ao sincronizar conquistas:', sincronizacao.error);
 
-  const [{ data: catalogo, error: erro1 }, { data: minhas, error: erro2 }] = await Promise.all([
-    supabase.from('conquistas').select('id, codigo, titulo, descricao, icone').order('id'),
-    usuarioId
-      ? supabase.from('usuario_conquistas').select('conquista_id, desbloqueada_em').eq('usuario_id', usuarioId)
-      : Promise.resolve({ data: [], error: null }),
-  ]);
-  if (erro1) throw erro1;
-  if (erro2) throw erro2;
-
-  const mapaDesbloqueadas = new Map(minhas.map((m) => [m.conquista_id, m.desbloqueada_em]));
-  return catalogo.map((c) => ({
+  const { data, error } = await supabase.rpc('progresso_conquistas');
+  if (error) throw error;
+  return (data ?? []).map((c) => ({
     ...c,
-    desbloqueada: mapaDesbloqueadas.has(c.id),
-    desbloqueada_em: mapaDesbloqueadas.get(c.id) || null,
+    atual: c.atual == null ? null : Number(c.atual),
+    alvo: c.alvo == null ? null : Number(c.alvo),
   }));
 }

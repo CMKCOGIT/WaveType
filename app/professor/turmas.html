@@ -1,7 +1,18 @@
 <!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#315FD6"><title>Turmas | WaveType</title><link rel="icon" href="../../assets/images/icons/favicon.svg"><link rel="stylesheet" href="../../css/platform.css"><script>document.documentElement.dataset.theme=localStorage.getItem('wavetype_theme')||'light';</script></head>
 <body data-root="../../" data-role="professor" data-page="turmas"><div class="app-layout"><aside id="app-sidebar" class="app-sidebar"><a class="app-brand" href="../../index.html" aria-label="WaveType, página inicial"><img class="logo-light" src="../../assets/images/brand/wavetype-logo.svg" alt="WaveType"><img class="logo-dark" src="../../assets/images/brand/wavetype-logo-dark.svg" alt=""></a><p class="app-role">Área do professor</p><nav class="app-nav" aria-label="Navegação da área do professor"><a href="index.html" data-index="01"><span>Início</span></a><a href="turmas.html" data-index="02" aria-current="page"><span>Turmas</span></a><a href="alunos.html" data-index="03"><span>Alunos</span></a><a href="exercicios.html" data-index="04"><span>Exercícios</span></a><a href="relatorios.html" data-index="05"><span>Relatórios</span></a></nav><div class="app-sidebar-foot"><strong>Gestão que orienta</strong><small>Turmas, exercícios e resultados</small><a href="../../index.html">Ir ao site público →</a></div></aside><div class="app-workspace"><header id="app-topbar" class="app-topbar"><span class="topbar-context">Aprenda no seu ritmo. Evolua a cada tecla.</span><span class="topbar-profile"><span class="topbar-avatar">PR</span><span><strong>Área do professor</strong><small>WaveType</small></span></span></header><main class="app-main">
-    <header class="page-heading"><div><span class="eyebrow">Organização</span><h1>Gestão de turmas</h1><p data-resumo>Carregando…</p></div><div class="heading-actions"><button class="button" data-abrir-form-turma>+ Nova turma</button></div></header>
-    <form class="panel panel-pad toolbar" data-form-turma hidden style="margin-bottom:18px"><label class="field"><span>Nome da turma</span><input name="nome" maxlength="120" required placeholder="Ex.: 3º Ano A"></label><label class="field"><span>Ano/semestre</span><input name="ano_letivo" maxlength="20" placeholder="Ex.: 2026 · 1º semestre"></label><button class="button" type="submit" style="align-self:end">Criar turma</button></form>
+    <header class="page-heading"><div><span class="eyebrow">Organização</span><h1>Gestão de turmas</h1><p data-resumo>Carregando…</p></div><div class="heading-actions"><button class="button" type="button" data-abrir-form-turma>+ Nova turma</button></div></header>
+    <form class="panel panel-pad" data-form-turma hidden style="margin-bottom:18px">
+        <div class="panel-title"><div><h2 data-form-titulo>Nova turma</h2><p>O código de acesso é gerado automaticamente e é único.</p></div></div>
+        <input type="hidden" name="id">
+        <div class="form-grid">
+            <label class="field"><span>Nome da turma</span><input name="nome" maxlength="120" required placeholder="Ex.: 3º Ano A"></label>
+            <label class="field"><span>Ano/semestre</span><input name="ano_letivo" maxlength="20" placeholder="Ex.: 2026 · 1º semestre"></label>
+            <label class="field full"><span>Descrição</span><textarea name="descricao" rows="2" maxlength="500" placeholder="Ex.: Turma da manhã, laboratório de informática"></textarea></label>
+        </div>
+        <div class="form-actions" style="margin-top:14px"><button class="button" type="submit" data-salvar-turma>Criar turma</button><button class="button secondary" type="button" data-cancelar-turma>Cancelar</button></div>
+        <p class="feedback is-erro" data-feedback-form hidden role="alert"></p>
+    </form>
+    <p class="feedback" data-feedback hidden role="status" style="margin-bottom:14px"></p>
     <section class="card-grid" data-grid-turmas><article class="entity-card"><p>Carregando…</p></article></section>
 </main></div></div>
 <script type="module" src="../../js/pages/professor-turmas.js"></script>

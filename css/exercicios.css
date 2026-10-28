@@ -41,7 +41,7 @@
   align-items: center;
   gap: 12px;
   padding: 10px 12px;
-  border: 1px solid var(--borda, #dedede);
+  border: 1px solid var(--line);
   border-radius: 10px;
 }
 
@@ -53,8 +53,14 @@
   height: 30px;
   flex-shrink: 0;
   border-radius: 8px;
-  background: var(--superficie-secundaria, #eeeeee);
+  background: var(--surface-soft);
   font-weight: 700;
+  color: var(--action);
+}
+
+.etapa-linha.is-concluida .etapa-numero {
+  color: var(--text);
+  background: var(--surface-accent);
 }
 
 .etapa-conteudo {
@@ -80,13 +86,13 @@
   height: 4px;
   overflow: hidden;
   border-radius: 10px;
-  background: var(--fundo-barra, #e5e5e5);
+  background: var(--surface-soft);
 }
 
 .etapa-barra-preenchida {
   height: 100%;
   border-radius: inherit;
-  background: var(--cor-sucesso, #16a34a);
+  background: var(--aqua);
   transition: width 0.3s ease;
 }
 
@@ -102,7 +108,7 @@
   flex-shrink: 0;
   padding: 8px 14px;
   border-radius: 8px;
-  background: var(--cor-primaria, #2563eb);
+  background: var(--action);
   color: white;
   text-decoration: none;
   font-size: 0.85rem;
@@ -137,4 +143,23 @@
   .etapa-iniciar {
     padding: 7px 10px;
   }
+}
+
+/* Regra de conclusão da trilha (precisão mínima e tempo máximo) */
+.nivel-regra {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  padding: 4px 10px;
+  color: var(--violet);
+  background: rgba(107, 92, 231, 0.1);
+  border: 1px solid rgba(107, 92, 231, 0.28);
+  border-radius: 99px;
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.nivel-bloco + .nivel-bloco {
+  margin-top: 18px;
 }

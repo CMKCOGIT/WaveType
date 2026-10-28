@@ -10,6 +10,7 @@
     <link rel="icon" type="image/svg+xml" href="assets/images/icons/favicon.svg">
     <link rel="stylesheet" href="css/platform.css">
     <script>document.documentElement.dataset.theme = localStorage.getItem('wavetype_theme') || 'light';</script>
+    <script>if (/[#&]access_token=|[?&]code=/.test(location.hash + location.search)) document.documentElement.dataset.autenticando = '1';</script>
 </head>
 
 <body>
@@ -31,6 +32,8 @@
         </aside>
         <section class="auth-main" aria-labelledby="signup-title">
             <div class="auth-card">
+                <div class="auth-carregando" role="status" aria-live="polite"><span class="auth-spinner" aria-hidden="true"></span>Entrando na sua conta…</div>
+                <div data-etapa="cadastro">
                 <a class="eyebrow" href="index.html">← Voltar ao teste</a>
                 <h2 id="signup-title">Crie sua conta</h2>
                 <p>Leva menos de um minuto. Depois, a prática continua de onde você parou.</p>
@@ -57,11 +60,31 @@
                             required></label>
                     <button class="button auth-submit" type="submit">Criar minha conta</button>
                     <button class="button auth-google" type="button" data-google-auth="cadastro">Continuar com o
-                        Google</button> <!-- mudar a cor do botão do google -->
+                        Google</button>
                     <p class="auth-demo" data-form-feedback hidden role="status"></p>
                 </form>
                 <p class="auth-foot">Já tem uma conta? <a href="login.html">Entrar</a></p>
+                </div>
+                <div data-etapa="completar" hidden>
+                    <span class="eyebrow">Falta pouco</span>
+                    <h2>Conclua seu cadastro</h2>
+                    <p>Você entrou com o Google como <strong data-email-conta></strong>. Confirme seu nome e escolha como vai usar o WaveType para continuar.</p>
+                    <form class="auth-form" data-auth-form="completar" novalidate>
+                        <fieldset class="field" style="border:0;padding:0;margin:0"><span>Quero usar como</span>
+                            <div class="role-picker">
+                                <label class="role-option"><input type="radio" name="tipo" value="usuario"><span><strong>Usuário</strong><small>Treinar e evoluir</small></span></label>
+                                <label class="role-option"><input type="radio" name="tipo" value="aluno"><span><strong>Aluno</strong><small>Praticar e acompanhar</small></span></label>
+                                <label class="role-option"><input type="radio" name="tipo" value="professor"><span><strong>Professor</strong><small>Ensinar e gerenciar</small></span></label>
+                            </div>
+                        </fieldset>
+                        <label class="field"><span>Nome completo</span><input name="nome" autocomplete="name" minlength="2" maxlength="120" required></label>
+                        <button class="button auth-submit" type="submit">Concluir cadastro</button>
+                        <p class="auth-demo" data-form-feedback hidden role="status"></p>
+                    </form>
+                    <p class="auth-foot">Não é você? <button type="button" class="auth-link" data-trocar-conta>Usar outra conta</button></p>
+                </div>
             </div>
+
         </section>
     </main>
     <script type="module" src="js/pages/cadastro.js"></script>

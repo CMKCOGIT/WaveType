@@ -1,4 +1,4 @@
-// Os 5 níveis ficam aqui no código. Cada exercício do banco tem a coluna "nivel" (1 a 5).
+// Os 6 níveis da trilha oficial ficam aqui no código. Cada exercício do banco tem a coluna "nivel_trilha" (1 a 6) e "ordem" (1 a 20).
 export const NIVEIS = [
   {
     nivel: 1,
