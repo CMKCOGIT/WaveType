@@ -56,7 +56,12 @@ export default defineConfig(({ mode }) => {
   garantirChavePublica(chave);
 
   if (!url || !chave) {
-    const aviso = `Variáveis do Supabase ausentes. Defina ${NOMES_URL[0]} e ${NOMES_CHAVE[0]} nas Environment Variables da Vercel (ou num .env local).`;
+    // Só os NOMES encontrados (nunca os valores), para facilitar o diagnóstico no log do build.
+    const encontradas = Object.keys(env).filter((n) => /SUPABASE/i.test(n)).sort();
+    const faltando = [!url && 'URL', !chave && 'chave anon'].filter(Boolean).join(' e ');
+    const aviso =
+      `Variáveis do Supabase ausentes (${faltando}). Defina ${NOMES_URL[0]} e ${NOMES_CHAVE[0]} nas Environment Variables da Vercel ` +
+      `(ambientes Production e Preview) e faça um novo deploy. Nomes com "SUPABASE" encontrados neste build: ${encontradas.join(', ') || 'nenhum'}.`;
     if (process.env.VERCEL) throw new Error(aviso);
     console.warn(`\n⚠  ${aviso}\n`);
   }
