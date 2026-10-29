@@ -66,6 +66,7 @@ Para rodar localmente com as mesmas variáveis: `vercel env pull .env.local` (ou
 ## 7. Recuperação de senha (Supabase › Authentication)
 
 - **URL Configuration › Redirect URLs** precisa aceitar `https://SEU-DOMINIO/redefinir-senha.html` (já coberto por `https://SEU-DOMINIO/**`).
-- **Emails › Reset Password**: o modelo padrão do Supabase já funciona (usa `{{ .ConfirmationURL }}`).
+- **Emails › Reset Password** e **Confirm signup**: troque o modelo padrão (em inglês) pelos de `supabase/templates/` (em português). Cole o HTML no campo *Message body* e use o assunto indicado no topo de cada arquivo. O link precisa continuar sendo `{{ .ConfirmationURL }}`.
+- **Spam**: o texto ajuda pouco. O que mais pesa é o remetente: um domínio próprio (`@wavetype.com.br`) com SPF, DKIM e DMARC configurados num serviço como Brevo ou Resend.
 - **Envio de e-mails**: o servidor de e-mail embutido do Supabase tem limite baixo de envios por hora e, em projetos novos, só entrega para membros da equipe do projeto. Para alunos e professores reais, configure um SMTP próprio em **Project Settings › Authentication › SMTP Settings**.
 - Contas criadas só com o Google não precisam de senha. Se a pessoa pedir recuperação e definir uma senha pelo link do e-mail, ela passa a poder entrar das duas formas; nada é criado sem esse pedido.

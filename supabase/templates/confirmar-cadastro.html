@@ -1,0 +1,14 @@
+<!-- Supabase › Authentication › Emails › Confirm signup
+     Assunto sugerido: Confirme seu cadastro no WaveType -->
+<div style="margin:0;padding:24px;background:#f5f8ff;font-family:Arial,Helvetica,sans-serif;color:#17233f">
+  <div style="max-width:520px;margin:0 auto;background:#ffffff;border:1px solid #e3e8f4;border-radius:16px;padding:32px">
+    <p style="margin:0 0 24px;font-size:20px;font-weight:bold;color:#315fd6">WaveType</p>
+    <h1 style="margin:0 0 12px;font-size:22px">Confirme seu cadastro</h1>
+    <p style="margin:0 0 24px;font-size:15px;line-height:1.5">Olá! Falta só confirmar o e-mail <strong>{{ .Email }}</strong> para começar a praticar no WaveType.</p>
+    <p style="margin:0 0 24px">
+      <a href="{{ .ConfirmationURL }}" style="display:inline-block;padding:12px 22px;background:#315fd6;color:#ffffff;text-decoration:none;border-radius:10px;font-weight:bold;font-size:15px">Confirmar e-mail</a>
+    </p>
+    <p style="margin:0;font-size:13px;line-height:1.5;color:#5b6478">Se você não criou uma conta no WaveType, ignore este e-mail.</p>
+  </div>
+  <p style="max-width:520px;margin:16px auto 0;font-size:12px;color:#8a93a6;text-align:center">WaveType · Prática de digitação</p>
+</div>
