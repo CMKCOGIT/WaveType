@@ -1671,3 +1671,12 @@ body.single-line #words-wrapper {
     animation: none;
   }
 }
+
+/* Login: link "Esqueci minha senha" */
+.auth-esqueci {
+  justify-self: end;
+  margin-top: -6px;
+  color: var(--action);
+  font-size: 0.8rem;
+  font-weight: 800;
+}

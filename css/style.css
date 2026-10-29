@@ -921,9 +921,28 @@ html[data-theme="dark"] .theme-toggle span {
   transition: transform 180ms ease;
 }
 .word {
+  position: relative;
   display: inline-flex;
+  flex-wrap: wrap; /* só quebra quando a palavra é maior que o bloco inteiro */
+  max-width: 100%;
   white-space: nowrap;
   border-radius: 7px;
+}
+/* Letras digitadas a mais: aparecem como "+N" sobreposto, sem alargar a palavra
+   (alargar empurrava o texto de referência para os lados). */
+.word.has-extra::before {
+  content: "+" attr(data-extras);
+  position: absolute;
+  top: -0.62em;
+  right: -0.5em;
+  z-index: 1;
+  padding: 0 0.32em;
+  color: var(--error);
+  background: var(--error-soft);
+  border-radius: 6px;
+  font-size: 0.42em;
+  line-height: 1.5;
+  pointer-events: none;
 }
 .letter {
   position: relative;

@@ -1,31 +1,40 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#315FD6">
-  <title>Recuperar senha | WaveType</title>
-  <link rel="icon" href="assets/images/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="assets/css/wavetype.css">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#315FD6">
+    <meta name="description" content="Recupere o acesso à sua conta WaveType.">
+    <title>Recuperar senha | WaveType</title>
+    <link rel="icon" type="image/svg+xml" href="assets/images/icons/favicon.svg">
+    <link rel="stylesheet" href="css/platform.css">
+    <script>document.documentElement.dataset.theme = localStorage.getItem('wavetype_theme') || 'light';</script>
 </head>
-<body data-page="recuperar-senha" data-auth-state="guest">
-  <main class="auth-page">
-    <aside class="auth-aside">
-      <a class="brand" href="index.html"><img src="assets/images/wavetype-logo-dark.svg" alt="WaveType"></a>
-      <div><span class="eyebrow" style="color:#56DDCA">Acesso seguro</span><h1>Recupere seu ritmo.</h1><p>Solicite o link de redefinição e volte para a sua experiência.</p></div>
-    </aside>
-    <section class="auth-main" aria-labelledby="recovery-title">
-      <div class="auth-card">
-        <a class="muted" href="login.html">← Voltar ao login</a>
-        <h2 id="recovery-title" style="margin-top:24px">Recuperar senha</h2>
-        <p>Informe o e-mail usado na sua conta.</p>
-        <form class="auth-form" id="form-recuperacao" name="recuperacao" method="post" data-form="recuperacao" data-endpoint="supabase.auth.resetPasswordForEmail">
-          <label class="field" for="recovery-email"><span>E-mail</span><input id="recovery-email" name="email" type="email" autocomplete="email" maxlength="190" required data-field="usuarios.email"></label>
-          <p class="sr-only" role="status" aria-live="polite" data-feedback="recuperacao"></p>
-          <button class="button block" type="submit" data-action="submit-password-recovery">Enviar link de recuperação</button>
-        </form>
-      </div>
-    </section>
-  </main>
+<body>
+    <main class="auth-page">
+        <aside class="auth-aside">
+            <a href="index.html"><img class="auth-logo" src="assets/images/brand/wavetype-logo-white.svg" alt="WaveType"></a>
+            <div class="auth-copy">
+                <span class="eyebrow">Seu ritmo continua aqui</span>
+                <h1>Pratique.<br>Entenda.<br>Evolua.</h1>
+                <p>Uma experiência clara para quem aprende e uma visão objetiva para quem ensina.</p>
+                <ul class="auth-points"><li><i></i>Resultados organizados por sessão</li><li><i></i>Exercícios da sua turma</li><li><i></i>Evolução visível, sem distrações</li></ul>
+            </div>
+        </aside>
+        <section class="auth-main" aria-labelledby="titulo-pagina">
+            <div class="auth-card">
+                <a class="eyebrow" href="login.html">← Voltar ao login</a>
+                <h2 id="titulo-pagina">Recuperar senha</h2>
+                <p>Informe o e-mail da sua conta. Se ele estiver cadastrado, enviaremos um link para você criar uma nova senha.</p>
+                <form class="auth-form" data-form-recuperar novalidate>
+                    <label class="field"><span>E-mail</span><input type="email" name="email" autocomplete="email" maxlength="190" placeholder="voce@exemplo.com" required></label>
+                    <button class="button auth-submit" type="submit">Enviar link de recuperação</button>
+                    <p class="auth-demo" data-form-feedback hidden role="status" aria-live="polite"></p>
+                </form>
+                <p class="auth-foot">Você entra com o Google? Não precisa de senha: use <a href="login.html">Continuar com o Google</a>.</p>
+            </div>
+        </section>
+    </main>
+    <script type="module" src="js/pages/recuperar-senha.js"></script>
 </body>
 </html>

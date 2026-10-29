@@ -11,6 +11,7 @@ import {
   limparUrlDoOAuth,
   sair,
   TIPO_PENDENTE,
+  validarSenha,
 } from '../auth.js';
 
 const form = document.querySelector('[data-auth-form="cadastro"]');
@@ -51,6 +52,7 @@ async function iniciar() {
     // clicar em "Continuar com o Google", não há mais nada a pedir.
     const pendente = localStorage.getItem(TIPO_PENDENTE);
     const nomeGoogle = (perfil?.nome || '').trim();
+    let erroAutomatico = null;
     if (TIPOS.includes(pendente) && nomeGoogle.length >= 2) {
       try {
         const completo = await concluirCadastro({ tipo: pendente, nome: nomeGoogle });
@@ -58,10 +60,12 @@ async function iniciar() {
         return window.location.replace(destinoDoPerfil(completo));
       } catch (erro) {
         console.error('Falha ao concluir o cadastro automaticamente:', erro);
+        erroAutomatico = erro.message;
       }
     }
 
     mostrarEtapaDeConclusao(perfil, pendente);
+    if (erroAutomatico) mostrarFeedback(feedbackCompletar, erroAutomatico, 'erro');
   } catch (erro) {
     console.error('Falha ao confirmar a sessão:', erro);
     mostrarFeedback(feedback, 'Não foi possível confirmar sua sessão. Tente novamente.', 'erro');
@@ -162,10 +166,7 @@ form.querySelectorAll('input[name="tipo"]').forEach((radio) => {
 function validar({ nome, email, senha }) {
   if (nome.length < 2) return 'Digite seu nome completo.';
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return 'Digite um e-mail válido.';
-  if (senha.length < 8 || !/[a-zA-Z]/.test(senha) || !/[0-9]/.test(senha)) {
-    return 'A senha precisa ter 8+ caracteres, com letra e número.';
-  }
-  return null;
+  return validarSenha(senha);
 }
 
 function pararCarregamento() {

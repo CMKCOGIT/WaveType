@@ -11,8 +11,9 @@ Rode os arquivos de `supabase/migrations/` **nesta ordem**, um por vez (cada um 
 3. `20261027000003_trilha_nivel_extremo.sql`
 4. `20261027000004_conquistas_gamificacao.sql`
 5. `20261028000005_tempo_maximo_e_precisao.sql` (tempo máximo e precisão acima de 85% em toda a trilha; tempo e precisão definidos pelo professor nas atividades)
+6. `20261029000006_correcao_cadastro_google.sql` (conclusão do cadastro com Google confere a gravação; recarrega o cache da API)
 
-Depois rode `supabase/verificacao.sql`. Cada nível (1 a 6) deve mostrar 20 exercícios e as demais consultas devem voltar vazias.
+Depois rode `supabase/diagnostico.sql` (mostra quais migrações estão aplicadas e se há contas presas na conclusão do cadastro) e `supabase/verificacao.sql`. Cada nível (1 a 6) deve mostrar 20 exercícios e as demais consultas devem voltar vazias.
 
 > Faça as migrações **antes** de publicar o código novo: as telas novas usam colunas e funções criadas por elas.
 
@@ -61,3 +62,10 @@ Para rodar localmente com as mesmas variáveis: `vercel env pull .env.local` (ou
 1. Abrir o site publicado › Entrar › Continuar com o Google › deve cair na área do perfil.
 2. Conta Google nova › deve abrir "Conclua seu cadastro" e só liberar a plataforma depois de escolher o tipo.
 3. No console do navegador (F12), nenhuma mensagem em vermelho; na aba Rede, as chamadas a `supabase.co` devem responder 200/201.
+
+## 7. Recuperação de senha (Supabase › Authentication)
+
+- **URL Configuration › Redirect URLs** precisa aceitar `https://SEU-DOMINIO/redefinir-senha.html` (já coberto por `https://SEU-DOMINIO/**`).
+- **Emails › Reset Password**: o modelo padrão do Supabase já funciona (usa `{{ .ConfirmationURL }}`).
+- **Envio de e-mails**: o servidor de e-mail embutido do Supabase tem limite baixo de envios por hora e, em projetos novos, só entrega para membros da equipe do projeto. Para alunos e professores reais, configure um SMTP próprio em **Project Settings › Authentication › SMTP Settings**.
+- Contas criadas só com o Google não precisam de senha. Se a pessoa pedir recuperação e definir uma senha pelo link do e-mail, ela passa a poder entrar das duas formas; nada é criado sem esse pedido.
