@@ -145,8 +145,11 @@ document.addEventListener('DOMContentLoaded', () => {
             // A palavra atual fica a 25% da esquerda; o texto corre para o lado
             desiredOffset = Math.max(0, word.offsetLeft - elements.viewport.clientWidth * 0.25);
         } else {
+            // Mede pela letra atual: uma palavra longa pode ocupar mais de uma linha.
             const lineHeight = parseFloat(getComputedStyle(elements.wrapper).lineHeight);
-            desiredOffset = Math.max(0, word.offsetTop - lineHeight);
+            const alvo = letters[Math.min(state.currentLetterIndex, letters.length - 1)] ?? word;
+            const topo = alvo.getBoundingClientRect().top - elements.wrapper.getBoundingClientRect().top;
+            desiredOffset = Math.max(0, topo - lineHeight);
         }
 
         if (elements.wrapper.dataset.axis !== axis || Math.abs(desiredOffset - state.wrapperOffset) > 1) {
@@ -219,7 +222,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!previous) return;
 
         // Só volta se a palavra anterior tiver erro (letra errada, extra ou faltando)
-        if (!previous.querySelector('.letter.incorrect, .letter.missed')) return;
+        if (!previous.querySelector('.letter.incorrect, .letter.missed') && !extrasDaPalavra(previous)) return;
 
         // Desfaz as letras "puladas" para o contador de erros não ficar duplicado
         previous.querySelectorAll('.letter.missed').forEach((letter) => {
@@ -271,10 +274,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 markCurrentWordProblem();
             }
         } else {
-            const extra = document.createElement('span');
-            extra.className = 'letter incorrect extra-letter';
-            extra.textContent = character;
-            word.appendChild(extra);
+            // Letra a mais: não entra no texto (isso alargava a palavra e deslocava
+            // o texto de referência). Fica contada na palavra e aparece como "+N".
+            definirExtras(word, extrasDaPalavra(word) + 1);
             state.extra += 1;
             addErrorKey('extra');
             markCurrentWordProblem();
@@ -321,16 +323,30 @@ document.addEventListener('DOMContentLoaded', () => {
         const word = currentWord();
         if (!word) return;
         const letters = Array.from(word.querySelectorAll('.letter'));
-        const target = letters[state.currentLetterIndex - 1];
-        if (!target) return;
-        if (target.classList.contains('incorrect') || target.classList.contains('extra-letter')) state.corrected += 1;
-        if (target.classList.contains('extra-letter')) target.remove();
-        else {
+        if (state.currentLetterIndex > letters.length) {
+            // Apaga uma letra a mais
+            definirExtras(word, extrasDaPalavra(word) - 1);
+            state.corrected += 1;
+        } else {
+            const target = letters[state.currentLetterIndex - 1];
+            if (!target) return;
+            if (target.classList.contains('incorrect')) state.corrected += 1;
             target.classList.remove('correct', 'incorrect');
             delete target.dataset.typed;
         }
         state.currentLetterIndex -= 1;
         updateTypingPosition();
+    }
+
+    function extrasDaPalavra(word) {
+        return Number(word.dataset.extras || 0);
+    }
+
+    function definirExtras(word, quantidade) {
+        const total = Math.max(0, quantidade);
+        if (total) word.dataset.extras = String(total);
+        else delete word.dataset.extras;
+        word.classList.toggle('has-extra', total > 0);
     }
 
     function consistencyScore(samples) {

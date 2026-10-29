@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#315FD6">
+    <meta name="description" content="Defina uma nova senha para a sua conta WaveType.">
+    <title>Nova senha | WaveType</title>
+    <link rel="icon" type="image/svg+xml" href="assets/images/icons/favicon.svg">
+    <link rel="stylesheet" href="css/platform.css">
+    <script>document.documentElement.dataset.theme = localStorage.getItem('wavetype_theme') || 'light';</script>
+    <script>
+        // Lido antes do Supabase limpar o endereço: o link de recuperação traz type=recovery.
+        document.documentElement.dataset.autenticando = '1';
+        if (/[#&]type=recovery/.test(location.hash)) sessionStorage.setItem('wavetype_recuperacao', '1');
+    </script>
+</head>
+<body>
+    <main class="auth-page">
+        <aside class="auth-aside">
+            <a href="index.html"><img class="auth-logo" src="assets/images/brand/wavetype-logo-white.svg" alt="WaveType"></a>
+            <div class="auth-copy">
+                <span class="eyebrow">Seu ritmo continua aqui</span>
+                <h1>Pratique.<br>Entenda.<br>Evolua.</h1>
+                <p>Uma experiência clara para quem aprende e uma visão objetiva para quem ensina.</p>
+                <ul class="auth-points"><li><i></i>Resultados organizados por sessão</li><li><i></i>Exercícios da sua turma</li><li><i></i>Evolução visível, sem distrações</li></ul>
+            </div>
+        </aside>
+        <section class="auth-main" aria-labelledby="titulo-pagina">
+            <div class="auth-card">
+                <div class="auth-carregando" role="status" aria-live="polite"><span class="auth-spinner" aria-hidden="true"></span>Validando o link…</div>
+                <a class="eyebrow" href="login.html">← Voltar ao login</a>
+                <h2 id="titulo-pagina">Crie uma nova senha</h2>
+                <p data-instrucao>Escolha uma senha com 8 ou mais caracteres, com letras e números.</p>
+                <form class="auth-form" data-form-nova-senha novalidate hidden>
+                    <label class="field"><span>Nova senha</span><input type="password" name="senha" autocomplete="new-password" minlength="8" placeholder="8+ caracteres, com letra e número" required></label>
+                    <label class="field"><span>Repita a nova senha</span><input type="password" name="confirmacao" autocomplete="new-password" minlength="8" required></label>
+                    <button class="button auth-submit" type="submit">Salvar nova senha</button>
+                </form>
+                <p class="auth-demo" data-form-feedback hidden role="status" aria-live="polite"></p>
+                <p class="auth-foot" data-pedir-novo hidden><a href="recuperar-senha.html">Pedir um novo link</a></p>
+            </div>
+        </section>
+    </main>
+    <script type="module" src="js/pages/redefinir-senha.js"></script>
+</body>
+</html>

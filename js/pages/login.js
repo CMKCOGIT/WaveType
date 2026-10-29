@@ -16,8 +16,17 @@ const feedback = document.querySelector('[data-form-feedback]');
 
 iniciar();
 
+// Leva o e-mail já digitado para a tela de "Esqueci minha senha".
+document.querySelector('[data-link-recuperar]')?.addEventListener('click', (evento) => {
+  const email = form.elements.email.value.trim();
+  if (email) evento.currentTarget.href = `recuperar-senha.html?email=${encodeURIComponent(email)}`;
+});
+
 // Ao voltar do Google (ou se já houver sessão), segue direto para a área certa.
 async function iniciar() {
+  if (new URLSearchParams(location.search).get('senha') === 'redefinida') {
+    mostrarFeedback('Senha alterada. Entre com a nova senha.', 'sucesso');
+  }
   const erroOAuth = lerErroDoRetornoOAuth();
   if (erroOAuth) {
     limparUrlDoOAuth();

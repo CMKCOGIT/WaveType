@@ -1,5 +1,6 @@
 // js/api/resultados.js
 import { supabase } from '../supabaseClient.js';
+import { traduzErro } from '../auth.js';
 
 /**
  * Chamado ao final de uma sessão de digitação (treinar.html).
@@ -15,14 +16,25 @@ export async function registrarResultado({ exercicio_id, turma_id = null, ppm, p
   const alunoId = sessao.session?.user.id;
   if (!alunoId) throw new Error('Sessão expirada. Entre novamente.');
 
-  const { data, error } = await supabase
-    .from('resultados')
-    .insert({ aluno_id: alunoId, exercicio_id, turma_id, ppm, precisao, acertos, erros, tempo_seg, concluiu_texto })
-    .select()
-    .single();
-  if (error) throw new Error(error.message);
+  const registro = { aluno_id: alunoId, exercicio_id, turma_id, ppm, precisao, acertos, erros, tempo_seg, concluiu_texto };
+  let { data, error } = await inserir(registro);
+
+  // Banco sem a migração 05 (coluna concluiu_texto): a requisição é recusada
+  // ANTES de gravar (PGRST204), então repetir sem a coluna não duplica nada.
+  // Assim a tentativa não se perde; a regra de tempo volta a valer quando a
+  // migração for aplicada.
+  if (error?.code === 'PGRST204' && /concluiu_texto/.test(error.message)) {
+    console.warn('Banco sem a coluna resultados.concluiu_texto: rode a migração 20261028000005.');
+    delete registro.concluiu_texto;
+    ({ data, error } = await inserir(registro));
+  }
+  if (error) throw traduzErro(error);
 
   return { resultado: data, novasConquistas: await conquistasLiberadasEm(alunoId, data.criado_em) };
+}
+
+function inserir(registro) {
+  return supabase.from('resultados').insert(registro).select().single();
 }
 
 // As conquistas liberadas pelo trigger têm o mesmo horário da transação do resultado.

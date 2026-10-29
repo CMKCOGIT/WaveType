@@ -57,9 +57,46 @@ export async function entrarComGoogle({ origem = 'login' } = {}) {
   return data;
 }
 
-export async function sair() {
+/**
+ * "Esqueci minha senha": o Supabase envia um link de uso único que volta para
+ * /redefinir-senha.html. A resposta é a mesma exista ou não a conta, para não
+ * revelar quais e-mails estão cadastrados.
+ */
+export async function solicitarRecuperacaoSenha(email) {
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: `${window.location.origin}/redefinir-senha.html`,
+  });
+  if (!error) return;
+  if (error.status === 429 || /security purposes|rate limit/i.test(error.message)) {
+    throw new Error('Muitas solicitações seguidas. Aguarde um minuto e tente de novo.');
+  }
+  throw traduzErro(error);
+}
+
+/** Define a nova senha da sessão aberta pelo link de recuperação. */
+export async function definirNovaSenha(senha) {
+  const { error } = await supabase.auth.updateUser({ password: senha });
+  if (!error) return;
+  if (/different from the old password/i.test(error.message)) {
+    throw new Error('A nova senha precisa ser diferente da anterior.');
+  }
+  if (/session missing|expired|invalid/i.test(error.message)) {
+    throw new Error('Este link expirou ou já foi usado. Peça um novo link de recuperação.');
+  }
+  throw traduzErro(error);
+}
+
+/** Regras de senha do cadastro (8+ caracteres, com letra e número). */
+export function validarSenha(senha) {
+  if (senha.length < 8 || !/[a-zA-Z]/.test(senha) || !/[0-9]/.test(senha)) {
+    return 'A senha precisa ter 8+ caracteres, com letra e número.';
+  }
+  return null;
+}
+
+export async function sair({ destino = '/login.html' } = {}) {
   await supabase.auth.signOut();
-  window.location.href = '/login.html';
+  window.location.href = destino;
 }
 
 /** Retorna a sessão atual (ou null) sem lançar erro. */
@@ -94,11 +131,24 @@ export function destinoDoPerfil(perfil) {
   return cadastroIncompleto(perfil) ? PAGINA_COMPLETAR_CADASTRO : DESTINOS[perfil.tipo];
 }
 
-/** Grava tipo e nome de um cadastro incompleto (RPC concluir_cadastro). */
+/**
+ * Grava tipo e nome de um cadastro incompleto (RPC concluir_cadastro) e
+ * confere no banco se ficou gravado. Sem essa conferência, uma falha
+ * silenciosa mandava a pessoa de volta para esta mesma tela a cada login.
+ */
 export async function concluirCadastro({ tipo, nome }) {
-  const { data, error } = await supabase.rpc('concluir_cadastro', { p_tipo: tipo, p_nome: nome });
+  const { error } = await supabase.rpc('concluir_cadastro', { p_tipo: tipo, p_nome: nome });
   if (error) throw traduzErro(error);
-  return data;
+
+  const perfil = await obterPerfil();
+  if (cadastroIncompleto(perfil)) {
+    console.error('concluir_cadastro respondeu, mas o perfil continua incompleto:', {
+      tipo: perfil?.tipo,
+      tipo_definido: perfil?.tipo_definido,
+    });
+    throw new Error('Não foi possível salvar seu cadastro. Tente novamente; se continuar, avise o administrador do site.');
+  }
+  return perfil;
 }
 
 /**
@@ -196,6 +246,11 @@ export function traduzErro(error) {
     'Unsupported provider: provider is not enabled': 'O login com Google não está ativado no Supabase.',
   };
   if (mapa[error?.message]) return new Error(mapa[error.message]);
+  // PGRST202/PGRST204: função ou coluna que o banco ainda não tem (migração não aplicada).
+  if (/^PGRST20[24]$/.test(error?.code ?? '')) {
+    console.error('Banco de dados desatualizado:', error.message);
+    return new Error('O banco de dados do WaveType ainda não foi atualizado para esta versão. Avise o administrador do site.');
+  }
   // Mensagens das nossas RPCs já vêm em português e prontas para a pessoa.
   if (error?.code && /^(P0|22|23|28|42501)/.test(error.code) && error.message) return new Error(error.message);
   console.error(error);
