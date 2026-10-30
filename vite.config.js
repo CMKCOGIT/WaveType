@@ -66,7 +66,25 @@ export default defineConfig(({ mode }) => {
     console.warn(`\n⚠  ${aviso}\n`);
   }
 
+  // Abre a conexão com o Supabase junto com o HTML, antes de o JS pedir os
+  // dados (economiza DNS + TLS na volta do Google e em cada página interna).
+  const origemSupabase = (() => {
+    try {
+      return url ? new URL(url).origin : '';
+    } catch {
+      return '';
+    }
+  })();
+  const preconectarSupabase = {
+    name: 'wavetype-preconnect-supabase',
+    transformIndexHtml() {
+      if (!origemSupabase) return [];
+      return [{ tag: 'link', attrs: { rel: 'preconnect', href: origemSupabase, crossorigin: '' }, injectTo: 'head-prepend' }];
+    },
+  };
+
   return {
+    plugins: [preconectarSupabase],
     define: {
       'import.meta.env.VITE_SUPABASE_URL': JSON.stringify(url),
       'import.meta.env.VITE_SUPABASE_ANON_KEY': JSON.stringify(chave),

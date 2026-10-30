@@ -4,7 +4,7 @@ import {
   entrarComGoogle,
   obterSessao,
   obterPerfil,
-  destinoDoPerfil,
+  irParaArea,
   lerErroDoRetornoOAuth,
   limparUrlDoOAuth,
   TIPO_PENDENTE,
@@ -78,7 +78,7 @@ botaoGoogle.addEventListener('click', async () => {
 
 async function redirecionarConformePapel() {
   const perfil = await obterPerfil();
-  window.location.replace(destinoDoPerfil(perfil));
+  irParaArea(perfil);
 }
 
 function mostrarCarregamento() {
