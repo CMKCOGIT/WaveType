@@ -3364,3 +3364,16 @@ html[data-theme="dark"] .step-item b {
     transition-duration: 0.001ms !important;
   }
 }
+
+/* Fim do teste público para quem não está logado: convite em vez de "repetir" */
+.resultado-convite {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
+}
+@media (max-width: 720px) {
+  .resultado-convite {
+    justify-content: flex-start;
+  }
+}

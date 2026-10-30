@@ -1,0 +1,165 @@
+/* ==========================================================================
+   WaveType — tokens de design (camada do redesenho)
+   Carregado DEPOIS de style.css / platform.css. Define tokens --wt-* e
+   ajusta alguns tokens antigos para cumprir contraste WCAG 2.2 AA.
+   Guia: docs/redesign/01-tokens.md
+   ========================================================================== */
+
+:root {
+  /* ---- Paleta da marca (inalterada) ---- */
+  --wt-blue-600: #315fd6;   /* Action blue */
+  --wt-blue-500: #4f7cff;   /* Wave blue */
+  --wt-blue-300: #7898ff;
+  --wt-blue-50: #eef3ff;
+  --wt-violet-500: #6b5ce7; /* Flow violet */
+  --wt-violet-300: #9488ff;
+  --wt-aqua-500: #2ecab6;   /* Evolution aqua — destaque, nunca texto pequeno no claro */
+  --wt-aqua-300: #56ddca;
+  --wt-aqua-700: #0e7f71;   /* aqua legível: 4,9:1 sobre branco */
+  --wt-ink-900: #17233f;    /* Deep ink */
+  --wt-ink-700: #3a4560;
+  --wt-ink-600: #4a5571;
+  --wt-mist-50: #f5f8ff;    /* Soft mist */
+  --wt-night-900: #0e1730;
+  --wt-night-800: #16213a;
+  --wt-night-700: #1d2a49;
+  --wt-white: #ffffff;
+  --wt-red-600: #c0353f;
+
+  /* ---- Semânticos (tema claro) ---- */
+  --wt-bg: var(--wt-mist-50);
+  --wt-surface: var(--wt-white);
+  --wt-surface-sunken: #eef2fc;
+  --wt-surface-tint: rgba(79, 124, 255, 0.07);
+  --wt-text: var(--wt-ink-900);
+  --wt-text-muted: var(--wt-ink-600);   /* 7,3:1 sobre branco */
+  --wt-text-subtle: #5a6480;            /* 5,9:1 sobre branco */
+  --wt-line: rgba(23, 35, 63, 0.11);
+  --wt-line-strong: rgba(49, 95, 214, 0.3);
+  --wt-accent: var(--wt-blue-600);
+  --wt-accent-hover: #2a52bd;
+  --wt-on-accent: var(--wt-white);
+  --wt-success-text: var(--wt-aqua-700);
+  --wt-danger: var(--wt-red-600);
+  --wt-focus: var(--wt-blue-500);
+  --wt-gradient-wave: linear-gradient(100deg, var(--wt-blue-600) 0%, var(--wt-blue-500) 48%, var(--wt-violet-500) 100%);
+  --wt-gradient-tide: linear-gradient(90deg, var(--wt-blue-500), var(--wt-aqua-500));
+  --wt-glow: radial-gradient(60% 60% at 50% 40%, rgba(79, 124, 255, 0.16), transparent 70%);
+
+  /* ---- Espaçamento (base 4 px) ---- */
+  --wt-space-1: 4px;
+  --wt-space-2: 8px;
+  --wt-space-3: 12px;
+  --wt-space-4: 16px;
+  --wt-space-5: 20px;
+  --wt-space-6: 24px;
+  --wt-space-8: 32px;
+  --wt-space-10: 40px;
+  --wt-space-12: 48px;
+  --wt-space-16: 64px;
+  --wt-section: clamp(64px, 9vw, 120px);
+
+  /* ---- Raios (uma escala só para site e plataforma) ---- */
+  --wt-radius-xs: 6px;
+  --wt-radius-sm: 10px;
+  --wt-radius-md: 14px;
+  --wt-radius-lg: 20px;
+  --wt-radius-xl: 28px;
+  --wt-radius-pill: 999px;
+
+  /* ---- Tipografia ---- */
+  --wt-font-sans: "Manrope", system-ui, sans-serif;
+  --wt-font-mono: "IBM Plex Mono", ui-monospace, monospace;
+  --wt-text-xs: 0.75rem;
+  --wt-text-sm: 0.875rem;
+  --wt-text-md: 1rem;
+  --wt-text-lg: 1.125rem;
+  --wt-text-xl: clamp(1.25rem, 1.6vw, 1.5rem);
+  --wt-text-2xl: clamp(1.75rem, 3vw, 2.4rem);
+  --wt-text-display: clamp(2.3rem, 5vw, 4rem);
+  --wt-tracking-tight: -0.045em;
+  --wt-tracking-caps: 0.14em;
+
+  /* ---- Elevação ---- */
+  --wt-shadow-1: 0 1px 2px rgba(23, 35, 63, 0.05), 0 4px 14px rgba(23, 35, 63, 0.05);
+  --wt-shadow-2: 0 2px 6px rgba(23, 35, 63, 0.05), 0 14px 36px rgba(23, 35, 63, 0.08);
+  --wt-shadow-3: 0 4px 12px rgba(23, 35, 63, 0.06), 0 30px 70px rgba(35, 60, 140, 0.14);
+  --wt-ring: 0 0 0 3px rgba(79, 124, 255, 0.28);
+
+  /* ---- Movimento ---- */
+  --wt-dur-instant: 90ms;
+  --wt-dur-fast: 160ms;
+  --wt-dur-base: 240ms;
+  --wt-dur-slow: 480ms;
+  --wt-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --wt-ease-wave: cubic-bezier(0.45, 0.05, 0.25, 1);
+  --wt-ease-standard: cubic-bezier(0.2, 0, 0, 1);
+
+  /* ---- Tokens antigos ajustados por contraste (só tema claro) ---- */
+  --subtle: rgba(23, 35, 63, 0.72);   /* era 0,62 → 4,49:1; agora 5,6:1 */
+}
+
+html[data-theme="dark"] {
+  --wt-bg: var(--wt-night-900);
+  --wt-surface: var(--wt-night-800);
+  --wt-surface-sunken: #121b33;
+  --wt-surface-tint: rgba(120, 152, 255, 0.1);
+  --wt-text: #f1f5ff;
+  --wt-text-muted: rgba(241, 245, 255, 0.78);
+  --wt-text-subtle: rgba(241, 245, 255, 0.66);
+  --wt-line: rgba(241, 245, 255, 0.11);
+  --wt-line-strong: rgba(120, 152, 255, 0.38);
+  --wt-accent: var(--wt-blue-300);
+  --wt-accent-hover: #94adff;
+  --wt-on-accent: var(--wt-ink-900);
+  --wt-success-text: var(--wt-aqua-300);
+  --wt-danger: #ff8a92;
+  --wt-focus: var(--wt-blue-300);
+  --wt-gradient-wave: linear-gradient(100deg, var(--wt-blue-300) 0%, #8aa6ff 45%, var(--wt-violet-300) 100%);
+  --wt-glow: radial-gradient(60% 60% at 50% 40%, rgba(120, 152, 255, 0.18), transparent 70%);
+  --wt-shadow-1: 0 1px 2px rgba(0, 0, 0, 0.25), 0 4px 14px rgba(0, 0, 0, 0.18);
+  --wt-shadow-2: 0 2px 6px rgba(0, 0, 0, 0.24), 0 14px 36px rgba(0, 0, 0, 0.28);
+  --wt-shadow-3: 0 4px 12px rgba(0, 0, 0, 0.3), 0 30px 70px rgba(0, 0, 0, 0.42);
+  --wt-ring: 0 0 0 3px rgba(120, 152, 255, 0.4);
+}
+
+/* Modo alto contraste: tinta sobre branco, sem gradientes nem transparências */
+body.high-contrast {
+  --wt-bg: #ffffff;
+  --wt-surface: #ffffff;
+  --wt-surface-sunken: #ffffff;
+  --wt-surface-tint: #ffffff;
+  --wt-text: #000814;
+  --wt-text-muted: #17233f;
+  --wt-text-subtle: #17233f;
+  --wt-line: #17233f;
+  --wt-line-strong: #17233f;
+  --wt-accent: #1f46b0;
+  --wt-accent-hover: #17233f;
+  --wt-on-accent: #ffffff;
+  --wt-success-text: #075e54;
+  --wt-focus: #000814;
+  --wt-gradient-wave: linear-gradient(#1f46b0, #1f46b0);
+  --wt-gradient-tide: linear-gradient(#17233f, #17233f);
+  --wt-glow: none;
+  --wt-shadow-1: none;
+  --wt-shadow-2: none;
+  --wt-shadow-3: none;
+  --wt-ring: 0 0 0 3px #000814;
+}
+
+/* Movimento reduzido: pelo sistema ou pelo modo do WaveType */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --wt-dur-instant: 0ms;
+    --wt-dur-fast: 0ms;
+    --wt-dur-base: 0ms;
+    --wt-dur-slow: 0ms;
+  }
+}
+body.reduce-motion {
+  --wt-dur-instant: 0ms;
+  --wt-dur-fast: 0ms;
+  --wt-dur-base: 0ms;
+  --wt-dur-slow: 0ms;
+}

@@ -1680,3 +1680,48 @@ body.single-line #words-wrapper {
   font-size: 0.8rem;
   font-weight: 800;
 }
+
+/* Página Perfil */
+.perfil-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+  align-items: start;
+}
+.perfil-form {
+  display: grid;
+  gap: 14px;
+}
+.perfil-form .button {
+  justify-self: start;
+}
+.perfil-form input[readonly] {
+  color: var(--muted);
+  background: var(--surface-soft);
+}
+.perfil-ajuda {
+  margin: 16px 0 0;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+.perfil-ajuda a {
+  color: var(--action);
+  font-weight: 800;
+}
+@media (max-width: 820px) {
+  .perfil-grid {
+    grid-template-columns: 1fr;
+  }
+}
+.auth-nota {
+  margin: -6px 0 0;
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+.perfil-grid > .perfil-largo {
+  grid-column: 1 / -1;
+}
+.perfil-codigo {
+  font-size: 1.05rem;
+  letter-spacing: 0.18em;
+}

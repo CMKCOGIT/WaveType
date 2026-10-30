@@ -1,0 +1,6 @@
+/* Entrada de CSS: legado primeiro, camadas do redesenho depois (ordem garantida no build). */
+@import "../platform.css";
+@import "../exercicios.css";
+@import "./tokens.css";
+@import "./app.css";
+@import "./motion.css";

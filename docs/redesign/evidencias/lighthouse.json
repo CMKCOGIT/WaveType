@@ -1,0 +1,62 @@
+{
+ "antes/index": {
+  "performance": 90,
+  "accessibility": 96,
+  "best-practices": 100,
+  "FCP": "2.9 s",
+  "LCP": "2.9 s",
+  "CLS": "0.004",
+  "TBT": "0 ms",
+  "SI": "3.0 s"
+ },
+ "antes/cadastro": {
+  "performance": 96,
+  "accessibility": 95,
+  "best-practices": 100,
+  "FCP": "2.3 s",
+  "LCP": "2.3 s",
+  "CLS": "0.001",
+  "TBT": "0 ms",
+  "SI": "2.3 s"
+ },
+ "antes/login": {
+  "performance": 96,
+  "accessibility": 95,
+  "best-practices": 100,
+  "FCP": "2.3 s",
+  "LCP": "2.3 s",
+  "CLS": "0.001",
+  "TBT": "0 ms",
+  "SI": "2.3 s"
+ },
+ "depois/index": {
+  "performance": 94,
+  "accessibility": 100,
+  "best-practices": 100,
+  "FCP": "1.2 s",
+  "LCP": "2.9 s",
+  "CLS": "0",
+  "TBT": "70 ms",
+  "SI": "1.2 s"
+ },
+ "depois/cadastro": {
+  "performance": 98,
+  "accessibility": 100,
+  "best-practices": 100,
+  "FCP": "1.5 s",
+  "LCP": "2.3 s",
+  "CLS": "0",
+  "TBT": "70 ms",
+  "SI": "1.5 s"
+ },
+ "depois/login": {
+  "performance": 98,
+  "accessibility": 100,
+  "best-practices": 100,
+  "FCP": "1.4 s",
+  "LCP": "2.3 s",
+  "CLS": "0",
+  "TBT": "20 ms",
+  "SI": "1.4 s"
+ }
+}

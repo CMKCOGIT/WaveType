@@ -7,7 +7,8 @@
     <meta name="theme-color" content="#315FD6">
     <title>Conquistas | WaveType</title>
     <link rel="icon" href="../../assets/images/icons/favicon.svg">
-    <link rel="stylesheet" href="../../css/platform.css">
+    <link rel="preload" href="../../assets/fonts/Manrope-Variable.ttf" as="font" type="font/ttf" crossorigin>
+    <link rel="stylesheet" href="../../css/redesign/plataforma.css">
     <script>document.documentElement.dataset.theme = localStorage.getItem('wavetype_theme') || 'light';</script>
 </head>
 
@@ -21,7 +22,7 @@
             <nav class="app-nav" aria-label="Navegação da área do usuário"><a href="index.html"
                     data-index="01"><span>Início</span></a><a href="resultados.html"
                     data-index="02"><span>Resultados</span></a><a href="conquistas.html" data-index="03"
-                    aria-current="page"><span>Conquistas</span></a><a href="exercicios.html" data-index="04"><span>Exercícios</span></a><a href="treinar.html" data-index="05"><span>Treinar</span></a></nav>
+                    aria-current="page"><span>Conquistas</span></a><a href="exercicios.html" data-index="04"><span>Exercícios</span></a><a href="treinar.html" data-index="05"><span>Treinar</span></a><a href="perfil.html" data-index="06"><span>Perfil</span></a></nav>
             <div class="app-sidebar-foot"><strong>Seu espaço</strong><small>Prática, clareza e evolução</small><a
                     href="../../index.html">Ir ao site público →</a></div>
         </aside>
@@ -50,6 +51,7 @@
         </div>
     </div>
     <script type="module" src="../../js/pages/usuario-conquistas.js"></script>
+    <script type="module" src="../../js/motion.js"></script>
 </body>
 
 </html>

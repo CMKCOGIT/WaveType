@@ -86,6 +86,70 @@ export async function definirNovaSenha(senha) {
   throw traduzErro(error);
 }
 
+/** Formas de login da conta atual (ex.: ['google'], ['email', 'google']). */
+export async function metodosDeLogin() {
+  // getUser consulta o Supabase; a sessão guardada no navegador pode estar desatualizada.
+  const { data } = await supabase.auth.getUser();
+  const usuario = data?.user;
+  const providers = usuario?.app_metadata?.providers ?? usuario?.identities?.map((i) => i.provider) ?? [];
+  return [...new Set(providers)];
+}
+
+/** Troca a própria conta entre "usuario" e "aluno" (RPC alterar_tipo_conta). */
+export async function alterarTipoConta(tipo) {
+  const { error } = await supabase.rpc('alterar_tipo_conta', { p_tipo: tipo });
+  if (error) throw traduzErro(error);
+}
+
+/** Altera o nome exibido (a única coluna do perfil que o próprio usuário edita). */
+export async function atualizarNome(nome) {
+  const sessao = await obterSessao();
+  if (!sessao) throw new Error('Sessão expirada. Entre novamente.');
+  const { error } = await supabase.from('usuarios').update({ nome }).eq('id', sessao.user.id);
+  if (error) throw traduzErro(error);
+}
+
+/**
+ * Troca de senha na página Perfil. Quem já tem senha precisa informar a
+ * atual (conferida antes da troca). Quem só entra com o Google pode criar
+ * uma senha se quiser; nada é criado sem esse pedido.
+ */
+export async function alterarSenha({ senhaAtual, novaSenha }) {
+  const sessao = await obterSessao();
+  if (!sessao) throw new Error('Sessão expirada. Entre novamente.');
+
+  if (senhaAtual != null) {
+    const { error } = await supabase.auth.signInWithPassword({ email: sessao.user.email, password: senhaAtual });
+    if (error) {
+      if (error.message === 'Invalid login credentials') throw new Error('A senha atual está incorreta.');
+      throw traduzErro(error);
+    }
+  }
+
+  const { error } = await supabase.auth.updateUser({ password: novaSenha });
+  if (!error) return;
+  if (/different from the old password/i.test(error.message)) {
+    throw new Error('A nova senha precisa ser diferente da atual.');
+  }
+  if (error.code === 'reauthentication_needed' || /reauthenticat/i.test(error.message)) {
+    throw new Error('Por segurança, saia e entre de novo na sua conta antes de trocar a senha.');
+  }
+  throw traduzErro(error);
+}
+
+/**
+ * Senha da conta criada com o Google, pedida na conclusão do cadastro.
+ * Se a mesma senha já foi gravada numa tentativa anterior, não é erro.
+ */
+export async function criarSenhaDaConta(senha) {
+  const { error } = await supabase.auth.updateUser({ password: senha });
+  if (!error || /different from the old password/i.test(error.message)) return;
+  if (error.code === 'weak_password' || /weak|at least/i.test(error.message)) {
+    throw new Error('Essa senha é fraca demais. Use 8+ caracteres, com letra e número.');
+  }
+  throw traduzErro(error);
+}
+
 /** Regras de senha do cadastro (8+ caracteres, com letra e número). */
 export function validarSenha(senha) {
   if (senha.length < 8 || !/[a-zA-Z]/.test(senha) || !/[0-9]/.test(senha)) {

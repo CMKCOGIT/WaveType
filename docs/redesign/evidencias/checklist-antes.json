@@ -1,0 +1,113 @@
+{
+ "tempo_15": {
+  "antesDaTecla": "15",
+  "durante": "5",
+  "encerrou": true,
+  "resultado": {
+   "result-wpm": "26",
+   "result-raw": "29",
+   "result-accuracy": "92%",
+   "result-consistency": "27%",
+   "chars-correct": "33",
+   "chars-wrong": "2",
+   "chars-missed": "0",
+   "chars-extra": "1"
+  },
+  "erros": 0
+ },
+ "tempo_30": {
+  "antesDaTecla": "30",
+  "durante": "20",
+  "encerrou": true,
+  "resultado": {
+   "result-wpm": "13",
+   "result-raw": "14",
+   "result-accuracy": "92%",
+   "result-consistency": "0%",
+   "chars-correct": "33",
+   "chars-wrong": "2",
+   "chars-missed": "0",
+   "chars-extra": "1"
+  },
+  "erros": 0
+ },
+ "tempo_60": {
+  "antesDaTecla": "60",
+  "durante": "50",
+  "encerrou": true,
+  "resultado": {
+   "result-wpm": "7",
+   "result-raw": "7",
+   "result-accuracy": "92%",
+   "result-consistency": "0%",
+   "chars-correct": "33",
+   "chars-wrong": "2",
+   "chars-missed": "0",
+   "chars-extra": "1"
+  },
+  "erros": 0
+ },
+ "conteudo_mode_sentences": "Um resultado claro mostra qual deve ser o próximo foco. Um resultado claro mostra qual deve ser o próximo foco. A precis",
+ "conteudo_mode_words": "futuro teclado acontece palavras futuro atenção simples sistema conquista conquista resultados rápido acontece sistema r",
+ "conteudo_level_easy": "amor café casa som amor mapa amor café rede rede suco dedo mesa pão suco sol amor casa bola noite bom pão pão casa dia s",
+ "conteudo_level_advanced": "psicologia extraordinário desenvolvimento acessibilidade psicologia aprendizagem interdisciplinar simultaneamente aperfe",
+ "esc": [
+  false,
+  0
+ ],
+ "reiniciar": [
+  false,
+  0
+ ],
+ "teclas": [
+  "word:incorrect,incorrect,missed,missed,missed",
+  "word active:current,_,_,_,_,_"
+ ],
+ "modos": [
+  "typing-page large-text high-contrast reduce-motion",
+  "true,true,true"
+ ],
+ "demo": [
+  {
+   "titulo": "Você sabe o que vai encontrar.",
+   "url": "wavetype.com.br/app/aluno",
+   "visiveis": [
+    "grid",
+    "none"
+   ],
+   "acoes": [
+    "Visão do aluno→",
+    "Visão do professor→"
+   ]
+  },
+  {
+   "titulo": "Você sabe o que vai encontrar.",
+   "url": "wavetype.com.br/app/professor",
+   "visiveis": [
+    "none",
+    "grid"
+   ],
+   "acoes": [
+    "Visão do aluno→",
+    "Visão do professor→"
+   ]
+  }
+ ],
+ "links": {
+  "/index.html": "Pular para o conteúdo→#conteudo | →index.html | Página inicial→index.html | Para as escolas→escolas.html | Como funciona→como-funciona.html | Sobre→sobre.html | Entrar→login.html | Criar conta→cadastro.html | Página inicial→index.html | Para as escolas→escolas.html | Como funciona→como-funciona.html | Sobre→sobre.html | Entrar→login.html | Criar conta→cadastro.html | 01 · VISITANTE\n       →#teste | 02 · ALUNO\n           →#demonstracao | 03 · PROFESSOR\n       →#demonstracao | →index.html | Página inicial→index.html | Para as escolas→escolas.html | Como funciona→como-funciona.html | Sobre→sobre.html | Entrar→login.html",
+  "/escolas.html": "Pular para o conteúdo→#conteudo | →index.html | Página inicial→index.html | Para as escolas→escolas.html | Como funciona→como-funciona.html | Sobre→sobre.html | Entrar→login.html | Criar conta→cadastro.html | Página inicial→index.html | Para as escolas→escolas.html | Como funciona→como-funciona.html | Sobre→sobre.html | Entrar→login.html | Criar conta→cadastro.html | Conhecer a proposta→#proposta | Experimentar o teste→index.html#teste | Fazer o teste grátis→index.html#teste | →index.html | Página inicial→index.html | Para as escolas→escolas.html | Como funciona→como-funciona.html | Sobre→sobre.html | Entrar→login.html",
+  "/como-funciona.html": "Pular para o conteúdo→#conteudo | →index.html | Página inicial→index.html | Para as escolas→escolas.html | Como funciona→como-funciona.html | Sobre→sobre.html | Entrar→login.html | Criar conta→cadastro.html | Página inicial→index.html | Para as escolas→escolas.html | Como funciona→como-funciona.html | Sobre→sobre.html | Entrar→login.html | Criar conta→cadastro.html | Fazer um teste→index.html#teste | Conhecer as métricas→#metricas | Fazer o teste grátis→index.html#teste | →index.html | Página inicial→index.html | Para as escolas→escolas.html | Como funciona→como-funciona.html | Sobre→sobre.html | Entrar→login.html",
+  "/sobre.html": "Pular para o conteúdo→#conteudo | →index.html | Página inicial→index.html | Para as escolas→escolas.html | Como funciona→como-funciona.html | Sobre→sobre.html | Entrar→login.html | Criar conta→cadastro.html | Página inicial→index.html | Para as escolas→escolas.html | Como funciona→como-funciona.html | Sobre→sobre.html | Entrar→login.html | Criar conta→cadastro.html | Experimentar a digitaç→index.html#teste | Entender o método→como-funciona.html | Começar a digitar→index.html#teste | →index.html | Página inicial→index.html | Para as escolas→escolas.html | Como funciona→como-funciona.html | Sobre→sobre.html | Entrar→login.html",
+  "/login.html": "→index.html | ← Voltar ao teste→index.html | Esqueci minha senha→recuperar-senha.html | Criar conta→cadastro.html",
+  "/cadastro.html": "→index.html | ← Voltar ao teste→index.html | Entrar→login.html"
+ },
+ "pular": [
+  "skip-link→#conteudo",
+  "#conteudo"
+ ],
+ "ancora#conteudo": true,
+ "ancora#teste": true,
+ "ancora#demonstracao": true,
+ "ancora#plataforma": true,
+ "mobile": 11
+}

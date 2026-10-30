@@ -94,11 +94,58 @@ document.addEventListener('DOMContentLoaded', () => {
     function appendExercicio() {
         const palavras = exercicioTexto.split(/\s+/).filter(Boolean);
         if (!palavras.length) return;
-        // Repete o exercício inteiro quantas vezes forem necessárias para atingir o mínimo
+        // Textos curtos da trilha ganham rodadas extras até o mínimo de caracteres.
+        // O tempo máximo (função tempo_limite_trilha no banco) conta essas rodadas,
+        // e cada rodada tem exatamente o mesmo tamanho do texto original.
         const tamanhoCiclo = palavras.join(' ').length + 1;
-        // O tempo máximo da trilha (função tempo_limite_trilha no banco) considera esta repetição.
         const vezes = exercicioRepete ? Math.max(1, Math.ceil(MIN_CHARS_EXERCICIO / tamanhoCiclo)) : 1;
-        for (let i = 0; i < vezes; i += 1) palavras.forEach(createWord);
+        palavras.forEach(createWord);
+        let anterior = palavras;
+        for (let i = 1; i < vezes; i += 1) {
+            anterior = variarRodada(palavras, anterior);
+            anterior.forEach(createWord);
+        }
+    }
+
+    // Em vez de repetir o mesmo texto, embaralha as palavras; com poucas
+    // palavras diferentes, cria combinações novas com as mesmas letras
+    // (ex.: "asdf jklç" vira "dkas fçjl").
+    function variarRodada(palavras, anterior) {
+        const poucasPalavras = new Set(palavras.map((p) => p.toLocaleLowerCase('pt-BR'))).size < 4;
+        const letras = [...new Set(palavras.join('').replace(/[^\p{L}]/gu, ''))];
+        for (let tentativa = 0; tentativa < 6; tentativa += 1) {
+            const rodada = embaralhar(palavras).map((palavra) =>
+                poucasPalavras && letras.length > 1 ? palavraComLetras(palavra, letras) : palavra
+            );
+            if (rodada.join(' ') !== anterior.join(' ') && rodada[0] !== anterior[anterior.length - 1]) return rodada;
+        }
+        return embaralhar(palavras);
+    }
+
+    function palavraComLetras(modelo, letras) {
+        // Mesmo tamanho e mesma pontuação; só as letras mudam (sem 3 iguais seguidas).
+        let resultado = '';
+        for (const caractere of modelo) {
+            if (!/\p{L}/u.test(caractere)) {
+                resultado += caractere;
+                continue;
+            }
+            let letra;
+            do {
+                letra = letras[Math.floor(Math.random() * letras.length)];
+            } while (resultado.endsWith(letra + letra));
+            resultado += letra;
+        }
+        return resultado;
+    }
+
+    function embaralhar(lista) {
+        const copia = [...lista];
+        for (let i = copia.length - 1; i > 0; i -= 1) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [copia[i], copia[j]] = [copia[j], copia[i]];
+        }
+        return copia;
     }
 
     function appendWords(amount) {

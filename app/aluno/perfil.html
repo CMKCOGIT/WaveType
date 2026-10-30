@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="#315FD6">
+    <title>Perfil | WaveType</title>
+    <link rel="icon" href="../../assets/images/icons/favicon.svg">
+    <link rel="preload" href="../../assets/fonts/Manrope-Variable.ttf" as="font" type="font/ttf" crossorigin>
+    <link rel="stylesheet" href="../../css/redesign/plataforma.css">
+    <script>document.documentElement.dataset.theme = localStorage.getItem('wavetype_theme') || 'light';</script>
+</head>
+
+<body data-root="../../" data-role="aluno" data-page="perfil">
+    <div class="app-layout">
+        <aside id="app-sidebar" class="app-sidebar"><a class="app-brand" href="../../index.html"
+                aria-label="WaveType, página inicial"><img class="logo-light"
+                    src="../../assets/images/brand/wavetype-logo.svg" alt="WaveType"><img class="logo-dark"
+                    src="../../assets/images/brand/wavetype-logo-dark.svg" alt=""></a>
+            <p class="app-role">Área do aluno</p>
+            <nav class="app-nav" aria-label="Navegação da área do aluno"><a href="index.html" data-index="01"><span>Início</span></a><a href="exercicios.html" data-index="02"><span>Exercícios</span></a><a href="turmas.html" data-index="03"><span>Turmas</span></a><a href="resultados.html" data-index="04"><span>Resultados</span></a><a href="conquistas.html" data-index="05"><span>Conquistas</span></a><a href="ranking.html" data-index="06"><span>Ranking</span></a><a href="perfil.html" aria-current="page" data-index="07"><span>Perfil</span></a></nav>
+            <div class="app-sidebar-foot"><strong>Seu espaço</strong><small>Prática, clareza e evolução</small><a
+                    href="../../index.html">Ir ao site público →</a></div>
+        </aside>
+        <div class="app-workspace">
+            <header id="app-topbar" class="app-topbar"><span class="topbar-context">Aprenda no seu ritmo. Evolua a cada
+                    tecla.</span><span class="topbar-profile"><span class="topbar-avatar">AL</span><span><strong>Área do
+                            aluno</strong><small>WaveType</small></span></span></header>
+            <main class="app-main">
+                <header class="page-heading">
+                    <div><span class="eyebrow">Sua conta</span>
+                        <h1>Perfil</h1>
+                        <p>Seus dados de acesso e sua senha.</p>
+                    </div>
+                </header>
+                <div class="perfil-grid">
+                    <section class="panel panel-pad" aria-labelledby="titulo-dados">
+                        <div class="panel-title"><div><h2 id="titulo-dados">Dados da conta</h2><p>O e-mail é o mesmo usado para entrar.</p></div></div>
+                        <form class="perfil-form" data-form-dados novalidate>
+                            <label class="field"><span>Nome completo</span><input name="nome" autocomplete="name" minlength="2" maxlength="120" required></label>
+                            <label class="field"><span>E-mail</span><input name="email" type="email" readonly></label>
+                            <label class="field"><span>Tipo de conta</span><input name="tipo" readonly></label>
+                            <div class="field" data-campo-id hidden><span>Seu código de aluno</span><div class="id-box"><span class="perfil-codigo" data-meu-id></span><button type="button" class="copiar" data-copiar-id>Copiar</button></div></div>
+                            <button class="button" type="submit">Salvar dados</button>
+                            <p class="feedback" data-feedback-dados hidden role="status"></p>
+                        </form>
+                    </section>
+                    <section class="panel panel-pad" aria-labelledby="titulo-senha">
+                        <div class="panel-title"><div><h2 id="titulo-senha" data-titulo-senha>Alterar senha</h2><p data-texto-senha>Use 8 ou mais caracteres, com letras e números.</p></div></div>
+                        <form class="perfil-form" data-form-senha novalidate>
+                            <label class="field" data-campo-atual><span>Senha atual</span><input type="password" name="atual" autocomplete="current-password"></label>
+                            <label class="field"><span>Nova senha</span><input type="password" name="nova" autocomplete="new-password" minlength="8" required></label>
+                            <label class="field"><span>Repita a nova senha</span><input type="password" name="confirmacao" autocomplete="new-password" minlength="8" required></label>
+                            <button class="button" type="submit" data-botao-senha>Alterar senha</button>
+                            <p class="feedback" data-feedback-senha hidden role="status"></p>
+                        </form>
+                        <p class="perfil-ajuda">Esqueceu a senha atual? <a href="../../recuperar-senha.html" data-link-recuperar>Receba um link por e-mail</a>.</p>
+                    </section>
+                    <section class="panel panel-pad perfil-largo" aria-labelledby="titulo-tipo" data-painel-tipo hidden>
+                        <div class="panel-title"><div><h2 id="titulo-tipo">Tipo de conta</h2><p data-texto-tipo></p></div></div>
+                        <form class="perfil-form" data-form-tipo novalidate>
+                            <div class="role-picker" style="grid-template-columns:repeat(2,minmax(0,1fr));max-width:520px">
+                                <label class="role-option"><input type="radio" name="tipo" value="usuario"><span><strong>Usuário</strong><small>Treinar e evoluir por conta própria</small></span></label>
+                                <label class="role-option"><input type="radio" name="tipo" value="aluno"><span><strong>Aluno</strong><small>Participar de turmas e atividades</small></span></label>
+                            </div>
+                            <button class="button secondary" type="submit">Trocar tipo de conta</button>
+                            <p class="feedback" data-feedback-tipo hidden role="status"></p>
+                        </form>
+                    </section>
+                </div>
+            </main>
+        </div>
+    </div>
+    <script type="module" src="../../js/pages/perfil.js"></script>
+    <script type="module" src="../../js/motion.js"></script>
+</body>
+
+</html>

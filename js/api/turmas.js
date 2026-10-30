@@ -71,6 +71,12 @@ export async function listarAlunosDaTurma(turmaId) {
   return data ?? [];
 }
 
+/** Professor: adiciona um aluno pelo código curto (ou pelo ID longo). */
+export async function adicionarAluno(turmaId, identificador) {
+  const { error } = await supabase.rpc('adicionar_aluno', { p_turma_id: turmaId, p_identificador: identificador });
+  if (error) throw new Error(error.message);
+}
+
 /** Professor: adiciona um aluno pelo ID do perfil. */
 export async function adicionarAlunoPorId(turmaId, alunoId) {
   const { error } = await supabase.rpc('adicionar_aluno_por_id', { p_turma_id: turmaId, p_aluno_id: alunoId });

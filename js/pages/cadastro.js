@@ -12,6 +12,7 @@ import {
   sair,
   TIPO_PENDENTE,
   validarSenha,
+  criarSenhaDaConta,
 } from '../auth.js';
 
 const form = document.querySelector('[data-auth-form="cadastro"]');
@@ -48,24 +49,9 @@ async function iniciar() {
       return window.location.replace(destinoDoPerfil(perfil));
     }
 
-    // O Google já deu nome e e-mail; se o tipo foi escolhido antes de
-    // clicar em "Continuar com o Google", não há mais nada a pedir.
-    const pendente = localStorage.getItem(TIPO_PENDENTE);
-    const nomeGoogle = (perfil?.nome || '').trim();
-    let erroAutomatico = null;
-    if (TIPOS.includes(pendente) && nomeGoogle.length >= 2) {
-      try {
-        const completo = await concluirCadastro({ tipo: pendente, nome: nomeGoogle });
-        localStorage.removeItem(TIPO_PENDENTE);
-        return window.location.replace(destinoDoPerfil(completo));
-      } catch (erro) {
-        console.error('Falha ao concluir o cadastro automaticamente:', erro);
-        erroAutomatico = erro.message;
-      }
-    }
-
-    mostrarEtapaDeConclusao(perfil, pendente);
-    if (erroAutomatico) mostrarFeedback(feedbackCompletar, erroAutomatico, 'erro');
+    // O Google dá nome e e-mail; falta o tipo de conta (já marcado se foi
+    // escolhido antes de ir ao Google) e a senha, que o Google não fornece.
+    mostrarEtapaDeConclusao(perfil, localStorage.getItem(TIPO_PENDENTE));
   } catch (erro) {
     console.error('Falha ao confirmar a sessão:', erro);
     mostrarFeedback(feedback, 'Não foi possível confirmar sua sessão. Tente novamente.', 'erro');
@@ -92,12 +78,20 @@ formCompletar.addEventListener('submit', async (evento) => {
   const dados = new FormData(formCompletar);
   const tipo = dados.get('tipo');
   const nome = String(dados.get('nome') || '').trim();
+  const senha = String(dados.get('senha') || '');
+  const confirmacao = String(dados.get('confirmacao') || '');
   if (!tipo) return mostrarFeedback(feedbackCompletar, MSG_TIPO, 'erro');
   if (nome.length < 2) return mostrarFeedback(feedbackCompletar, 'Digite seu nome completo.', 'erro');
+  const erroSenha = validarSenha(senha);
+  if (erroSenha) return mostrarFeedback(feedbackCompletar, erroSenha, 'erro');
+  if (senha !== confirmacao) return mostrarFeedback(feedbackCompletar, 'As senhas não são iguais.', 'erro');
 
   botaoCompletar.disabled = true;
   botaoCompletar.textContent = 'Salvando...';
   try {
+    // Senha primeiro: se ela já tiver sido gravada numa tentativa anterior,
+    // a nova tentativa segue normalmente (ver criarSenhaDaConta).
+    await criarSenhaDaConta(senha);
     const perfil = await concluirCadastro({ tipo, nome });
     localStorage.removeItem(TIPO_PENDENTE);
     window.location.replace(destinoDoPerfil(perfil));

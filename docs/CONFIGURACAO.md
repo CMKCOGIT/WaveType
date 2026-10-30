@@ -12,6 +12,7 @@ Rode os arquivos de `supabase/migrations/` **nesta ordem**, um por vez (cada um 
 4. `20261027000004_conquistas_gamificacao.sql`
 5. `20261028000005_tempo_maximo_e_precisao.sql` (tempo máximo e precisão acima de 85% em toda a trilha; tempo e precisão definidos pelo professor nas atividades)
 6. `20261029000006_correcao_cadastro_google.sql` (conclusão do cadastro com Google confere a gravação; recarrega o cache da API)
+7. `20261030000007_codigo_aluno_e_tipo_conta.sql` (código curto do aluno; troca entre usuário e aluno pelo Perfil)
 
 Depois rode `supabase/diagnostico.sql` (mostra quais migrações estão aplicadas e se há contas presas na conclusão do cadastro) e `supabase/verificacao.sql`. Cada nível (1 a 6) deve mostrar 20 exercícios e as demais consultas devem voltar vazias.
 
@@ -66,6 +67,7 @@ Para rodar localmente com as mesmas variáveis: `vercel env pull .env.local` (ou
 ## 7. Recuperação de senha (Supabase › Authentication)
 
 - **URL Configuration › Redirect URLs** precisa aceitar `https://SEU-DOMINIO/redefinir-senha.html` (já coberto por `https://SEU-DOMINIO/**`).
-- **Emails › Reset Password**: o modelo padrão do Supabase já funciona (usa `{{ .ConfirmationURL }}`).
+- **Emails › Reset Password** e **Confirm signup**: troque o modelo padrão (em inglês) pelos de `supabase/templates/` (em português). Cole o HTML no campo *Message body* e use o assunto indicado no topo de cada arquivo. O link precisa continuar sendo `{{ .ConfirmationURL }}`.
+- **Spam**: o texto ajuda pouco. O que mais pesa é o remetente: um domínio próprio (`@wavetype.com.br`) com SPF, DKIM e DMARC configurados num serviço como Brevo ou Resend.
 - **Envio de e-mails**: o servidor de e-mail embutido do Supabase tem limite baixo de envios por hora e, em projetos novos, só entrega para membros da equipe do projeto. Para alunos e professores reais, configure um SMTP próprio em **Project Settings › Authentication › SMTP Settings**.
 - Contas criadas só com o Google não precisam de senha. Se a pessoa pedir recuperação e definir uma senha pelo link do e-mail, ela passa a poder entrar das duas formas; nada é criado sem esse pedido.

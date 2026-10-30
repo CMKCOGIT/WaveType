@@ -1,0 +1,213 @@
+/* ==========================================================================
+   WaveType — área de digitação (camada do redesenho)
+   Só aparência: não altera fonte, altura de linha, espaçamentos do texto nem
+   a altura da janela de palavras (o motor calcula a rolagem por elas).
+   ========================================================================== */
+
+/* ---- Cartão do teste ---- */
+.typing-shell {
+  position: relative;
+  border: 1px solid var(--wt-line);
+  border-top: 1px solid var(--wt-line);
+  border-radius: var(--wt-radius-lg);
+  box-shadow: var(--wt-shadow-3);
+  isolation: isolate;
+}
+/* A "crista" da onda: faixa em gradiente no topo do cartão */
+.typing-shell::before {
+  content: "";
+  position: absolute;
+  inset: -1px -1px auto;
+  height: 4px;
+  border-radius: var(--wt-radius-lg) var(--wt-radius-lg) 0 0;
+  background: var(--wt-gradient-wave);
+  pointer-events: none;
+}
+
+.typing-toolbar {
+  flex-wrap: wrap;
+  row-gap: 10px;
+  border-bottom-color: var(--wt-line);
+}
+
+/* ---- Controle segmentado em pílula ---- */
+.segmented-control {
+  gap: 2px;
+  padding: 4px;
+  background: var(--wt-surface-sunken);
+  border: 1px solid var(--wt-line);
+  border-radius: var(--wt-radius-pill);
+}
+.segment {
+  min-height: 40px;
+  padding: 8px 14px;
+  color: var(--wt-text-muted);
+  border-radius: var(--wt-radius-pill);
+  transition:
+    color var(--wt-dur-fast) var(--wt-ease-standard),
+    background-color var(--wt-dur-fast) var(--wt-ease-standard),
+    box-shadow var(--wt-dur-fast) var(--wt-ease-standard);
+}
+.segment:hover {
+  color: var(--wt-text);
+  background: var(--wt-surface-tint);
+}
+.segment.active {
+  color: var(--wt-accent);
+  background: var(--wt-surface);
+  box-shadow:
+    0 0 0 1px var(--wt-line-strong),
+    0 2px 8px rgba(35, 60, 140, 0.12);
+}
+.segment:focus-visible {
+  outline: 0;
+  box-shadow: var(--wt-ring);
+}
+
+/* ---- Menu de acessibilidade ---- */
+.accessibility-menu summary {
+  min-height: 48px;
+  color: var(--wt-text);
+  background: var(--wt-surface);
+  border-color: var(--wt-line);
+  border-radius: var(--wt-radius-pill);
+  transition: background-color var(--wt-dur-fast) var(--wt-ease-standard), border-color var(--wt-dur-fast);
+}
+.accessibility-menu summary:hover,
+.accessibility-menu[open] summary {
+  background: var(--wt-surface-tint);
+  border-color: var(--wt-line-strong);
+}
+.accessibility-panel {
+  padding: 8px;
+  border-color: var(--wt-line);
+  border-radius: var(--wt-radius-md);
+  box-shadow: var(--wt-shadow-3);
+}
+.preference-toggle {
+  color: var(--wt-text);
+  border-radius: var(--wt-radius-sm);
+}
+.preference-toggle i {
+  background: rgba(23, 35, 63, 0.22);
+}
+html[data-theme="dark"] .preference-toggle i {
+  background: rgba(241, 245, 255, 0.24);
+}
+.preference-toggle[aria-pressed="true"] i {
+  background: var(--wt-accent);
+}
+.preference-toggle i::after {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+  transition: transform var(--wt-dur-base) var(--wt-ease-out);
+}
+
+/* ---- Placar ao vivo ---- */
+.live-row span {
+  color: var(--wt-text-subtle);
+}
+.live-row .live-primary strong {
+  color: var(--wt-accent);
+}
+.restart-button {
+  border-radius: var(--wt-radius-pill);
+  transition: color var(--wt-dur-fast), background-color var(--wt-dur-fast);
+}
+
+/* ---- Palco do texto ---- */
+.typing-stage {
+  background: var(--wt-surface-sunken);
+  border: 2px solid transparent;
+  border-radius: var(--wt-radius-md);
+  transition:
+    border-color var(--wt-dur-base) var(--wt-ease-standard),
+    background-color var(--wt-dur-base) var(--wt-ease-standard),
+    box-shadow var(--wt-dur-base) var(--wt-ease-standard);
+}
+.typing-shell.focused .typing-stage {
+  background: var(--wt-surface);
+  border-color: var(--wt-blue-500);
+  box-shadow: 0 0 0 5px rgba(79, 124, 255, 0.12);
+}
+html[data-theme="dark"] .typing-shell.focused .typing-stage {
+  border-color: var(--wt-blue-300);
+}
+
+/* Cursor: fica sólido enquanto a pessoa digita (a animação reinicia a cada letra
+   e só começa depois de 0,7 s) e pisca suavemente quando ela para.
+   Cor sólida e uma animação só: o cursor é recriado a cada tecla, então gradiente,
+   brilho e animações extras custavam tempo no keydown. */
+.letter.current::before,
+.word.caret-at-end::after {
+  width: 2.5px;
+  background: var(--wt-accent);
+  animation: wt-caret-piscar 1.1s 0.7s var(--wt-ease-wave) infinite;
+}
+@keyframes wt-caret-piscar {
+  0%,
+  45% {
+    opacity: 1;
+  }
+  55%,
+  90% {
+    opacity: 0.18;
+  }
+}
+
+.letter.incorrect {
+  color: var(--wt-danger);
+  border-radius: 3px;
+}
+.letter.missed {
+  color: var(--wt-danger);
+}
+
+/* Aviso "Comece a digitar".
+   Sem backdrop-filter: o aviso fica (invisível) sobre o texto durante o teste e o
+   desfoque era recalculado a cada tecla — o INP ia de ~32 ms para ~85 ms. */
+.focus-prompt {
+  background: color-mix(in srgb, var(--wt-surface-sunken) 92%, transparent);
+}
+.focus-prompt strong {
+  font-size: 1.05rem;
+  letter-spacing: -0.01em;
+}
+.focus-prompt strong::before {
+  content: "";
+  display: block;
+  width: 34px;
+  height: 12px;
+  margin: 0 auto 10px;
+  background: center / contain no-repeat
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 34 12'%3E%3Cpath d='M1 6c4 0 4-5 8-5s4 10 8 10 4-10 8-10 4 5 8 5' fill='none' stroke='%234f7cff' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+.focus-prompt span {
+  color: var(--wt-text-muted);
+}
+
+.test-footnote {
+  color: var(--wt-text-subtle);
+}
+kbd {
+  border-radius: var(--wt-radius-xs);
+}
+
+/* ---- Resultado ---- */
+.result-panel .result-heading h2,
+.result-panel .result-heading h3 {
+  letter-spacing: var(--wt-tracking-tight);
+}
+
+/* ---- Alto contraste: sem brilho, sem desfoque ---- */
+body.high-contrast .typing-shell::before {
+  background: #1f46b0;
+}
+body.high-contrast .letter.current::before,
+body.high-contrast .word.caret-at-end::after {
+  width: 3px;
+  background: #000814;
+}
+body.high-contrast .typing-shell.focused .typing-stage {
+  border-color: #000814;
+  box-shadow: none;
+}

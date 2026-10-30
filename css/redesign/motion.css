@@ -1,0 +1,53 @@
+/* ==========================================================================
+   WaveType — módulo de movimento (camada do redesenho)
+   Desligar:
+     1. em uma página: <html data-motion="off">
+     2. no site inteiro: remover <link …motion.css> e <script …motion.js>
+   Respeita prefers-reduced-motion e o modo "Reduzir movimento" (body.reduce-motion).
+   Catálogo: docs/redesign/03-animacoes.md
+   ========================================================================== */
+
+@media (prefers-reduced-motion: no-preference) {
+  /* M1 — Revelação ao rolar (o JS só marca elementos fora da primeira tela) */
+  html.wt-motion:not([data-motion="off"]) body:not(.reduce-motion) [data-wt-reveal] {
+    transition:
+      opacity var(--wt-dur-slow) var(--wt-ease-out),
+      transform var(--wt-dur-slow) var(--wt-ease-out);
+    transition-delay: calc(var(--wt-ordem, 0) * 70ms);
+  }
+  html.wt-motion:not([data-motion="off"]) body:not(.reduce-motion) [data-wt-reveal]:not(.wt-revelado) {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+
+  /* M3 — Entrada do resultado do teste */
+  html:not([data-motion="off"]) body:not(.reduce-motion) .typing-shell.finished .result-panel {
+    animation: wt-subir var(--wt-dur-slow) var(--wt-ease-out) both;
+  }
+
+  /* M4 — Troca de abas da demonstração (o JS alterna display; a animação reinicia) */
+  html:not([data-motion="off"]) body:not(.reduce-motion) .preview-tabpanel {
+    animation: wt-surgir var(--wt-dur-base) var(--wt-ease-out) both;
+  }
+
+  /* M5 — Onda do cartão de métrica desliza ao passar o mouse */
+  html:not([data-motion="off"]) .metric-card::after {
+    transition: transform var(--wt-dur-slow) var(--wt-ease-wave);
+  }
+  html:not([data-motion="off"]) .metric-card:hover::after {
+    transform: translateX(-30px);
+  }
+}
+
+@keyframes wt-subir {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+@keyframes wt-surgir {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}

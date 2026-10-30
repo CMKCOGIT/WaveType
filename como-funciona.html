@@ -20,7 +20,9 @@
     <link rel="apple-touch-icon" sizes="180x180" href="assets/images/icons/apple-touch-icon.png">
     <link rel="manifest" href="site.webmanifest">
     <script>document.documentElement.dataset.theme = localStorage.getItem('wavetype_theme') || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');</script>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="preload" href="assets/fonts/Manrope-Variable.ttf" as="font" type="font/ttf" crossorigin>
+    <link rel="preload" href="assets/fonts/IBMPlexMono-Regular.ttf" as="font" type="font/ttf" crossorigin>
+    <link rel="stylesheet" href="css/redesign/publico.css">
 </head>
 <body>
     <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
@@ -222,6 +224,7 @@
         </div>
     </footer>
     <script type="module" src="js/site.js"></script>
+    <script type="module" src="js/motion.js"></script>
 </body>
 </html>
 

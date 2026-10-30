@@ -1,0 +1,19 @@
+{
+  "rotulo": "antes",
+  "vitais": {
+    "cls": 0.0066,
+    "lcp_ms": 136
+  },
+  "latencia_digitacao_ms": {
+    "handler_med": 1.7,
+    "handler_p95": 2.5,
+    "quadro_med": 33.3,
+    "quadro_p95": 35.4
+  },
+  "css_js_bytes": 20561,
+  "erros": [
+    "cadastro@375: rolagem horizontal (398px)",
+    "cadastro@768: rolagem horizontal (1162px)",
+    "cadastro@1280: rolagem horizontal (2205px)"
+  ]
+}
