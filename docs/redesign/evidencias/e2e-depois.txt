@@ -1,0 +1,161 @@
+PASS: Google volta para a própria origem (http://localhost:4173/login.html)
+PASS: não passa pela tela intermediária
+PASS: nome do perfil aparece no topo
+PASS: botão Sair visível
+PASS: A sem erros no console
+PASS: cadastro com Google volta para cadastro.html
+PASS: tipo escolhido antes do Google já vem marcado
+PASS: conclusão sem senha é barrada
+PASS: senhas diferentes barradas
+PASS: nada é gravado antes da validação
+PASS: cadastro concluído com o tipo escolhido e o nome do Google
+PASS: senha da conta Google gravada na conclusão
+PASS: B sem erros no console
+PASS: nome do Google pré-preenchido
+PASS: tokens removidos da barra de endereço
+PASS: sem tipo, não conclui
+PASS: após concluir, entra na área do aluno
+PASS: C sem erros no console
+PASS: cadastro incompleto não acessa a plataforma
+PASS: erro do Google vira mensagem amigável
+PASS: formulário volta a aparecer
+PASS: login com e-mail e senha leva à área do usuário
+PASS: F sem erros no console
+PASS: sem sessão, página interna manda para o login
+PASS: seis níveis na trilha
+PASS: trilha mostra a regra (tempo máximo e precisão acima de 85%)
+PASS: nível 6 conta só o concluído (85% não conta)
+PASS: resumo da trilha: 3 de 120
+PASS: atividades listadas à parte
+PASS: atividade atrasada sinalizada
+PASS: atividade abre o treino com a turma (treinar.html?id=900&turma=7)
+PASS: H sem erros no console
+PASS: celular sem rolagem horizontal (390px)
+PASS: treino avisa a regra antes de começar
+PASS: 85% não conclui e explica o motivo
+PASS: oferece tentar novamente
+PASS: navegador não envia "concluido" (o banco decide)
+PASS: 85,5% conclui
+PASS: conquista nova aparece em aviso discreto
+PASS: botão leva ao próximo exercício da etapa
+PASS: I sem erros no console
+PASS: atividade do professor não repete o texto (11 caracteres)
+PASS: contagem regressiva começa no tempo do professor
+PASS: digitação real salva na turma certa ({"aluno_id":"20000000-0000-0000-0000-000000000001","exercicio_id":900,"turma_id":7,"ppm":108,"precisao":100,"acertos":9,"erros":0,"tempo_seg":1,"concluiu_texto":true})
+PASS: atividade concluída
+PASS: I2 sem erros no console
+PASS: treino mostra o tempo máximo
+PASS: contagem regressiva começa no tempo máximo
+PASS: tempo esgotado é registrado ({"c":false,"t":3})
+PASS: explica que o tempo acabou
+PASS: I3 sem erros no console
+PASS: conquistas sincronizadas pelo banco
+PASS: bloqueadas exibidas como bloqueadas
+PASS: recém-desbloqueadas destacadas na primeira visita
+PASS: próximo objetivo = o mais perto de sair (36/40)
+PASS: filtro de desbloqueadas
+PASS: J sem erros no console
+PASS: destaque de "nova" só aparece uma vez
+PASS: turma criada sem código no navegador (gerado no banco)
+PASS: código inválido barrado antes de enviar
+PASS: adição pelo código curto chama a RPC com a turma certa
+PASS: ID longo antigo continua aceito
+PASS: publicar sem turma é barrado
+PASS: atividade enviada para duas turmas com meta
+PASS: edição carrega a atividade
+PASS: K sem erros no console
+PASS: aluno vê o código curto (6 caracteres) para adição direta
+PASS: entrada por código chama a RPC
+PASS: L sem erros no console
+PASS: endereço antigo de retorno continua funcionando
+PASS: cadastro (nao_grava): mostra o motivo em vez de ciclo silencioso → "Não foi possível salvar seu cadastro. Tente novamente; se continuar, avise o administrador do site."
+PASS: cadastro (nao_grava): botão liberado para tentar de novo
+PASS: cadastro (sem_funcao): mostra o motivo em vez de ciclo silencioso → "O banco de dados do WaveType ainda não foi atualizado para esta versão. Avise o administrador do site."
+PASS: cadastro (sem_funcao): botão liberado para tentar de novo
+PASS: conta existente não passa pela conclusão de novo
+PASS: coluna ausente: grava sem ela, uma única vez (2 requisições, 1 recusada)
+PASS: erro técnico não aparece para o aluno
+PASS: erro de permissão: mensagem clara e sem reenvio
+PASS: "Esqueci minha senha" leva o e-mail digitado
+PASS: e-mail inválido barrado
+PASS: pedido enviado ao Supabase com retorno para redefinir-senha.html
+PASS: resposta não revela se o e-mail existe
+PASS: muitas solicitações: pede para aguardar
+PASS: P sem erros no console
+PASS: confirmação diferente barrada
+PASS: senha fraca barrada
+PASS: nova senha enviada ao Supabase
+PASS: login avisa que a senha foi alterada
+PASS: login com a nova senha funciona
+PASS: P2 sem erros no console
+PASS: link expirado: avisa e oferece novo link
+PASS: página aberta sem link: avisa e oferece novo link
+PASS: 1366px: palavra longa cabe no bloco (quebra dentro dele)
+PASS: 1366px: letras erradas e a mais não deslocam o texto de referência
+PASS: 1366px: letras a mais continuam contadas (+4)
+PASS: 1366px: Backspace apaga letra a mais
+PASS: 1366px: texto continua no lugar após seguir digitando
+PASS: 1366px: posição atual visível no bloco
+DEBUG 1366 pneumoul:-6..49 casa:55..110 sol:55..110 óli:55..110 vp=165
+PASS: Q1366 sem erros no console
+PASS: 390px: palavra longa cabe no bloco (quebra dentro dele)
+PASS: 390px: letras erradas e a mais não deslocam o texto de referência
+PASS: 390px: letras a mais continuam contadas (+4)
+PASS: 390px: Backspace apaga letra a mais
+PASS: 390px: texto continua no lugar após seguir digitando
+PASS: 390px: posição atual visível no bloco
+DEBUG 390 pneumoul:-41..33 casa:37..74 sol:37..74 stpuomeo:78..152 vp=149
+PASS: Q390 sem erros no console
+PASS: usuario: Perfil abre pelo menu com os dados da conta
+PASS: usuario: ID de aluno só aparece para aluno
+PASS: usuario: nome salvo
+PASS: usuario: exige a senha atual
+PASS: usuario: confirmação diferente barrada
+PASS: usuario: senha fraca barrada
+PASS: usuario: senha atual errada não troca nada
+PASS: usuario: senha alterada com a senha atual correta
+PASS: R usuario sem erros no console
+PASS: aluno: Perfil abre pelo menu com os dados da conta
+PASS: aluno: ID de aluno só aparece para aluno
+PASS: aluno: nome salvo
+PASS: aluno: exige a senha atual
+PASS: aluno: confirmação diferente barrada
+PASS: aluno: senha fraca barrada
+PASS: aluno: senha atual errada não troca nada
+PASS: aluno: senha alterada com a senha atual correta
+PASS: R aluno sem erros no console
+PASS: professor: Perfil abre pelo menu com os dados da conta
+PASS: professor: ID de aluno só aparece para aluno
+PASS: professor: nome salvo
+PASS: professor: exige a senha atual
+PASS: professor: confirmação diferente barrada
+PASS: professor: senha fraca barrada
+PASS: professor: senha atual errada não troca nada
+PASS: professor: senha alterada com a senha atual correta
+PASS: R professor sem erros no console
+PASS: conta Google: não pede senha atual
+PASS: conta Google: cria senha só quando a pessoa pede
+PASS: depois de criar, passa a pedir a senha atual
+PASS: Perfil no celular sem rolagem horizontal (390px)
+PASS: R2 sem erros no console
+PASS: usuario: tipo atual marcado
+PASS: usuario → aluno: troca feita e abre a nova área
+PASS: perfil do aluno mostra o código curto
+PASS: S usuario sem erros no console
+PASS: aluno: tipo atual marcado
+PASS: aluno → usuario: troca feita e abre a nova área
+PASS: S aluno sem erros no console
+PASS: professor não vê a troca de tipo
+PASS: visitante: sem botão para refazer o teste no fim
+PASS: visitante: botão para entrar no fim do teste
+PASS: T visitante sem erros no console
+PASS: logado: continua podendo refazer o teste
+PASS: T logado sem erros no console
+PASS: primeira rodada é o texto original
+PASS: rodadas variam em vez de repetir (15 diferentes de 15)
+PASS: tamanho igual ao usado no tempo máximo (149 caracteres)
+PASS: só usa as letras do exercício
+PASS: palavras mantêm o tamanho do original
+AMOSTRA asdf jklç | jdds çjkç | sfjs lskf | fksç fçfa | jdçl çalj | aaçd jçfl
+
+Todos os cenários passaram

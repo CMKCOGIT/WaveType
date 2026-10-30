@@ -1,0 +1,15 @@
+{
+  "rotulo": "depois",
+  "vitais": {
+    "cls": 0.0002,
+    "lcp_ms": 136
+  },
+  "latencia_digitacao_ms": {
+    "handler_med": 1.9,
+    "handler_p95": 2.8,
+    "quadro_med": 33.3,
+    "quadro_p95": 33.9
+  },
+  "css_js_bytes": 24571,
+  "erros": []
+}
