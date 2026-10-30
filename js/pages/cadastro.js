@@ -6,7 +6,7 @@ import {
   obterPerfil,
   cadastroIncompleto,
   concluirCadastro,
-  destinoDoPerfil,
+  irParaArea,
   lerErroDoRetornoOAuth,
   limparUrlDoOAuth,
   sair,
@@ -46,7 +46,7 @@ async function iniciar() {
     const perfil = await obterPerfil();
     if (!cadastroIncompleto(perfil)) {
       localStorage.removeItem(TIPO_PENDENTE);
-      return window.location.replace(destinoDoPerfil(perfil));
+      return irParaArea(perfil);
     }
 
     // O Google dá nome e e-mail; falta o tipo de conta (já marcado se foi
@@ -94,7 +94,7 @@ formCompletar.addEventListener('submit', async (evento) => {
     await criarSenhaDaConta(senha);
     const perfil = await concluirCadastro({ tipo, nome });
     localStorage.removeItem(TIPO_PENDENTE);
-    window.location.replace(destinoDoPerfil(perfil));
+    irParaArea(perfil);
   } catch (erro) {
     mostrarFeedback(feedbackCompletar, erro.message, 'erro');
     botaoCompletar.disabled = false;

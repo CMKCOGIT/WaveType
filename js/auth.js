@@ -159,6 +159,11 @@ export function validarSenha(senha) {
 }
 
 export async function sair({ destino = '/login.html' } = {}) {
+  try {
+    sessionStorage.removeItem(PERFIL_ENTREGUE);
+  } catch {
+    /* nada a limpar */
+  }
   await supabase.auth.signOut();
   window.location.href = destino;
 }
@@ -193,6 +198,39 @@ export function cadastroIncompleto(perfil) {
 /** Para onde a pessoa deve ir depois de entrar. */
 export function destinoDoPerfil(perfil) {
   return cadastroIncompleto(perfil) ? PAGINA_COMPLETAR_CADASTRO : DESTINOS[perfil.tipo];
+}
+
+// Entrega do perfil entre o login e a primeira página interna: a área logada
+// reaproveita o perfil que o login acabou de ler, em vez de buscá-lo de novo
+// (economiza uma ida ao Supabase logo depois do Google). Vale uma vez só, por
+// poucos segundos, nesta aba e para o mesmo usuário. É só para a navegação:
+// quem protege os dados continua sendo a RLS.
+const PERFIL_ENTREGUE = 'wavetype_perfil_entregue';
+const VALIDADE_ENTREGA_MS = 15000;
+
+/** Vai para a área certa levando o perfil já carregado. */
+export function irParaArea(perfil) {
+  if (!cadastroIncompleto(perfil)) {
+    try {
+      sessionStorage.setItem(PERFIL_ENTREGUE, JSON.stringify({ em: Date.now(), perfil }));
+    } catch {
+      /* sem sessionStorage: a página seguinte busca o perfil normalmente */
+    }
+  }
+  window.location.replace(destinoDoPerfil(perfil));
+}
+
+function receberPerfilEntregue(usuarioId) {
+  try {
+    const bruto = sessionStorage.getItem(PERFIL_ENTREGUE);
+    sessionStorage.removeItem(PERFIL_ENTREGUE);
+    if (!bruto) return null;
+    const { em, perfil } = JSON.parse(bruto);
+    const recente = Date.now() - em < VALIDADE_ENTREGA_MS;
+    return recente && perfil?.id === usuarioId ? perfil : null;
+  } catch {
+    return null;
+  }
 }
 
 /**
@@ -248,11 +286,12 @@ export function limparUrlDoOAuth() {
 export async function exigirPapel(papelEsperado) {
   let perfil = null;
   try {
-    if (!(await obterSessao())) {
+    const sessao = await obterSessao();
+    if (!sessao) {
       window.location.replace('/login.html');
       return null;
     }
-    perfil = await obterPerfil();
+    perfil = receberPerfilEntregue(sessao.user.id) ?? (await obterPerfil());
   } catch (erro) {
     console.error('Falha ao carregar o perfil:', erro);
     window.location.replace('/login.html');

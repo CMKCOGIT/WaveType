@@ -12,14 +12,16 @@ async function iniciar() {
 
   document.getElementById('saudacao').textContent = `Olá, ${primeiroNome(perfil.nome)}.`;
 
+  // O ranking não depende do resumo: os dois carregam ao mesmo tempo.
+  const ranking = preencherAmostraRanking().catch((erro) => console.error('Falha ao carregar o ranking:', erro));
   try {
     const dashboard = await carregarDashboardAluno();
     preencherMetricas(dashboard);
     preencherTabelaRecentes(dashboard.sessoesRecentes);
-    await preencherAmostraRanking();
   } catch (erro) {
     console.error('Falha ao carregar dashboard do aluno:', erro);
   }
+  await ranking;
 }
 
 function preencherMetricas(d) {
