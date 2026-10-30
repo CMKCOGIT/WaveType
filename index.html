@@ -23,7 +23,9 @@
     <link rel="apple-touch-icon" sizes="180x180" href="assets/images/icons/apple-touch-icon.png">
     <link rel="manifest" href="site.webmanifest">
     <script>document.documentElement.dataset.theme = localStorage.getItem('wavetype_theme') || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');</script>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="preload" href="assets/fonts/Manrope-Variable.ttf" as="font" type="font/ttf" crossorigin>
+    <link rel="preload" href="assets/fonts/IBMPlexMono-Regular.ttf" as="font" type="font/ttf" crossorigin>
+    <link rel="stylesheet" href="css/redesign/teste.css">
 </head>
 <body class="typing-page">
     <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
@@ -182,11 +184,11 @@
                             </div>
                             <span class="preview-side-tag">Espaço do Aluno</span>
                             <nav class="preview-side-nav" aria-label="Navegação do Aluno">
-                                <span class="preview-nav-item active"><i class="p-nav-icon">📊</i> Visão geral</span>
-                                <span class="preview-nav-item"><i class="p-nav-icon">⌨️</i> Praticar</span>
-                                <span class="preview-nav-item"><i class="p-nav-icon">📈</i> Resultados</span>
-                                <span class="preview-nav-item"><i class="p-nav-icon">🏅</i> Conquistas</span>
-                                <span class="preview-nav-item"><i class="p-nav-icon">🏆</i> Ranking</span>
+                                <span class="preview-nav-item active"><i class="p-nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></i> Visão geral</span>
+                                <span class="preview-nav-item"><i class="p-nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M7 14h10"/></svg></i> Praticar</span>
+                                <span class="preview-nav-item"><i class="p-nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg></i> Resultados</span>
+                                <span class="preview-nav-item"><i class="p-nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="9" r="6"/><path d="M8.5 14.5 7 22l5-3 5 3-1.5-7.5"/></svg></i> Conquistas</span>
+                                <span class="preview-nav-item"><i class="p-nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg></i> Ranking</span>
                             </nav>
                             <div class="preview-user-card">
                                 <div class="preview-xp-bar">
@@ -297,11 +299,11 @@
                             </div>
                             <span class="preview-side-tag">Espaço do Professor</span>
                             <nav class="preview-side-nav" aria-label="Navegação do Professor">
-                                <span class="preview-nav-item active"><i class="p-nav-icon">📊</i> Visão geral</span>
-                                <span class="preview-nav-item"><i class="p-nav-icon">👥</i> Turmas</span>
-                                <span class="preview-nav-item"><i class="p-nav-icon">🎓</i> Alunos</span>
-                                <span class="preview-nav-item"><i class="p-nav-icon">📝</i> Exercícios</span>
-                                <span class="preview-nav-item"><i class="p-nav-icon">📑</i> Relatórios</span>
+                                <span class="preview-nav-item active"><i class="p-nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></i> Visão geral</span>
+                                <span class="preview-nav-item"><i class="p-nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14a6.5 6.5 0 0 1 3.5 6"/></svg></i> Turmas</span>
+                                <span class="preview-nav-item"><i class="p-nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c3 2.5 9 2.5 12 0v-5M22 9v6"/></svg></i> Alunos</span>
+                                <span class="preview-nav-item"><i class="p-nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></svg></i> Exercícios</span>
+                                <span class="preview-nav-item"><i class="p-nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/></svg></i> Relatórios</span>
                             </nav>
                             <div class="preview-user-card">
                                 <strong>Prof. Carlos Menezes</strong>
@@ -439,5 +441,6 @@
     <script type="module" src="js/site.js"></script>
     <script type="module" src="js/script.js"></script>
     <script type="module" src="js/pages/teste-publico.js"></script>
+    <script type="module" src="js/motion.js"></script>
 </body>
 </html>

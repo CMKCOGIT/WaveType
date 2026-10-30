@@ -7,7 +7,8 @@
     <meta name="description" content="Defina uma nova senha para a sua conta WaveType.">
     <title>Nova senha | WaveType</title>
     <link rel="icon" type="image/svg+xml" href="assets/images/icons/favicon.svg">
-    <link rel="stylesheet" href="css/platform.css">
+    <link rel="preload" href="assets/fonts/Manrope-Variable.ttf" as="font" type="font/ttf" crossorigin>
+    <link rel="stylesheet" href="css/redesign/plataforma.css">
     <script>document.documentElement.dataset.theme = localStorage.getItem('wavetype_theme') || 'light';</script>
     <script>
         // Lido antes do Supabase limpar o endereço: o link de recuperação traz type=recovery.
@@ -43,5 +44,6 @@
         </section>
     </main>
     <script type="module" src="js/pages/redefinir-senha.js"></script>
+    <script type="module" src="js/motion.js"></script>
 </body>
 </html>

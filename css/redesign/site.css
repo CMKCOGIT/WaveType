@@ -1,0 +1,415 @@
+/* ==========================================================================
+   WaveType — site público (camada do redesenho)
+   Páginas: index, escolas, como-funciona, sobre.
+   Só aparência. Nenhum seletor usado pelo JS muda de nome.
+   ========================================================================== */
+
+/* Onda reutilizável (SVG em linha, sem requisição externa) */
+:root {
+  --wt-wave-svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 80' preserveAspectRatio='none'%3E%3Cpath d='M0 48c120-26 240-38 360-24s240 46 360 46 240-34 360-46 240 6 360 22v34H0z' fill='%23000'/%3E%3C/svg%3E");
+  --wt-wave-line: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 16'%3E%3Cpath d='M0 8c10 0 10-6 20-6s10 12 20 12 10-12 20-12 10 12 20 12 10-12 20-12 10 6 20 6' fill='none' stroke='%23000' stroke-width='2'/%3E%3C/svg%3E");
+}
+
+body {
+  font-family: var(--wt-font-sans);
+}
+
+::selection {
+  color: #ffffff;
+  background: var(--wt-blue-600);
+}
+
+:focus-visible {
+  outline: 3px solid var(--wt-focus);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ---- Botões ---- */
+.button {
+  border-radius: var(--wt-radius-pill);
+  transition:
+    transform var(--wt-dur-fast) var(--wt-ease-out),
+    background-color var(--wt-dur-fast) var(--wt-ease-standard),
+    border-color var(--wt-dur-fast) var(--wt-ease-standard),
+    box-shadow var(--wt-dur-base) var(--wt-ease-standard);
+}
+.button:not(.button-secondary):not(.button-light) {
+  background: var(--wt-accent);
+  border-color: var(--wt-accent);
+  color: var(--wt-on-accent);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.18) inset, 0 6px 18px rgba(49, 95, 214, 0.22);
+}
+.button:not(.button-secondary):not(.button-light):hover {
+  background: var(--wt-accent-hover);
+  border-color: var(--wt-accent-hover);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.18) inset, 0 10px 26px rgba(49, 95, 214, 0.3);
+}
+.button:active {
+  transform: translateY(0) scale(0.98);
+}
+.button-secondary {
+  color: var(--wt-text);
+  background: var(--wt-surface);
+  border-color: var(--wt-line-strong);
+}
+.button-secondary:hover {
+  color: var(--wt-accent);
+  background: var(--wt-surface-tint);
+}
+
+/* ---- Cabeçalho ---- */
+.site-header {
+  background: color-mix(in srgb, var(--wt-bg) 82%, transparent);
+  -webkit-backdrop-filter: saturate(1.4) blur(14px);
+  backdrop-filter: saturate(1.4) blur(14px);
+  border-bottom-color: var(--wt-line);
+}
+.desktop-nav {
+  gap: 6px;
+}
+.desktop-nav a {
+  position: relative;
+  padding: 0 12px;
+  color: var(--wt-text-muted);
+  border-radius: var(--wt-radius-pill);
+  transition: color var(--wt-dur-fast), background-color var(--wt-dur-fast);
+}
+.desktop-nav a:hover {
+  color: var(--wt-text);
+  background: var(--wt-surface-tint);
+}
+.desktop-nav a[aria-current="page"] {
+  color: var(--wt-accent);
+}
+.desktop-nav a[aria-current="page"]::after {
+  left: 14px;
+  right: 14px;
+  bottom: 6px;
+  height: 3px;
+  background: var(--wt-gradient-tide);
+  border-radius: var(--wt-radius-pill);
+}
+.theme-toggle {
+  border-color: var(--wt-line);
+  border-radius: var(--wt-radius-pill);
+  transition: background-color var(--wt-dur-fast), border-color var(--wt-dur-fast), transform var(--wt-dur-base) var(--wt-ease-out);
+}
+.theme-toggle:hover {
+  border-color: var(--wt-line-strong);
+  transform: rotate(-18deg);
+}
+.header-auth-link {
+  color: var(--wt-text-muted);
+}
+.mobile-nav {
+  background: var(--wt-surface);
+  box-shadow: var(--wt-shadow-2);
+}
+.mobile-nav a {
+  border-bottom-color: var(--wt-line);
+}
+
+/* ---- Tipografia de títulos ---- */
+.eyebrow,
+.section-kicker {
+  letter-spacing: var(--wt-tracking-caps);
+}
+.section-heading h2,
+.compact-heading h1,
+.schools-copy h2,
+.accessibility-grid h2,
+.faq-intro h2,
+.page-hero h1 {
+  letter-spacing: var(--wt-tracking-tight);
+  text-wrap: balance;
+}
+.section-heading > p,
+.compact-heading > p,
+.page-hero .page-lede {
+  text-wrap: pretty;
+}
+/* Segunda linha do título com o gradiente da onda (com cor de reserva) */
+.compact-heading h1 span,
+.page-hero h1 span {
+  color: var(--wt-accent);
+}
+@supports (-webkit-background-clip: text) or (background-clip: text) {
+  .compact-heading h1 span,
+  .page-hero h1 span {
+    background: var(--wt-gradient-wave);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    /* evita cortar descendentes (g, j, p) */
+    padding-bottom: 0.08em;
+  }
+}
+body.high-contrast .compact-heading h1 span,
+body.high-contrast .page-hero h1 span {
+  background: none;
+  -webkit-text-fill-color: currentColor;
+  color: #1f46b0;
+}
+
+/* ---- Hero com o teste ---- */
+.typing-section {
+  background:
+    var(--wt-glow) 80% 0% / 70% 70% no-repeat,
+    var(--wt-bg);
+  border-bottom: 0;
+}
+/* Onda que fecha a seção */
+.typing-section::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: clamp(28px, 4vw, 56px);
+  background: var(--wt-surface);
+  -webkit-mask: var(--wt-wave-svg) center / 100% 100% no-repeat;
+  mask: var(--wt-wave-svg) center / 100% 100% no-repeat;
+  pointer-events: none;
+}
+/* Os blocos de "ritmo" viram ondulações suaves */
+.typing-rhythm span {
+  height: 14px;
+  border-radius: var(--wt-radius-pill);
+  opacity: 0.22;
+}
+.typing-rhythm span:nth-child(1) {
+  background: var(--wt-gradient-wave);
+}
+.typing-rhythm span:nth-child(3) {
+  height: 18px;
+  background: linear-gradient(90deg, var(--wt-violet-500), var(--wt-blue-500));
+}
+
+/* ---- Seções ---- */
+.public-product,
+.public-steps {
+  position: relative;
+}
+.public-product {
+  background: var(--wt-surface);
+  border-top: 0;
+}
+
+/* Cartões de experiência (links) */
+.experience-card {
+  background: var(--wt-bg);
+  border-color: var(--wt-line);
+  border-radius: var(--wt-radius-lg);
+  transition:
+    transform var(--wt-dur-base) var(--wt-ease-out),
+    box-shadow var(--wt-dur-base) var(--wt-ease-standard),
+    border-color var(--wt-dur-base) var(--wt-ease-standard);
+}
+.experience-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--wt-line-strong);
+  box-shadow: var(--wt-shadow-2);
+}
+.experience-card::after {
+  width: 160px;
+  height: 22px;
+  right: -12px;
+  bottom: 26px;
+  border: 0;
+  border-radius: 0;
+  background: var(--card-color, var(--wt-blue-500));
+  -webkit-mask: var(--wt-wave-line) left center / 60px 100% repeat-x;
+  mask: var(--wt-wave-line) left center / 60px 100% repeat-x;
+  opacity: 0.5;
+  transform: none;
+  transition: transform var(--wt-dur-slow) var(--wt-ease-wave);
+}
+.experience-card:hover::after {
+  transform: translateX(-20px);
+}
+.experience-index {
+  color: var(--wt-accent);
+}
+
+/* Cartões informativos (não clicáveis): sem elevação ao passar o mouse */
+.purpose-card,
+.value-card,
+.mode-card,
+.audience-card,
+.metric-explain-card,
+.benefit-card,
+.priority-card,
+.detail-card,
+.analysis-card,
+.diagnosis-card,
+.flow-step {
+  border-radius: var(--wt-radius-lg);
+  border-color: var(--wt-line);
+}
+.purpose-card,
+.value-card,
+.mode-card,
+.audience-card,
+.metric-explain-card,
+.benefit-card {
+  box-shadow: var(--wt-shadow-1);
+  transition: border-color var(--wt-dur-base) var(--wt-ease-standard), box-shadow var(--wt-dur-base);
+}
+.purpose-card:hover,
+.value-card:hover,
+.mode-card:hover,
+.audience-card:hover,
+.metric-explain-card:hover,
+.benefit-card:hover {
+  border-color: var(--wt-line-strong);
+}
+
+/* ---- Passos ---- */
+.step-line {
+  border-top: 0;
+  gap: 0;
+  position: relative;
+}
+/* Linha ondulada que liga os passos */
+.step-line::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 14px;
+  background: var(--wt-gradient-tide);
+  -webkit-mask: var(--wt-wave-line) left center / 90px 100% repeat-x;
+  mask: var(--wt-wave-line) left center / 90px 100% repeat-x;
+  opacity: 0.55;
+}
+.step-item {
+  padding-top: 38px;
+  border-left-color: var(--wt-line);
+}
+.step-item b {
+  display: inline-grid;
+  place-items: center;
+  min-width: 44px;
+  height: 32px;
+  padding: 0 10px;
+  color: #0b6b5f; /* 5,3:1 sobre o fundo do selo */
+  background: color-mix(in srgb, var(--wt-aqua-500) 9%, transparent);
+  width: fit-content;
+  align-self: flex-start;
+  border-radius: var(--wt-radius-pill);
+  font-size: 0.9rem;
+}
+html[data-theme="dark"] .step-item b {
+  color: var(--wt-aqua-300);
+}
+.step-item p {
+  color: var(--wt-text-muted);
+}
+
+/* ---- Demonstração do produto ---- */
+.product-browser {
+  border-radius: var(--wt-radius-xl);
+  box-shadow: var(--wt-shadow-3);
+}
+.preview-tab-btn {
+  border-radius: var(--wt-radius-pill);
+  transition: background-color var(--wt-dur-fast), color var(--wt-dur-fast), box-shadow var(--wt-dur-fast);
+}
+.p-nav-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  color: currentColor;
+}
+.p-nav-icon svg {
+  width: 16px;
+  height: 16px;
+  display: block;
+}
+/* Contraste dos textos pequenos da demonstração */
+.preview-side-tag {
+  color: var(--wt-text-subtle);
+  opacity: 1;
+}
+.preview-exit-demo {
+  color: var(--wt-text-subtle);
+}
+.preview-kpi-badge.positive,
+.preview-action-tag {
+  color: var(--wt-success-text);
+}
+html[data-theme="dark"] .preview-kpi-badge.positive,
+html[data-theme="dark"] .preview-action-tag {
+  color: var(--wt-aqua-300);
+}
+
+/* ---- Páginas internas ---- */
+.page-hero {
+  background:
+    var(--wt-glow) 90% 10% / 60% 80% no-repeat,
+    var(--wt-bg);
+  border-bottom: 0;
+}
+.page-hero::after {
+  width: auto;
+  height: clamp(24px, 3.5vw, 48px);
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  background: var(--wt-surface);
+  border-radius: 0;
+  opacity: 1;
+  -webkit-mask: var(--wt-wave-svg) center / 100% 100% no-repeat;
+  mask: var(--wt-wave-svg) center / 100% 100% no-repeat;
+}
+
+/* ---- Chamadas finais ---- */
+.final-cta,
+.plain-cta {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(70% 120% at 100% 0%, rgba(107, 92, 231, 0.55), transparent 60%),
+    radial-gradient(60% 120% at 0% 100%, rgba(46, 202, 182, 0.28), transparent 60%),
+    var(--wt-blue-600);
+}
+html[data-theme="dark"] .final-cta,
+html[data-theme="dark"] .plain-cta {
+  background:
+    radial-gradient(70% 120% at 100% 0%, rgba(107, 92, 231, 0.45), transparent 60%),
+    #2045a3;
+}
+body.high-contrast .final-cta,
+body.high-contrast .plain-cta {
+  background: #1f46b0;
+}
+
+/* ---- Rodapé ---- */
+.site-footer {
+  position: relative;
+  background: var(--wt-surface);
+  border-top: 1px solid var(--wt-line);
+}
+.site-footer::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -1px;
+  height: 3px;
+  background: var(--wt-gradient-wave);
+  opacity: 0.8;
+}
+.footer-links a {
+  color: var(--wt-text-muted);
+  transition: color var(--wt-dur-fast);
+}
+.footer-links a:hover {
+  color: var(--wt-accent);
+}
+.page-hero + .content-section.surface {
+  border-top: 0;
+}

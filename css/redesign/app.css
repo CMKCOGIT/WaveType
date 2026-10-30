@@ -1,0 +1,321 @@
+/* ==========================================================================
+   WaveType — plataforma e autenticação (camada do redesenho)
+   Páginas: login, cadastro, recuperar/redefinir senha e app/**.
+   Só aparência. Nenhum seletor usado pelo JS muda de nome.
+   ========================================================================== */
+
+:root {
+  --wt-wave-line: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 16'%3E%3Cpath d='M0 8c10 0 10-6 20-6s10 12 20 12 10-12 20-12 10 12 20 12 10-12 20-12 10 6 20 6' fill='none' stroke='%23000' stroke-width='2'/%3E%3C/svg%3E");
+  /* Uma escala de raio para site e plataforma */
+  --radius-sm: var(--wt-radius-sm);
+  --radius: var(--wt-radius-lg);
+  --radius-lg: var(--wt-radius-xl);
+  --muted: var(--wt-text-muted);
+  --line: var(--wt-line);
+  --shadow-soft: var(--wt-shadow-1);
+  --shadow: var(--wt-shadow-2);
+}
+[data-theme="dark"] {
+  --muted: var(--wt-text-muted);
+  --line: var(--wt-line);
+  --shadow-soft: var(--wt-shadow-1);
+  --shadow: var(--wt-shadow-2);
+}
+
+body {
+  font-family: var(--wt-font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+::selection {
+  color: #ffffff;
+  background: var(--wt-blue-600);
+}
+:focus-visible {
+  outline: 3px solid var(--wt-focus);
+  outline-offset: 2px;
+}
+
+/* ---- Botões ---- */
+.button {
+  border-radius: var(--wt-radius-pill);
+  transition:
+    transform var(--wt-dur-fast) var(--wt-ease-out),
+    background-color var(--wt-dur-fast) var(--wt-ease-standard),
+    border-color var(--wt-dur-fast) var(--wt-ease-standard),
+    box-shadow var(--wt-dur-base) var(--wt-ease-standard);
+}
+.button:not(.secondary):not(.ghost):not(.auth-google) {
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.18) inset, 0 6px 16px rgba(49, 95, 214, 0.2);
+}
+.button:not(.secondary):not(.ghost):not(.auth-google):hover {
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.18) inset, 0 10px 24px rgba(49, 95, 214, 0.28);
+}
+.button:active:not(:disabled) {
+  transform: scale(0.98);
+}
+.button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+.button.ghost:hover {
+  background: var(--wt-surface-tint);
+}
+
+/* ---- Campos ---- */
+.field input,
+.field select,
+.field textarea {
+  border-radius: var(--wt-radius-sm);
+  transition: border-color var(--wt-dur-fast), box-shadow var(--wt-dur-fast);
+}
+.field input:hover,
+.field select:hover,
+.field textarea:hover {
+  border-color: var(--wt-line-strong);
+}
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  border-color: var(--wt-blue-500);
+  box-shadow: var(--wt-ring);
+}
+
+/* ---- Autenticação ---- */
+.auth-aside {
+  background:
+    radial-gradient(80% 60% at 100% 0%, rgba(107, 92, 231, 0.6), transparent 65%),
+    radial-gradient(70% 50% at 0% 100%, rgba(46, 202, 182, 0.35), transparent 60%),
+    var(--wt-blue-600);
+}
+.auth-aside {
+  padding-bottom: calc(clamp(36px, 5vw, 72px) + 56px); /* espaço para as ondas */
+}
+[data-theme="dark"] .auth-aside {
+  background:
+    radial-gradient(80% 60% at 100% 0%, rgba(107, 92, 231, 0.5), transparent 65%),
+    #2045a3;
+}
+/* Arcos antigos dão lugar a ondas contínuas na base do painel */
+.auth-aside::before {
+  left: 0;
+  right: 0;
+  bottom: 18px;
+  width: auto;
+  height: 22px;
+  border: 0;
+  border-radius: 0;
+  background: rgba(255, 255, 255, 0.5);
+  -webkit-mask: var(--wt-wave-line) left center / 120px 100% repeat-x;
+  mask: var(--wt-wave-line) left center / 120px 100% repeat-x;
+  opacity: 0.5;
+  transform: none;
+}
+.auth-aside::after {
+  top: auto;
+  left: 0;
+  right: 0;
+  bottom: 44px;
+  width: auto;
+  height: 16px;
+  border: 0;
+  border-radius: 0;
+  background: var(--wt-aqua-300);
+  -webkit-mask: var(--wt-wave-line) 30px center / 80px 100% repeat-x;
+  mask: var(--wt-wave-line) 30px center / 80px 100% repeat-x;
+  opacity: 0.45;
+  transform: none;
+}
+.auth-copy > p {
+  color: rgba(255, 255, 255, 0.94); /* era 0,78 → 4,09:1; agora ≥ 5:1 */
+}
+.auth-copy h1 {
+  letter-spacing: -0.05em;
+  text-wrap: balance;
+}
+.auth-main {
+  background:
+    radial-gradient(60% 40% at 50% 0%, rgba(79, 124, 255, 0.08), transparent 70%),
+    var(--surface);
+}
+.auth-card h2 {
+  letter-spacing: -0.04em;
+}
+
+/* Cartões de tipo de conta.
+   Correção: o rádio era absoluto sem ancestral posicionado e herdava width:100%,
+   o que criava rolagem horizontal no cadastro. */
+.role-option {
+  position: relative;
+}
+.role-option input {
+  width: 1px;
+  height: 1px;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  inset: 50% auto auto 50%;
+}
+.role-option > span {
+  border-radius: var(--wt-radius-md);
+  cursor: pointer;
+  transition:
+    border-color var(--wt-dur-fast),
+    background-color var(--wt-dur-fast),
+    box-shadow var(--wt-dur-fast),
+    transform var(--wt-dur-base) var(--wt-ease-out);
+}
+.role-option:hover > span {
+  border-color: var(--wt-line-strong);
+}
+.role-option input:checked + span {
+  box-shadow: var(--wt-ring);
+}
+/* Foco de teclado visível no cartão (o rádio é invisível) */
+.role-option input:focus-visible + span {
+  outline: 3px solid var(--wt-focus);
+  outline-offset: 2px;
+}
+
+/* ---- Estrutura da área logada ---- */
+.app-sidebar {
+  background: var(--surface);
+}
+.app-nav a {
+  position: relative;
+  border-radius: var(--wt-radius-sm);
+  transition: color var(--wt-dur-fast), background-color var(--wt-dur-fast);
+}
+.app-nav a[aria-current="page"] {
+  font-weight: 800;
+}
+.app-nav a[aria-current="page"]::after {
+  content: "";
+  position: absolute;
+  left: -18px;
+  top: 10px;
+  bottom: 10px;
+  width: 4px;
+  background: var(--wt-gradient-wave);
+  border-radius: 0 4px 4px 0;
+}
+.app-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 15;
+  background: color-mix(in srgb, var(--surface) 86%, transparent);
+  -webkit-backdrop-filter: saturate(1.4) blur(12px);
+  backdrop-filter: saturate(1.4) blur(12px);
+}
+.app-sidebar-foot {
+  border-radius: var(--wt-radius-md);
+}
+
+.page-heading h1 {
+  letter-spacing: -0.045em;
+  text-wrap: balance;
+}
+
+/* ---- Cartões ---- */
+.metric-card,
+.panel,
+.entity-card,
+.practice-row,
+.achievement,
+.table-wrap {
+  border-color: var(--wt-line);
+}
+.metric-card {
+  border-radius: var(--wt-radius-lg);
+  transition: border-color var(--wt-dur-base), box-shadow var(--wt-dur-base);
+}
+.metric-card:hover {
+  border-color: var(--wt-line-strong);
+}
+/* A onda de cada métrica corre na base do cartão */
+.metric-card::after {
+  left: 0;
+  right: -60px; /* folga para a onda deslizar (M5 em motion.css) */
+  bottom: 12px;
+  width: auto;
+  height: 12px;
+  border: 0;
+  border-radius: 0;
+  background: var(--metric, var(--wt-blue-500));
+  -webkit-mask: var(--wt-wave-line) left center / 60px 100% repeat-x;
+  mask: var(--wt-wave-line) left center / 60px 100% repeat-x;
+  opacity: 0.28;
+  transform: none;
+}
+.metric-card > span {
+  font-weight: 700;
+}
+
+.entity-card {
+  transition: border-color var(--wt-dur-base), box-shadow var(--wt-dur-base), transform var(--wt-dur-base) var(--wt-ease-out);
+}
+.entity-card:hover {
+  border-color: var(--wt-line-strong);
+  box-shadow: var(--wt-shadow-2);
+}
+
+.level-badge {
+  color: var(--wt-accent);
+  background:
+    linear-gradient(var(--surface), var(--surface)) padding-box,
+    var(--wt-gradient-wave) border-box;
+  border: 2px solid transparent;
+}
+.progress-track {
+  background: var(--wt-surface-sunken);
+}
+.progress-fill {
+  background: var(--wt-gradient-tide);
+  transition: width var(--wt-dur-slow) var(--wt-ease-out);
+}
+
+/* Ranking vazio: a mensagem ocupava só a coluna de 32 px do grid */
+.ranking-list li:not(:has(*)) {
+  display: block;
+  color: var(--muted);
+  font-size: 0.86rem;
+}
+
+/* ---- Tabelas ---- */
+.table-wrap {
+  border-radius: var(--wt-radius-md);
+}
+.data-table th {
+  color: var(--wt-text-muted);
+  background: var(--wt-surface-sunken);
+  letter-spacing: 0.02em;
+}
+.data-table tbody tr {
+  transition: background-color var(--wt-dur-fast);
+}
+.data-table tbody tr:hover {
+  background: var(--wt-surface-tint);
+}
+
+/* Texto em aqua legível (era 2,05:1 sobre branco) */
+.positive {
+  color: var(--wt-success-text);
+}
+
+/* ---- Feedback ---- */
+.feedback,
+.auth-demo {
+  border-radius: var(--wt-radius-sm);
+}
+
+/* Hierarquia: "Criar conta/Entrar" é a ação principal; Google fica como secundária */
+.button.auth-google {
+  color: var(--wt-text);
+  background: var(--surface);
+  border-color: var(--wt-line-strong);
+  box-shadow: var(--wt-shadow-1);
+}
+.button.auth-google:hover {
+  color: var(--wt-accent);
+  background: var(--wt-surface-tint);
+  border-color: var(--wt-accent);
+}
