@@ -12,6 +12,7 @@ Rode os arquivos de `supabase/migrations/` **nesta ordem**, um por vez (cada um 
 4. `20261027000004_conquistas_gamificacao.sql`
 5. `20261028000005_tempo_maximo_e_precisao.sql` (tempo máximo e precisão acima de 85% em toda a trilha; tempo e precisão definidos pelo professor nas atividades)
 6. `20261029000006_correcao_cadastro_google.sql` (conclusão do cadastro com Google confere a gravação; recarrega o cache da API)
+7. `20261030000007_codigo_aluno_e_tipo_conta.sql` (código curto do aluno; troca entre usuário e aluno pelo Perfil)
 
 Depois rode `supabase/diagnostico.sql` (mostra quais migrações estão aplicadas e se há contas presas na conclusão do cadastro) e `supabase/verificacao.sql`. Cada nível (1 a 6) deve mostrar 20 exercícios e as demais consultas devem voltar vazias.
 

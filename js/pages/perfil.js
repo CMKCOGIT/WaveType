@@ -1,7 +1,7 @@
 // js/pages/perfil.js
 // Página Perfil das três áreas (usuário, aluno, professor). A área vem do
 // data-role do <body>.
-import { exigirPapel, metodosDeLogin, atualizarNome, alterarSenha, validarSenha } from '../auth.js';
+import { exigirPapel, metodosDeLogin, atualizarNome, alterarSenha, validarSenha, alterarTipoConta, DESTINOS } from '../auth.js';
 
 const TIPOS = { usuario: 'Usuário', aluno: 'Aluno', professor: 'Professor' };
 
@@ -25,10 +25,11 @@ async function iniciar() {
 
   if (perfil.tipo === 'aluno') {
     document.querySelector('[data-campo-id]').hidden = false;
-    document.querySelector('[data-meu-id]').textContent = perfil.id;
+    const codigo = perfil.codigo_aluno ?? perfil.id;
+    document.querySelector('[data-meu-id]').textContent = codigo;
     document.querySelector('[data-copiar-id]').addEventListener('click', async (evento) => {
       try {
-        await navigator.clipboard.writeText(perfil.id);
+        await navigator.clipboard.writeText(codigo);
         evento.target.textContent = 'Copiado!';
         setTimeout(() => (evento.target.textContent = 'Copiar'), 1800);
       } catch {
@@ -36,6 +37,8 @@ async function iniciar() {
       }
     });
   }
+
+  prepararTrocaDeTipo(perfil);
 
   const link = document.querySelector('[data-link-recuperar]');
   if (link && perfil.email) link.href = `../../recuperar-senha.html?email=${encodeURIComponent(perfil.email)}`;
@@ -105,6 +108,38 @@ formSenha.addEventListener('submit', async (evento) => {
     if (botaoSenha.textContent === 'Salvando...') botaoSenha.textContent = textoBotao;
   }
 });
+
+// Usuário <-> aluno. Professor não troca de tipo por aqui.
+function prepararTrocaDeTipo(perfil) {
+  if (!['usuario', 'aluno'].includes(perfil.tipo)) return;
+  const painel = document.querySelector('[data-painel-tipo]');
+  const form = document.querySelector('[data-form-tipo]');
+  const feedback = document.querySelector('[data-feedback-tipo]');
+  painel.hidden = false;
+  document.querySelector('[data-texto-tipo]').textContent =
+    perfil.tipo === 'aluno'
+      ? 'Você está como aluno. Como usuário, você treina por conta própria; suas turmas e resultados ficam guardados se voltar a ser aluno.'
+      : 'Você está como usuário. Como aluno, você pode entrar em turmas com o código do professor e fazer as atividades dele.';
+  form.querySelector(`input[value="${perfil.tipo}"]`).checked = true;
+
+  form.addEventListener('submit', async (evento) => {
+    evento.preventDefault();
+    const novo = new FormData(form).get('tipo');
+    if (novo === perfil.tipo) return mostrar(feedback, `Sua conta já é de ${TIPOS[novo].toLowerCase()}.`, true);
+    if (!confirm(`Trocar sua conta para ${TIPOS[novo].toLowerCase()}? Seu histórico de treinos continua o mesmo.`)) return;
+
+    const botao = form.querySelector('button[type="submit"]');
+    botao.disabled = true;
+    try {
+      await alterarTipoConta(novo);
+      mostrar(feedback, 'Tipo de conta alterado. Abrindo sua nova área…');
+      setTimeout(() => window.location.replace(DESTINOS[novo].replace('index.html', 'perfil.html')), 900);
+    } catch (erro) {
+      mostrar(feedback, erro.message, true);
+      botao.disabled = false;
+    }
+  });
+}
 
 function mostrar(elemento, mensagem, erro = false) {
   elemento.textContent = mensagem;

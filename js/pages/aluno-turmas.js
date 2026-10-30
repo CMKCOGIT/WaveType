@@ -11,10 +11,11 @@ async function iniciar() {
   const perfil = await exigirPapel('aluno');
   if (!perfil) return;
 
-  document.querySelector('[data-meu-id]').textContent = perfil.id;
+  const codigo = perfil.codigo_aluno ?? perfil.id;
+  document.querySelector('[data-meu-id]').textContent = codigo;
   document.querySelector('[data-copiar-id]').addEventListener('click', async (evento) => {
     try {
-      await navigator.clipboard.writeText(perfil.id);
+      await navigator.clipboard.writeText(codigo);
       evento.target.textContent = 'Copiado!';
       setTimeout(() => (evento.target.textContent = 'Copiar'), 1800);
     } catch {

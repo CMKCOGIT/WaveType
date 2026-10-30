@@ -3,8 +3,8 @@
     <header class="page-heading"><div><span class="eyebrow">Acompanhamento</span><h1>Gestão de alunos</h1><p>Encontre rapidamente quem está evoluindo e quem precisa de apoio.</p></div></header>
     <div class="toolbar"><label class="field"><span>Turma</span><select data-select-turma></select></label><label class="field"><span>Buscar aluno</span><input type="search" placeholder="Nome ou e-mail" data-table-search></label></div>
     <form class="panel panel-pad" data-form-adicionar style="margin-bottom:18px">
-        <div class="panel-title"><div><h2>Adicionar aluno pelo ID</h2><p>O aluno encontra o próprio ID em Turmas, na área dele. Ele também pode entrar sozinho com o código da turma.</p></div></div>
-        <div class="toolbar" style="margin-bottom:0"><label class="field"><span>ID do aluno</span><input class="mono" name="aluno_id" required placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" autocomplete="off" spellcheck="false"></label><button class="button" type="submit" style="align-self:end">Adicionar à turma</button></div>
+        <div class="panel-title"><div><h2>Adicionar aluno pelo código</h2><p>O aluno encontra o código dele (6 caracteres) em Turmas ou em Perfil, na área dele. Ele também pode entrar sozinho com o código da turma.</p></div></div>
+        <div class="toolbar" style="margin-bottom:0"><label class="field"><span>Código do aluno</span><input class="mono" name="aluno_id" required maxlength="36" placeholder="Ex.: K7Q2MX" autocomplete="off" autocapitalize="characters" spellcheck="false"></label><button class="button" type="submit" style="align-self:end">Adicionar à turma</button></div>
         <p class="feedback" data-feedback-adicionar hidden role="status"></p>
     </form>
     <div class="table-wrap"><table class="data-table"><thead><tr><th>Aluno</th><th>Sessões</th><th>WPM médio</th><th>Precisão média</th><th>Atividades concluídas</th><th>Última prática</th><th></th></tr></thead><tbody data-tabela-alunos><tr><td colspan="7">Carregando…</td></tr></tbody></table></div>

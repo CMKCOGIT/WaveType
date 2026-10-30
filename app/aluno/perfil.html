@@ -40,7 +40,7 @@
                             <label class="field"><span>Nome completo</span><input name="nome" autocomplete="name" minlength="2" maxlength="120" required></label>
                             <label class="field"><span>E-mail</span><input name="email" type="email" readonly></label>
                             <label class="field"><span>Tipo de conta</span><input name="tipo" readonly></label>
-                            <div class="field" data-campo-id hidden><span>Seu ID de aluno</span><div class="id-box"><span data-meu-id></span><button type="button" class="copiar" data-copiar-id>Copiar</button></div></div>
+                            <div class="field" data-campo-id hidden><span>Seu código de aluno</span><div class="id-box"><span class="perfil-codigo" data-meu-id></span><button type="button" class="copiar" data-copiar-id>Copiar</button></div></div>
                             <button class="button" type="submit">Salvar dados</button>
                             <p class="feedback" data-feedback-dados hidden role="status"></p>
                         </form>
@@ -55,6 +55,17 @@
                             <p class="feedback" data-feedback-senha hidden role="status"></p>
                         </form>
                         <p class="perfil-ajuda">Esqueceu a senha atual? <a href="../../recuperar-senha.html" data-link-recuperar>Receba um link por e-mail</a>.</p>
+                    </section>
+                    <section class="panel panel-pad perfil-largo" aria-labelledby="titulo-tipo" data-painel-tipo hidden>
+                        <div class="panel-title"><div><h2 id="titulo-tipo">Tipo de conta</h2><p data-texto-tipo></p></div></div>
+                        <form class="perfil-form" data-form-tipo novalidate>
+                            <div class="role-picker" style="grid-template-columns:repeat(2,minmax(0,1fr));max-width:520px">
+                                <label class="role-option"><input type="radio" name="tipo" value="usuario"><span><strong>Usuário</strong><small>Treinar e evoluir por conta própria</small></span></label>
+                                <label class="role-option"><input type="radio" name="tipo" value="aluno"><span><strong>Aluno</strong><small>Participar de turmas e atividades</small></span></label>
+                            </div>
+                            <button class="button secondary" type="submit">Trocar tipo de conta</button>
+                            <p class="feedback" data-feedback-tipo hidden role="status"></p>
+                        </form>
                     </section>
                 </div>
             </main>

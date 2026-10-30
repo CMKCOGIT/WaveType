@@ -1713,3 +1713,15 @@ body.single-line #words-wrapper {
     grid-template-columns: 1fr;
   }
 }
+.auth-nota {
+  margin: -6px 0 0;
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+.perfil-grid > .perfil-largo {
+  grid-column: 1 / -1;
+}
+.perfil-codigo {
+  font-size: 1.05rem;
+  letter-spacing: 0.18em;
+}

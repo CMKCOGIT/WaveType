@@ -1,13 +1,14 @@
 // js/pages/professor-alunos.js
 import { exigirPapel } from '../auth.js';
-import { listarMinhasTurmas, listarAlunosDaTurma, adicionarAlunoPorId, removerAlunoDaTurma } from '../api/turmas.js';
+import { listarMinhasTurmas, listarAlunosDaTurma, adicionarAluno, removerAlunoDaTurma } from '../api/turmas.js';
 
 const seletorTurma = document.querySelector('[data-select-turma]');
 const busca = document.querySelector('[data-table-search]');
 const corpo = document.querySelector('[data-tabela-alunos]');
 const formAdicionar = document.querySelector('[data-form-adicionar]');
 const feedbackAdicionar = document.querySelector('[data-feedback-adicionar]');
-const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+// Código curto (6 caracteres) ou o ID longo antigo, que continua aceito.
+const IDENTIFICADOR = /^([A-HJ-NP-Z2-9]{6}|[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$/i;
 let alunosCarregados = [];
 
 iniciar();
@@ -83,12 +84,12 @@ corpo.addEventListener('click', async (evento) => {
 formAdicionar.addEventListener('submit', async (evento) => {
   evento.preventDefault();
   const id = String(new FormData(formAdicionar).get('aluno_id') || '').trim();
-  if (!UUID.test(id)) return mostrarFeedback('Esse não parece um ID válido. Peça ao aluno para copiar o ID na página Turmas.', true);
+  if (!IDENTIFICADOR.test(id)) return mostrarFeedback('Código inválido. Ele tem 6 caracteres e aparece em Turmas ou em Perfil, na área do aluno.', true);
 
   const botao = formAdicionar.querySelector('button[type="submit"]');
   botao.disabled = true;
   try {
-    await adicionarAlunoPorId(Number(seletorTurma.value), id);
+    await adicionarAluno(Number(seletorTurma.value), id);
     formAdicionar.reset();
     mostrarFeedback('Aluno adicionado à turma.');
     await carregarAlunos();

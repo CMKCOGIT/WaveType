@@ -68,7 +68,7 @@
                 <div data-etapa="completar" hidden>
                     <span class="eyebrow">Falta pouco</span>
                     <h2>Conclua seu cadastro</h2>
-                    <p>Você entrou com o Google como <strong data-email-conta></strong>. Confirme seu nome e escolha como vai usar o WaveType para continuar.</p>
+                    <p>Você entrou com o Google como <strong data-email-conta></strong>. Confirme seu nome, escolha como vai usar o WaveType e crie uma senha para continuar.</p>
                     <form class="auth-form" data-auth-form="completar" novalidate>
                         <fieldset class="field" style="border:0;padding:0;margin:0"><span>Quero usar como</span>
                             <div class="role-picker">
@@ -78,6 +78,9 @@
                             </div>
                         </fieldset>
                         <label class="field"><span>Nome completo</span><input name="nome" autocomplete="name" minlength="2" maxlength="120" required></label>
+                        <label class="field"><span>Crie uma senha</span><input type="password" name="senha" autocomplete="new-password" minlength="8" placeholder="8+ caracteres, com letra e número" required></label>
+                        <label class="field"><span>Repita a senha</span><input type="password" name="confirmacao" autocomplete="new-password" minlength="8" required></label>
+                        <p class="auth-nota">Com a senha, você também pode entrar com e-mail e senha, além do Google.</p>
                         <button class="button auth-submit" type="submit">Concluir cadastro</button>
                         <p class="auth-demo" data-form-feedback hidden role="status"></p>
                     </form>
