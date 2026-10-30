@@ -2,4 +2,5 @@
 @import "../platform.css";
 @import "./tokens.css";
 @import "./app.css";
+@import "./plataforma-ui.css";
 @import "./motion.css";
