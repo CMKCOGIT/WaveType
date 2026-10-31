@@ -1,0 +1,522 @@
+/* ==========================================================================
+   WaveType — responsividade da plataforma (telas de acesso e área logada)
+   Carregado por último nas entradas da plataforma.
+   - Até 820 px: menu lateral vira gaveta (botão ☰ no topo) e o topo vira um
+     cabeçalho único com logo, tema, avatar e "Sair".
+   - Até 640 px: tabelas viram cartões (um por linha, com o nome da coluna).
+   - Alvos de toque com pelo menos 40 px em qualquer tela.
+   A gaveta e os rótulos das tabelas são criados por js/ui/plataforma.js.
+   ========================================================================== */
+
+/* Botões de ícone criados pelo JS (☰ e ✕), no mesmo estilo do botão de tema */
+.wt-icone-botao {
+  width: 42px;
+  height: 42px;
+  flex: 0 0 auto;
+  place-items: center;
+  padding: 0;
+  color: var(--p-text);
+  background: var(--p-surface-2);
+  border: 1px solid var(--p-line);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: color 160ms, background-color 160ms;
+}
+.wt-icone-botao svg {
+  width: 20px;
+  height: 20px;
+}
+.wt-icone-botao:hover {
+  color: var(--p-ink-blue);
+  background: var(--p-tint-blue);
+}
+
+/* Elementos criados pelo JS: só aparecem no celular/tablet */
+.wt-menu-botao,
+.wt-menu-fechar,
+.wt-topo-marca,
+.wt-menu-fundo {
+  display: none;
+}
+
+/* ---------- Alvos de toque (todas as telas) ---------- */
+.button.small {
+  min-height: 40px;
+}
+.copiar {
+  min-height: 32px;
+  padding: 6px 12px;
+}
+.conquista-filtros button {
+  min-height: 40px;
+}
+.auth-card > .eyebrow,
+.auth-card [data-etapa] > .eyebrow,
+.auth-esqueci,
+.app-sidebar-foot a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+}
+.auth-esqueci {
+  justify-self: end;
+}
+.etapa-iniciar {
+  min-height: 40px;
+}
+
+/* ---------- Celular e tablet (até 820 px) ---------- */
+@media (max-width: 820px) {
+  .app-layout {
+    display: block;
+    padding: 10px;
+  }
+
+  /* Gaveta do menu */
+  .app-sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 70;
+    width: min(86vw, 320px);
+    height: 100vh;
+    height: 100dvh;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 20px 16px calc(16px + env(safe-area-inset-bottom));
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    border-radius: 0 24px 24px 0;
+    border-left: 0;
+    box-shadow: 0 24px 60px rgba(10, 16, 34, 0.28);
+    transform: translateX(-104%);
+    visibility: hidden;
+    transition:
+      transform 320ms cubic-bezier(0.22, 1, 0.36, 1),
+      visibility 0s linear 320ms;
+  }
+  html.wt-menu-aberto .app-sidebar {
+    transform: none;
+    visibility: visible;
+    transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .app-sidebar .app-brand {
+    padding-right: 56px;
+  }
+  .app-role,
+  .app-sidebar-foot {
+    display: block;
+  }
+  .app-role {
+    margin-top: 22px;
+  }
+  .app-nav {
+    display: grid;
+    gap: 4px;
+    margin-top: 12px;
+    padding: 0;
+    overflow: visible;
+  }
+  .app-nav a {
+    min-width: 0;
+    min-height: 50px;
+    justify-content: flex-start;
+    padding: 12px 14px;
+    font-size: 1rem;
+  }
+  .app-nav a::before {
+    width: 21px;
+    height: 21px;
+  }
+  .app-nav a span {
+    display: inline;
+  }
+  .app-nav a[aria-current="page"]::after {
+    display: block;
+    left: -16px;
+  }
+  .app-sidebar-foot {
+    margin-top: auto;
+  }
+  .app-nav + .app-sidebar-foot {
+    margin-top: 24px;
+  }
+
+  .wt-menu-fechar {
+    position: absolute;
+    top: 16px;
+    right: 14px;
+    display: grid;
+  }
+
+  /* Fundo escurecido atrás da gaveta */
+  .wt-menu-fundo {
+    position: fixed;
+    inset: 0;
+    z-index: 65;
+    display: block;
+    background: rgba(10, 16, 34, 0.48);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 240ms ease;
+  }
+  html.wt-menu-aberto .wt-menu-fundo {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  html.wt-menu-aberto,
+  html.wt-menu-aberto body {
+    overflow: hidden;
+  }
+
+  /* Cabeçalho único: ☰ · logo · tema · avatar · Sair */
+  .app-topbar {
+    position: sticky;
+    top: 10px;
+    z-index: 40;
+    display: flex;
+    min-height: 60px;
+    gap: 8px;
+    padding: 0 8px;
+  }
+  .wt-menu-botao {
+    display: grid;
+  }
+  .wt-topo-marca {
+    display: block;
+    margin-right: auto;
+    padding: 0 2px;
+  }
+  .wt-topo-marca img {
+    display: block;
+    width: 148px;
+    max-width: none;
+    margin-inline: -10px;
+  }
+  .wt-topo-marca .logo-dark {
+    display: none;
+  }
+  [data-theme="dark"] .wt-topo-marca .logo-light {
+    display: none;
+  }
+  [data-theme="dark"] .wt-topo-marca .logo-dark {
+    display: block;
+    content: url("../../assets/images/brand/wavetype-logo-white.svg");
+  }
+  .topbar-context {
+    display: none;
+  }
+  .topbar-profile {
+    margin-right: 0;
+  }
+  .app-sair {
+    padding-inline: 12px;
+  }
+
+  .app-main {
+    width: 100%;
+    padding: 14px 0 48px;
+  }
+
+  /* Cabeçalho da página alinhado à esquerda, ações ocupando a largura */
+  .page-heading {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: left;
+    gap: 18px;
+  }
+  .heading-actions {
+    justify-content: stretch;
+  }
+  .heading-actions > .button,
+  .heading-actions > a,
+  .heading-actions > button {
+    flex: 1 1 auto;
+  }
+  .heading-actions > select,
+  .heading-actions .field {
+    width: 100%;
+  }
+
+  /* Painéis lado a lado viram coluna */
+  .dashboard-grid,
+  .perfil-grid,
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+  .panel-title {
+    flex-wrap: wrap;
+  }
+  .toolbar {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+  .toolbar .field {
+    min-width: 0;
+  }
+  .card-grid {
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+  }
+  .achievement-grid {
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr));
+  }
+  .form-actions,
+  .row-actions {
+    flex-wrap: wrap;
+  }
+
+  /* Treino: o teste ocupa a largura toda */
+  body[data-page="treinar"] .typing-shell {
+    padding: 12px;
+  }
+}
+
+/* ---------- Celular (até 640 px): tabelas viram cartões ---------- */
+@media (max-width: 640px) {
+  .table-wrap,
+  .panel .table-wrap {
+    overflow: visible;
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+  }
+  .data-table {
+    min-width: 0;
+  }
+  .data-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+  .data-table,
+  .data-table tbody {
+    display: block;
+  }
+  .data-table tr {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px 14px;
+    margin-bottom: 10px;
+    padding: 14px 16px;
+    background: var(--p-surface);
+    border: 1px solid var(--p-line);
+    border-radius: 16px;
+  }
+  .panel .data-table tr {
+    background: var(--p-surface-2);
+    border-color: transparent;
+  }
+  .data-table tbody tr:hover {
+    background: var(--p-surface-2);
+  }
+  .data-table th,
+  .data-table td {
+    display: block;
+    min-width: 0;
+    padding: 0;
+    border: 0;
+    overflow-wrap: anywhere;
+  }
+  .data-table td[data-label]::before {
+    content: attr(data-label);
+    display: block;
+    margin-bottom: 3px;
+    color: var(--p-soft);
+    font-family: var(--wt-font-sans);
+    font-size: 0.68rem;
+    font-weight: 750;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  /* A primeira coluna (nome) é o título do cartão */
+  .data-table td:first-child {
+    grid-column: 1 / -1;
+    font-size: 0.95rem;
+  }
+  .data-table td:first-child::before {
+    display: none;
+  }
+  /* Mensagens (carregando, vazio) e ações ocupam a linha toda */
+  .data-table td[colspan],
+  .data-table td:has(> .button),
+  .data-table td:has(> button) {
+    grid-column: 1 / -1;
+  }
+  .data-table td:has(> .button) .button,
+  .data-table td:has(> button) button {
+    width: 100%;
+  }
+
+  /* Linhas da trilha: o botão desce e ocupa a largura */
+  .etapa-linha {
+    flex-wrap: wrap;
+  }
+  .etapa-iniciar,
+  .etapa-indisponivel {
+    flex: 1 1 100%;
+    margin-left: 46px;
+  }
+  .practice-row {
+    grid-template-columns: 44px minmax(0, 1fr);
+  }
+  .practice-row .button,
+  .practice-row > a,
+  .practice-meta {
+    grid-column: 1 / -1;
+    justify-self: stretch;
+  }
+  .entity-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .role-picker {
+    grid-template-columns: 1fr;
+  }
+  .copiar {
+    min-height: 40px;
+    padding-inline: 14px;
+  }
+}
+
+/* ---------- Telas bem estreitas (até 380 px) ---------- */
+@media (max-width: 380px) {
+  .app-layout {
+    padding: 8px;
+  }
+  .app-topbar {
+    top: 8px;
+    gap: 6px;
+    padding: 0 6px;
+  }
+  .wt-topo-marca img {
+    width: 128px;
+  }
+  .app-topbar .wt-tema,
+  .wt-menu-botao {
+    width: 40px;
+    height: 40px;
+  }
+  .topbar-profile {
+    padding: 3px;
+  }
+  .page-heading {
+    padding: 20px 16px;
+  }
+  .panel-pad {
+    padding: 16px;
+  }
+  .auth-main {
+    padding: 60px 16px 28px;
+  }
+  .auth-aside {
+    padding: 24px 18px 26px;
+  }
+}
+
+/* Movimento reduzido: a gaveta abre sem deslizar */
+@media (prefers-reduced-motion: reduce) {
+  .app-sidebar,
+  html.wt-menu-aberto .app-sidebar,
+  .wt-menu-fundo {
+    transition: none;
+  }
+}
+
+/* ---------- Legibilidade: nenhum texto da plataforma abaixo de ~11,5 px ---------- */
+.app-role {
+  font-size: 0.72rem;
+}
+.topbar-avatar,
+.metric-card small,
+.copiar,
+.entity-stats span {
+  font-size: 0.75rem;
+}
+.status,
+.achievement small,
+.achievement-progress small {
+  font-size: 0.72rem;
+}
+
+/* ---------- Alvos que ficavam um pouco abaixo de 40 px ---------- */
+@media (max-width: 820px) {
+  .wt-topo-marca {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+}
+.app-brand {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+}
+
+/* ---------- Tablet (641–820 px): tabelas cabem sem arrastar ---------- */
+@media (max-width: 820px) {
+  .data-table {
+    min-width: 0;
+  }
+}
+.topbar-profile small {
+  font-size: 0.74rem;
+}
+
+/* ---------- Menu recolhido em ícones (821–1180 px) ---------- */
+@media (min-width: 821px) and (max-width: 1180px) {
+  .app-role {
+    display: none;
+  }
+  /* Só o símbolo do logo */
+  .app-brand {
+    width: 44px;
+    margin-inline: auto;
+    padding: 0;
+    overflow: hidden;
+  }
+  .app-brand img {
+    width: 160px;
+    max-width: none;
+    margin-left: -2px;
+  }
+  /* O nome do item sai da tela, mas continua para leitores de tela
+     (antes ficava display:none e o link ficava sem nome) */
+  .app-nav a span {
+    display: inline;
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+}
+
+/* ---------- Topo em telas muito estreitas ---------- */
+@media (max-width: 820px) {
+  /* Alinhado à esquerda: se faltar espaço, nada sai pela borda esquerda */
+  .app-topbar {
+    justify-content: flex-start;
+  }
+  .app-topbar > * {
+    flex-shrink: 0;
+  }
+}
+@media (max-width: 360px) {
+  /* Só o símbolo do logo, para caber ☰, tema, avatar e "Sair" */
+  .wt-topo-marca {
+    width: 40px;
+    overflow: hidden;
+  }
+  .wt-topo-marca img {
+    width: 150px;
+    margin-inline: -4px 0;
+  }
+  .app-sair {
+    padding-inline: 10px;
+  }
+}
