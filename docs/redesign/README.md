@@ -8,6 +8,7 @@
 | [03-animacoes.md](03-animacoes.md) | Catálogo de animações e como desligar |
 | [04-relatorio-final.md](04-relatorio-final.md) | Relatório final: métricas antes/depois, checklist de não-regressão e itens não executados |
 | [05-plataforma.md](05-plataforma.md) | Redesenho da plataforma (v2): telas de acesso, área logada e modo escuro |
+| [06-responsividade.md](06-responsividade.md) | Responsividade: menu em gaveta, tabelas em cartões, auditoria em 10 larguras |
 
 - `capturas/antes/` e `capturas/depois/`: capturas em 375, 768 e 1280 px, os modos de tema e acessibilidade, `metricas.json` e o vídeo `hero-e-teste.webm`.
 - `evidencias/`: Lighthouse, INP, checklist e saída da suíte e2e.

@@ -1,0 +1,51 @@
+index@320: textos<11.5px: 13
+index@360: textos<11.5px: 13
+index@390: textos<11.5px: 13
+index@414: textos<11.5px: 13
+index@600: textos<11.5px: 13
+index@768: textos<11.5px: 13
+index@900: textos<11.5px: 13
+index@1024: textos<11.5px: 13
+index@1280: textos<11.5px: 13
+index@1440: textos<11.5px: 13
+usuario-index@320: vaza: button.wt-icone-botao.wt-menu-botao (-8..32)
+usuario-exercicios@320: vaza: button.wt-icone-botao.wt-menu-botao (-8..32)
+usuario-treinar@320: vaza: button.wt-icone-botao.wt-menu-botao (-8..32)
+usuario-resultados@320: vaza: button.wt-icone-botao.wt-menu-botao (-8..32)
+usuario-conquistas@320: vaza: button.wt-icone-botao.wt-menu-botao (-8..32)
+usuario-ranking@320: vaza: button.wt-icone-botao.wt-menu-botao (-8..32)
+usuario-perfil@320: vaza: button.wt-icone-botao.wt-menu-botao (-8..32)
+aluno-index@320: vaza: button.wt-icone-botao.wt-menu-botao (-8..32)
+aluno-exercicios@320: vaza: button.wt-icone-botao.wt-menu-botao (-8..32)
+aluno-treinar@320: vaza: button.wt-icone-botao.wt-menu-botao (-8..32)
+aluno-turmas@320: vaza: button.wt-icone-botao.wt-menu-botao (-8..32)
+aluno-turmas@768: alvos<40px (1): button.copiar 65x32
+aluno-turmas@900: alvos<40px (1): button.copiar 65x32
+aluno-turmas@1024: alvos<40px (1): button.copiar 65x32
+aluno-turmas@1280: alvos<40px (1): button.copiar 65x32
+aluno-turmas@1440: alvos<40px (1): button.copiar 65x32
+aluno-resultados@320: vaza: button.wt-icone-botao.wt-menu-botao (-8..32)
+aluno-conquistas@320: vaza: button.wt-icone-botao.wt-menu-botao (-8..32)
+aluno-ranking@320: vaza: button.wt-icone-botao.wt-menu-botao (-8..32)
+aluno-perfil@320: vaza: button.wt-icone-botao.wt-menu-botao (-8..32)
+aluno-perfil@768: alvos<40px (1): button.copiar 65x32
+aluno-perfil@900: alvos<40px (1): button.copiar 65x32
+aluno-perfil@1024: alvos<40px (1): button.copiar 65x32
+aluno-perfil@1280: alvos<40px (1): button.copiar 65x32
+aluno-perfil@1440: alvos<40px (1): button.copiar 65x32
+professor-index@320: vaza: button.wt-icone-botao.wt-menu-botao (-8..32)
+professor-turmas@320: vaza: button.wt-icone-botao.wt-menu-botao (-8..32)
+professor-turmas@768: alvos<40px (2): button.copiar 65x32, button.copiar 90x32
+professor-turmas@900: alvos<40px (2): button.copiar 65x32, button.copiar 90x32
+professor-turmas@1024: alvos<40px (2): button.copiar 65x32, button.copiar 90x32
+professor-turmas@1280: alvos<40px (2): button.copiar 65x32, button.copiar 90x32
+professor-turmas@1440: alvos<40px (2): button.copiar 65x32, button.copiar 90x32
+professor-alunos@320: vaza: button.wt-icone-botao.wt-menu-botao (-8..32)
+professor-exercicios@320: vaza: button.wt-icone-botao.wt-menu-botao (-8..32)
+professor-relatorios@320: vaza: button.wt-icone-botao.wt-menu-botao (-8..32)
+professor-perfil@320: vaza: button.wt-icone-botao.wt-menu-botao (-8..32)
+index@320: textos<11.5px: 13
+index@340: textos<11.5px: 13
+index@360: textos<11.5px: 13
+index@375: textos<11.5px: 13
+index@390: textos<11.5px: 13

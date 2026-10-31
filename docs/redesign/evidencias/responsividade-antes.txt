@@ -1,0 +1,263 @@
+index@320: alvos<40px (1): button#menu-button.menu-button 36x48 | textos<11.5px: 13
+index@360: textos<11.5px: 13
+index@390: textos<11.5px: 13
+index@414: textos<11.5px: 13
+index@600: textos<11.5px: 13
+index@768: textos<11.5px: 13
+index@900: textos<11.5px: 13
+index@1024: textos<11.5px: 13
+index@1280: textos<11.5px: 13
+index@1440: textos<11.5px: 13
+escolas@320: alvos<40px (1): button#menu-button.menu-button 36x48
+como-funciona@320: alvos<40px (1): button#menu-button.menu-button 36x48
+sobre@320: alvos<40px (1): button#menu-button.menu-button 36x48
+login@320: alvos<40px (2): a.eyebrow 168x17, a.auth-esqueci 132x19
+login@360: alvos<40px (2): a.eyebrow 168x17, a.auth-esqueci 132x19
+login@390: alvos<40px (2): a.eyebrow 168x17, a.auth-esqueci 132x19
+login@414: alvos<40px (2): a.eyebrow 168x17, a.auth-esqueci 132x19
+login@600: alvos<40px (2): a.eyebrow 168x17, a.auth-esqueci 132x19
+login@768: alvos<40px (2): a.eyebrow 168x17, a.auth-esqueci 132x19
+login@900: alvos<40px (2): a.eyebrow 168x17, a.auth-esqueci 132x19
+login@1024: alvos<40px (2): a.eyebrow 168x17, a.auth-esqueci 132x19
+login@1280: alvos<40px (2): a.eyebrow 168x17, a.auth-esqueci 132x19
+login@1440: alvos<40px (2): a.eyebrow 168x17, a.auth-esqueci 132x19
+cadastro@320: alvos<40px (1): a.eyebrow 168x17
+cadastro@360: alvos<40px (1): a.eyebrow 168x17
+cadastro@390: alvos<40px (1): a.eyebrow 168x17
+cadastro@414: alvos<40px (1): a.eyebrow 168x17
+cadastro@600: alvos<40px (1): a.eyebrow 168x17
+cadastro@768: alvos<40px (1): a.eyebrow 168x17
+cadastro@900: alvos<40px (1): a.eyebrow 168x17
+cadastro@1024: alvos<40px (1): a.eyebrow 168x17
+cadastro@1280: alvos<40px (1): a.eyebrow 168x17
+cadastro@1440: alvos<40px (1): a.eyebrow 168x17
+recuperar-senha@320: alvos<40px (1): a.eyebrow 168x17
+recuperar-senha@360: alvos<40px (1): a.eyebrow 168x17
+recuperar-senha@390: alvos<40px (1): a.eyebrow 168x17
+recuperar-senha@414: alvos<40px (1): a.eyebrow 168x17
+recuperar-senha@600: alvos<40px (1): a.eyebrow 168x17
+recuperar-senha@768: alvos<40px (1): a.eyebrow 168x17
+recuperar-senha@900: alvos<40px (1): a.eyebrow 168x17
+recuperar-senha@1024: alvos<40px (1): a.eyebrow 168x17
+recuperar-senha@1280: alvos<40px (1): a.eyebrow 168x17
+recuperar-senha@1440: alvos<40px (1): a.eyebrow 168x17
+redefinir-senha@320: alvos<40px (1): a.eyebrow 168x17
+redefinir-senha@360: alvos<40px (1): a.eyebrow 168x17
+redefinir-senha@390: alvos<40px (1): a.eyebrow 168x17
+redefinir-senha@414: alvos<40px (1): a.eyebrow 168x17
+redefinir-senha@600: alvos<40px (1): a.eyebrow 168x17
+redefinir-senha@768: alvos<40px (1): a.eyebrow 168x17
+redefinir-senha@900: alvos<40px (1): a.eyebrow 168x17
+redefinir-senha@1024: alvos<40px (1): a.eyebrow 168x17
+redefinir-senha@1280: alvos<40px (1): a.eyebrow 168x17
+redefinir-senha@1440: alvos<40px (1): a.eyebrow 168x17
+usuario-index@320: arrastar: nav.app-nav (719/274), div.table-wrap (720/256) | alvos<40px (3): a.app-brand 164x40, button.button.ghost 55x38, a.button.secondary 108x38 | textos<11.5px: 3
+usuario-index@360: arrastar: nav.app-nav (719/314), div.table-wrap (720/296) | alvos<40px (3): a.app-brand 164x40, button.button.ghost 55x38, a.button.secondary 108x38 | textos<11.5px: 3
+usuario-index@390: arrastar: nav.app-nav (719/344), div.table-wrap (720/326) | alvos<40px (3): a.app-brand 164x40, button.button.ghost 55x38, a.button.secondary 108x38 | textos<11.5px: 3
+usuario-index@414: arrastar: nav.app-nav (719/368), div.table-wrap (720/350) | alvos<40px (3): a.app-brand 164x40, button.button.ghost 55x38, a.button.secondary 108x38 | textos<11.5px: 3
+usuario-index@600: arrastar: nav.app-nav (719/554), div.table-wrap (720/536) | alvos<40px (3): a.app-brand 164x40, button.button.ghost 55x38, a.button.secondary 108x38 | textos<11.5px: 4
+usuario-index@768: arrastar: div.table-wrap (720/704) | alvos<40px (3): a.app-brand 164x40, button.button.ghost 55x38, a.button.secondary 108x38 | textos<11.5px: 4
+usuario-index@900: alvos<40px (3): a.app-brand 66x40, button.button.ghost 55x38, a.button.secondary 108x38 | textos<11.5px: 5
+usuario-index@1024: alvos<40px (3): a.app-brand 66x40, button.button.ghost 55x38, a.button.secondary 108x38 | textos<11.5px: 5
+usuario-index@1280: alvos<40px (3): a 108x18, button.button.ghost 55x38, a.button.secondary 108x38 | textos<11.5px: 5
+usuario-index@1440: alvos<40px (3): a 108x18, button.button.ghost 55x38, a.button.secondary 108x38 | textos<11.5px: 5
+usuario-exercicios@320: arrastar: nav.app-nav (720/274) | alvos<40px (4): a.app-brand 164x40, button.button.ghost 55x38, a.etapa-iniciar 81x38, a.etapa-iniciar 73x38 | textos<11.5px: 1
+usuario-exercicios@360: arrastar: nav.app-nav (720/314) | alvos<40px (4): a.app-brand 164x40, button.button.ghost 55x38, a.etapa-iniciar 81x38, a.etapa-iniciar 73x38 | textos<11.5px: 1
+usuario-exercicios@390: arrastar: nav.app-nav (720/344) | alvos<40px (4): a.app-brand 164x40, button.button.ghost 55x38, a.etapa-iniciar 81x38, a.etapa-iniciar 73x38 | textos<11.5px: 1
+usuario-exercicios@414: arrastar: nav.app-nav (720/368) | alvos<40px (4): a.app-brand 164x40, button.button.ghost 55x38, a.etapa-iniciar 81x38, a.etapa-iniciar 73x38 | textos<11.5px: 1
+usuario-exercicios@600: arrastar: nav.app-nav (720/554) | alvos<40px (4): a.app-brand 164x40, button.button.ghost 55x38, a.etapa-iniciar 81x38, a.etapa-iniciar 73x38 | textos<11.5px: 2
+usuario-exercicios@768: alvos<40px (4): a.app-brand 164x40, button.button.ghost 55x38, a.etapa-iniciar 81x38, a.etapa-iniciar 73x38 | textos<11.5px: 2
+usuario-exercicios@900: alvos<40px (4): a.app-brand 66x40, button.button.ghost 55x38, a.etapa-iniciar 81x38, a.etapa-iniciar 73x38 | textos<11.5px: 3
+usuario-exercicios@1024: alvos<40px (4): a.app-brand 66x40, button.button.ghost 55x38, a.etapa-iniciar 81x38, a.etapa-iniciar 73x38 | textos<11.5px: 3
+usuario-exercicios@1280: alvos<40px (4): a 108x18, button.button.ghost 55x38, a.etapa-iniciar 81x38, a.etapa-iniciar 73x38 | textos<11.5px: 3
+usuario-exercicios@1440: alvos<40px (4): a 108x18, button.button.ghost 55x38, a.etapa-iniciar 81x38, a.etapa-iniciar 73x38 | textos<11.5px: 3
+usuario-treinar@320: arrastar: nav.app-nav (719/274) | alvos<40px (2): a.app-brand 164x40, button.button.ghost 55x38 | textos<11.5px: 1
+usuario-treinar@360: arrastar: nav.app-nav (719/314) | alvos<40px (2): a.app-brand 164x40, button.button.ghost 55x38 | textos<11.5px: 1
+usuario-treinar@390: arrastar: nav.app-nav (719/344) | alvos<40px (2): a.app-brand 164x40, button.button.ghost 55x38 | textos<11.5px: 1
+usuario-treinar@414: arrastar: nav.app-nav (719/368) | alvos<40px (2): a.app-brand 164x40, button.button.ghost 55x38 | textos<11.5px: 1
+usuario-treinar@600: arrastar: nav.app-nav (719/554) | alvos<40px (2): a.app-brand 164x40, button.button.ghost 55x38 | textos<11.5px: 2
+usuario-treinar@768: alvos<40px (2): a.app-brand 164x40, button.button.ghost 55x38 | textos<11.5px: 2
+usuario-treinar@900: alvos<40px (2): a.app-brand 66x40, button.button.ghost 55x38 | textos<11.5px: 3
+usuario-treinar@1024: alvos<40px (2): a.app-brand 66x40, button.button.ghost 55x38 | textos<11.5px: 3
+usuario-treinar@1280: alvos<40px (2): a 108x19, button.button.ghost 55x38 | textos<11.5px: 3
+usuario-treinar@1440: alvos<40px (2): a 108x19, button.button.ghost 55x38 | textos<11.5px: 3
+usuario-resultados@320: arrastar: nav.app-nav (720/274), div.table-wrap (720/256) | alvos<40px (2): a.app-brand 164x40, button.button.ghost 55x38 | textos<11.5px: 4
+usuario-resultados@360: arrastar: nav.app-nav (720/314), div.table-wrap (720/296) | alvos<40px (2): a.app-brand 164x40, button.button.ghost 55x38 | textos<11.5px: 4
+usuario-resultados@390: arrastar: nav.app-nav (720/344), div.table-wrap (720/326) | alvos<40px (2): a.app-brand 164x40, button.button.ghost 55x38 | textos<11.5px: 4
+usuario-resultados@414: arrastar: nav.app-nav (720/368), div.table-wrap (720/350) | alvos<40px (2): a.app-brand 164x40, button.button.ghost 55x38 | textos<11.5px: 4
+usuario-resultados@600: arrastar: nav.app-nav (720/554), div.table-wrap (720/536) | alvos<40px (2): a.app-brand 164x40, button.button.ghost 55x38 | textos<11.5px: 5
+usuario-resultados@768: arrastar: div.table-wrap (720/704) | alvos<40px (2): a.app-brand 164x40, button.button.ghost 55x38 | textos<11.5px: 5
+usuario-resultados@900: alvos<40px (2): a.app-brand 66x40, button.button.ghost 55x38 | textos<11.5px: 6
+usuario-resultados@1024: alvos<40px (2): a.app-brand 66x40, button.button.ghost 55x38 | textos<11.5px: 6
+usuario-resultados@1280: alvos<40px (2): a 108x18, button.button.ghost 55x38 | textos<11.5px: 6
+usuario-resultados@1440: alvos<40px (2): a 108x18, button.button.ghost 55x38 | textos<11.5px: 6
+usuario-conquistas@320: arrastar: nav.app-nav (720/274) | alvos<40px (5): a.app-brand 164x40, button.button.ghost 55x38, button 63x34, button 121x34, button 117x34 | textos<11.5px: 4
+usuario-conquistas@360: arrastar: nav.app-nav (720/314) | alvos<40px (5): a.app-brand 164x40, button.button.ghost 55x38, button 63x34, button 121x34, button 117x34 | textos<11.5px: 4
+usuario-conquistas@390: arrastar: nav.app-nav (720/344) | alvos<40px (5): a.app-brand 164x40, button.button.ghost 55x38, button 63x34, button 121x34, button 117x34 | textos<11.5px: 4
+usuario-conquistas@414: arrastar: nav.app-nav (720/368) | alvos<40px (5): a.app-brand 164x40, button.button.ghost 55x38, button 63x34, button 121x34, button 117x34 | textos<11.5px: 4
+usuario-conquistas@600: arrastar: nav.app-nav (720/554) | alvos<40px (5): a.app-brand 164x40, button.button.ghost 55x38, button 63x34, button 121x34, button 117x34 | textos<11.5px: 5
+usuario-conquistas@768: alvos<40px (5): a.app-brand 164x40, button.button.ghost 55x38, button 63x34, button 121x34, button 117x34 | textos<11.5px: 5
+usuario-conquistas@900: alvos<40px (5): a.app-brand 66x40, button.button.ghost 55x38, button 63x34, button 121x34, button 117x34 | textos<11.5px: 6
+usuario-conquistas@1024: alvos<40px (5): a.app-brand 66x40, button.button.ghost 55x38, button 63x34, button 121x34, button 117x34 | textos<11.5px: 6
+usuario-conquistas@1280: alvos<40px (5): a 108x18, button.button.ghost 55x38, button 63x34, button 121x34, button 117x34 | textos<11.5px: 6
+usuario-conquistas@1440: alvos<40px (5): a 108x18, button.button.ghost 55x38, button 63x34, button 121x34, button 117x34 | textos<11.5px: 6
+usuario-ranking@320: arrastar: nav.app-nav (719/274), div.table-wrap (720/256) | alvos<40px (3): a.app-brand 164x40, button.button.ghost 55x38, a.button.secondary 108x38 | textos<11.5px: 3
+usuario-ranking@360: arrastar: nav.app-nav (719/314), div.table-wrap (720/296) | alvos<40px (3): a.app-brand 164x40, button.button.ghost 55x38, a.button.secondary 108x38 | textos<11.5px: 3
+usuario-ranking@390: arrastar: nav.app-nav (719/344), div.table-wrap (720/326) | alvos<40px (3): a.app-brand 164x40, button.button.ghost 55x38, a.button.secondary 108x38 | textos<11.5px: 3
+usuario-ranking@414: arrastar: nav.app-nav (719/368), div.table-wrap (720/350) | alvos<40px (3): a.app-brand 164x40, button.button.ghost 55x38, a.button.secondary 108x38 | textos<11.5px: 3
+usuario-ranking@600: arrastar: nav.app-nav (719/554), div.table-wrap (720/536) | alvos<40px (3): a.app-brand 164x40, button.button.ghost 55x38, a.button.secondary 108x38 | textos<11.5px: 4
+usuario-ranking@768: arrastar: div.table-wrap (720/704) | alvos<40px (3): a.app-brand 164x40, button.button.ghost 55x38, a.button.secondary 108x38 | textos<11.5px: 4
+usuario-ranking@900: alvos<40px (3): a.app-brand 66x40, button.button.ghost 55x38, a.button.secondary 108x38 | textos<11.5px: 5
+usuario-ranking@1024: alvos<40px (3): a.app-brand 66x40, button.button.ghost 55x38, a.button.secondary 108x38 | textos<11.5px: 5
+usuario-ranking@1280: alvos<40px (3): a 108x18, button.button.ghost 55x38, a.button.secondary 108x38 | textos<11.5px: 5
+usuario-ranking@1440: alvos<40px (3): a 108x18, button.button.ghost 55x38, a.button.secondary 108x38 | textos<11.5px: 5
+usuario-perfil@320: arrastar: nav.app-nav (719/274) | alvos<40px (2): a.app-brand 164x40, button.button.ghost 55x38 | textos<11.5px: 1
+usuario-perfil@360: arrastar: nav.app-nav (719/314) | alvos<40px (2): a.app-brand 164x40, button.button.ghost 55x38 | textos<11.5px: 1
+usuario-perfil@390: arrastar: nav.app-nav (719/344) | alvos<40px (2): a.app-brand 164x40, button.button.ghost 55x38 | textos<11.5px: 1
+usuario-perfil@414: arrastar: nav.app-nav (719/368) | alvos<40px (2): a.app-brand 164x40, button.button.ghost 55x38 | textos<11.5px: 1
+usuario-perfil@600: arrastar: nav.app-nav (719/554) | alvos<40px (2): a.app-brand 164x40, button.button.ghost 55x38 | textos<11.5px: 2
+usuario-perfil@768: alvos<40px (2): a.app-brand 164x40, button.button.ghost 55x38 | textos<11.5px: 2
+usuario-perfil@900: alvos<40px (2): a.app-brand 66x40, button.button.ghost 55x38 | textos<11.5px: 3
+usuario-perfil@1024: alvos<40px (2): a.app-brand 66x40, button.button.ghost 55x38 | textos<11.5px: 3
+usuario-perfil@1280: alvos<40px (2): a 108x18, button.button.ghost 55x38 | textos<11.5px: 3
+usuario-perfil@1440: alvos<40px (2): a 108x18, button.button.ghost 55x38 | textos<11.5px: 3
+aluno-index@320: arrastar: nav.app-nav (840/274), div.table-wrap (720/256) | alvos<40px (4): a.app-brand 164x40, button.button.ghost 55x38, a.button.ghost 176x38, a.button.secondary 108x38 | textos<11.5px: 3
+aluno-index@360: arrastar: nav.app-nav (840/314), div.table-wrap (720/296) | alvos<40px (4): a.app-brand 164x40, button.button.ghost 55x38, a.button.ghost 176x38, a.button.secondary 108x38 | textos<11.5px: 3
+aluno-index@390: arrastar: nav.app-nav (840/344), div.table-wrap (720/326) | alvos<40px (4): a.app-brand 164x40, button.button.ghost 55x38, a.button.ghost 176x38, a.button.secondary 108x38 | textos<11.5px: 3
+aluno-index@414: arrastar: nav.app-nav (840/368), div.table-wrap (720/350) | alvos<40px (4): a.app-brand 164x40, button.button.ghost 55x38, a.button.ghost 176x38, a.button.secondary 108x38 | textos<11.5px: 3
+aluno-index@600: arrastar: nav.app-nav (840/554), div.table-wrap (720/536) | alvos<40px (4): a.app-brand 164x40, button.button.ghost 55x38, a.button.ghost 176x38, a.button.secondary 108x38 | textos<11.5px: 4
+aluno-index@768: arrastar: nav.app-nav (840/722), div.table-wrap (720/704) | alvos<40px (4): a.app-brand 164x40, button.button.ghost 55x38, a.button.ghost 176x38, a.button.secondary 108x38 | textos<11.5px: 4
+aluno-index@900: alvos<40px (4): a.app-brand 66x40, button.button.ghost 55x38, a.button.ghost 176x38, a.button.secondary 108x38 | textos<11.5px: 5
+aluno-index@1024: alvos<40px (4): a.app-brand 66x40, button.button.ghost 55x38, a.button.ghost 176x38, a.button.secondary 108x38 | textos<11.5px: 5
+aluno-index@1280: alvos<40px (4): a 108x18, button.button.ghost 55x38, a.button.ghost 176x38, a.button.secondary 108x38 | textos<11.5px: 5
+aluno-index@1440: alvos<40px (4): a 108x18, button.button.ghost 55x38, a.button.ghost 176x38, a.button.secondary 108x38 | textos<11.5px: 5
+aluno-exercicios@320: arrastar: nav.app-nav (840/274) | alvos<40px (7): a.app-brand 164x40, button.button.ghost 55x38, a.etapa-iniciar 81x38, a.etapa-iniciar 73x38, a.button.secondary 160x38, a.button.small 69x38 | textos<11.5px: 3
+aluno-exercicios@360: arrastar: nav.app-nav (840/314) | alvos<40px (7): a.app-brand 164x40, button.button.ghost 55x38, a.etapa-iniciar 81x38, a.etapa-iniciar 73x38, a.button.secondary 160x38, a.button.small 69x38 | textos<11.5px: 3
+aluno-exercicios@390: arrastar: nav.app-nav (840/344) | alvos<40px (7): a.app-brand 164x40, button.button.ghost 55x38, a.etapa-iniciar 81x38, a.etapa-iniciar 73x38, a.button.secondary 160x38, a.button.small 69x38 | textos<11.5px: 3
+aluno-exercicios@414: arrastar: nav.app-nav (840/368) | alvos<40px (7): a.app-brand 164x40, button.button.ghost 55x38, a.etapa-iniciar 81x38, a.etapa-iniciar 73x38, a.button.secondary 160x38, a.button.small 69x38 | textos<11.5px: 3
+aluno-exercicios@600: arrastar: nav.app-nav (840/554) | alvos<40px (7): a.app-brand 164x40, button.button.ghost 55x38, a.etapa-iniciar 81x38, a.etapa-iniciar 73x38, a.button.secondary 160x38, a.button.small 69x38 | textos<11.5px: 4
+aluno-exercicios@768: arrastar: nav.app-nav (840/722) | alvos<40px (7): a.app-brand 164x40, button.button.ghost 55x38, a.etapa-iniciar 81x38, a.etapa-iniciar 73x38, a.button.secondary 160x38, a.button.small 69x38 | textos<11.5px: 4
+aluno-exercicios@900: alvos<40px (7): a.app-brand 66x40, button.button.ghost 55x38, a.etapa-iniciar 81x38, a.etapa-iniciar 73x38, a.button.secondary 160x38, a.button.small 69x38 | textos<11.5px: 5
+aluno-exercicios@1024: alvos<40px (7): a.app-brand 66x40, button.button.ghost 55x38, a.etapa-iniciar 81x38, a.etapa-iniciar 73x38, a.button.secondary 160x38, a.button.small 69x38 | textos<11.5px: 5
+aluno-exercicios@1280: alvos<40px (7): a 108x18, button.button.ghost 55x38, a.etapa-iniciar 81x38, a.etapa-iniciar 73x38, a.button.secondary 160x38, a.button.small 69x38 | textos<11.5px: 5
+aluno-exercicios@1440: alvos<40px (7): a 108x18, button.button.ghost 55x38, a.etapa-iniciar 81x38, a.etapa-iniciar 73x38, a.button.secondary 160x38, a.button.small 69x38 | textos<11.5px: 5
+aluno-treinar@320: arrastar: nav.app-nav (840/274) | alvos<40px (2): a.app-brand 164x40, button.button.ghost 55x38 | textos<11.5px: 1
+aluno-treinar@360: arrastar: nav.app-nav (840/314) | alvos<40px (2): a.app-brand 164x40, button.button.ghost 55x38 | textos<11.5px: 1
+aluno-treinar@390: arrastar: nav.app-nav (840/344) | alvos<40px (2): a.app-brand 164x40, button.button.ghost 55x38 | textos<11.5px: 1
+aluno-treinar@414: arrastar: nav.app-nav (840/368) | alvos<40px (2): a.app-brand 164x40, button.button.ghost 55x38 | textos<11.5px: 1
+aluno-treinar@600: arrastar: nav.app-nav (840/554) | alvos<40px (2): a.app-brand 164x40, button.button.ghost 55x38 | textos<11.5px: 2
+aluno-treinar@768: arrastar: nav.app-nav (840/722) | alvos<40px (2): a.app-brand 164x40, button.button.ghost 55x38 | textos<11.5px: 2
+aluno-treinar@900: alvos<40px (2): a.app-brand 66x40, button.button.ghost 55x38 | textos<11.5px: 3
+aluno-treinar@1024: alvos<40px (2): a.app-brand 66x40, button.button.ghost 55x38 | textos<11.5px: 3
+aluno-treinar@1280: alvos<40px (2): a 108x19, button.button.ghost 55x38 | textos<11.5px: 3
+aluno-treinar@1440: alvos<40px (2): a 108x19, button.button.ghost 55x38 | textos<11.5px: 3
+aluno-turmas@320: arrastar: nav.app-nav (840/274) | alvos<40px (3): a.app-brand 164x40, button.button.ghost 55x38, button.copiar 54x22 | textos<11.5px: 4
+aluno-turmas@360: arrastar: nav.app-nav (840/314) | alvos<40px (3): a.app-brand 164x40, button.button.ghost 55x38, button.copiar 54x22 | textos<11.5px: 4
+aluno-turmas@390: arrastar: nav.app-nav (840/344) | alvos<40px (3): a.app-brand 164x40, button.button.ghost 55x38, button.copiar 54x22 | textos<11.5px: 4
+aluno-turmas@414: arrastar: nav.app-nav (840/368) | alvos<40px (3): a.app-brand 164x40, button.button.ghost 55x38, button.copiar 54x22 | textos<11.5px: 4
+aluno-turmas@600: arrastar: nav.app-nav (840/554) | alvos<40px (3): a.app-brand 164x40, button.button.ghost 55x38, button.copiar 54x22 | textos<11.5px: 5
+aluno-turmas@768: arrastar: nav.app-nav (840/722) | alvos<40px (3): a.app-brand 164x40, button.button.ghost 55x38, button.copiar 54x22 | textos<11.5px: 5
+aluno-turmas@900: alvos<40px (3): a.app-brand 66x40, button.button.ghost 55x38, button.copiar 54x22 | textos<11.5px: 6
+aluno-turmas@1024: alvos<40px (3): a.app-brand 66x40, button.button.ghost 55x38, button.copiar 54x22 | textos<11.5px: 6
+aluno-turmas@1280: alvos<40px (3): a 108x18, button.button.ghost 55x38, button.copiar 54x22 | textos<11.5px: 6
+aluno-turmas@1440: alvos<40px (3): a 108x18, button.button.ghost 55x38, button.copiar 54x22 | textos<11.5px: 6
+aluno-resultados@320: arrastar: nav.app-nav (840/274), div.table-wrap (720/256) | alvos<40px (2): a.app-brand 164x40, button.button.ghost 55x38 | textos<11.5px: 4
+aluno-resultados@360: arrastar: nav.app-nav (840/314), div.table-wrap (720/296) | alvos<40px (2): a.app-brand 164x40, button.button.ghost 55x38 | textos<11.5px: 4
+aluno-resultados@390: arrastar: nav.app-nav (840/344), div.table-wrap (720/326) | alvos<40px (2): a.app-brand 164x40, button.button.ghost 55x38 | textos<11.5px: 4
+aluno-resultados@414: arrastar: nav.app-nav (840/368), div.table-wrap (720/350) | alvos<40px (2): a.app-brand 164x40, button.button.ghost 55x38 | textos<11.5px: 4
+aluno-resultados@600: arrastar: nav.app-nav (840/554), div.table-wrap (720/536) | alvos<40px (2): a.app-brand 164x40, button.button.ghost 55x38 | textos<11.5px: 5
+aluno-resultados@768: arrastar: nav.app-nav (840/722), div.table-wrap (720/704) | alvos<40px (2): a.app-brand 164x40, button.button.ghost 55x38 | textos<11.5px: 5
+aluno-resultados@900: alvos<40px (2): a.app-brand 66x40, button.button.ghost 55x38 | textos<11.5px: 6
+aluno-resultados@1024: alvos<40px (2): a.app-brand 66x40, button.button.ghost 55x38 | textos<11.5px: 6
+aluno-resultados@1280: alvos<40px (2): a 108x18, button.button.ghost 55x38 | textos<11.5px: 6
+aluno-resultados@1440: alvos<40px (2): a 108x18, button.button.ghost 55x38 | textos<11.5px: 6
+aluno-conquistas@320: arrastar: nav.app-nav (840/274) | alvos<40px (5): a.app-brand 164x40, button.button.ghost 55x38, button 63x34, button 121x34, button 117x34 | textos<11.5px: 4
+aluno-conquistas@360: arrastar: nav.app-nav (840/314) | alvos<40px (5): a.app-brand 164x40, button.button.ghost 55x38, button 63x34, button 121x34, button 117x34 | textos<11.5px: 4
+aluno-conquistas@390: arrastar: nav.app-nav (840/344) | alvos<40px (5): a.app-brand 164x40, button.button.ghost 55x38, button 63x34, button 121x34, button 117x34 | textos<11.5px: 4
+aluno-conquistas@414: arrastar: nav.app-nav (840/368) | alvos<40px (5): a.app-brand 164x40, button.button.ghost 55x38, button 63x34, button 121x34, button 117x34 | textos<11.5px: 4
+aluno-conquistas@600: arrastar: nav.app-nav (840/554) | alvos<40px (5): a.app-brand 164x40, button.button.ghost 55x38, button 63x34, button 121x34, button 117x34 | textos<11.5px: 5
+aluno-conquistas@768: arrastar: nav.app-nav (840/722) | alvos<40px (5): a.app-brand 164x40, button.button.ghost 55x38, button 63x34, button 121x34, button 117x34 | textos<11.5px: 5
+aluno-conquistas@900: alvos<40px (5): a.app-brand 66x40, button.button.ghost 55x38, button 63x34, button 121x34, button 117x34 | textos<11.5px: 6
+aluno-conquistas@1024: alvos<40px (5): a.app-brand 66x40, button.button.ghost 55x38, button 63x34, button 121x34, button 117x34 | textos<11.5px: 6
+aluno-conquistas@1280: alvos<40px (5): a 108x18, button.button.ghost 55x38, button 63x34, button 121x34, button 117x34 | textos<11.5px: 6
+aluno-conquistas@1440: alvos<40px (5): a 108x18, button.button.ghost 55x38, button 63x34, button 121x34, button 117x34 | textos<11.5px: 6
+aluno-ranking@320: arrastar: nav.app-nav (840/274) | alvos<40px (2): a.app-brand 164x40, button.button.ghost 55x38 | textos<11.5px: 1
+aluno-ranking@360: arrastar: nav.app-nav (840/314) | alvos<40px (2): a.app-brand 164x40, button.button.ghost 55x38 | textos<11.5px: 1
+aluno-ranking@390: arrastar: nav.app-nav (840/344) | alvos<40px (2): a.app-brand 164x40, button.button.ghost 55x38 | textos<11.5px: 1
+aluno-ranking@414: arrastar: nav.app-nav (840/368) | alvos<40px (2): a.app-brand 164x40, button.button.ghost 55x38 | textos<11.5px: 1
+aluno-ranking@600: arrastar: nav.app-nav (840/554) | alvos<40px (2): a.app-brand 164x40, button.button.ghost 55x38 | textos<11.5px: 2
+aluno-ranking@768: arrastar: nav.app-nav (840/722) | alvos<40px (2): a.app-brand 164x40, button.button.ghost 55x38 | textos<11.5px: 2
+aluno-ranking@900: alvos<40px (2): a.app-brand 66x40, button.button.ghost 55x38 | textos<11.5px: 3
+aluno-ranking@1024: alvos<40px (2): a.app-brand 66x40, button.button.ghost 55x38 | textos<11.5px: 3
+aluno-ranking@1280: alvos<40px (2): a 108x18, button.button.ghost 55x38 | textos<11.5px: 3
+aluno-ranking@1440: alvos<40px (2): a 108x18, button.button.ghost 55x38 | textos<11.5px: 3
+aluno-perfil@320: arrastar: nav.app-nav (840/274) | alvos<40px (3): a.app-brand 164x40, button.button.ghost 55x38, button.copiar 54x22 | textos<11.5px: 2
+aluno-perfil@360: arrastar: nav.app-nav (840/314) | alvos<40px (3): a.app-brand 164x40, button.button.ghost 55x38, button.copiar 54x22 | textos<11.5px: 2
+aluno-perfil@390: arrastar: nav.app-nav (840/344) | alvos<40px (3): a.app-brand 164x40, button.button.ghost 55x38, button.copiar 54x22 | textos<11.5px: 2
+aluno-perfil@414: arrastar: nav.app-nav (840/368) | alvos<40px (3): a.app-brand 164x40, button.button.ghost 55x38, button.copiar 54x22 | textos<11.5px: 2
+aluno-perfil@600: arrastar: nav.app-nav (840/554) | alvos<40px (3): a.app-brand 164x40, button.button.ghost 55x38, button.copiar 54x22 | textos<11.5px: 3
+aluno-perfil@768: arrastar: nav.app-nav (840/722) | alvos<40px (3): a.app-brand 164x40, button.button.ghost 55x38, button.copiar 54x22 | textos<11.5px: 3
+aluno-perfil@900: alvos<40px (3): a.app-brand 66x40, button.button.ghost 55x38, button.copiar 54x22 | textos<11.5px: 4
+aluno-perfil@1024: alvos<40px (3): a.app-brand 66x40, button.button.ghost 55x38, button.copiar 54x22 | textos<11.5px: 4
+aluno-perfil@1280: alvos<40px (3): a 108x18, button.button.ghost 55x38, button.copiar 54x22 | textos<11.5px: 4
+aluno-perfil@1440: alvos<40px (3): a 108x18, button.button.ghost 55x38, button.copiar 54x22 | textos<11.5px: 4
+professor-index@320: arrastar: nav.app-nav (682/274), div.table-wrap (720/256) | alvos<40px (3): a.app-brand 164x40, button.button.ghost 55x38, a.button.secondary 97x38 | textos<11.5px: 4
+professor-index@360: arrastar: nav.app-nav (682/314), div.table-wrap (720/296) | alvos<40px (3): a.app-brand 164x40, button.button.ghost 55x38, a.button.secondary 97x38 | textos<11.5px: 4
+professor-index@390: arrastar: nav.app-nav (682/344), div.table-wrap (720/326) | alvos<40px (3): a.app-brand 164x40, button.button.ghost 55x38, a.button.secondary 97x38 | textos<11.5px: 4
+professor-index@414: arrastar: nav.app-nav (682/368), div.table-wrap (720/350) | alvos<40px (3): a.app-brand 164x40, button.button.ghost 55x38, a.button.secondary 97x38 | textos<11.5px: 4
+professor-index@600: arrastar: nav.app-nav (682/554), div.table-wrap (720/536) | alvos<40px (3): a.app-brand 164x40, button.button.ghost 55x38, a.button.secondary 97x38 | textos<11.5px: 5
+professor-index@768: arrastar: div.table-wrap (720/704) | alvos<40px (3): a.app-brand 164x40, button.button.ghost 55x38, a.button.secondary 97x38 | textos<11.5px: 5
+professor-index@900: alvos<40px (3): a.app-brand 66x40, button.button.ghost 55x38, a.button.secondary 97x38 | textos<11.5px: 6
+professor-index@1024: alvos<40px (3): a.app-brand 66x40, button.button.ghost 55x38, a.button.secondary 97x38 | textos<11.5px: 6
+professor-index@1280: alvos<40px (3): a 108x18, button.button.ghost 55x38, a.button.secondary 97x38 | textos<11.5px: 6
+professor-index@1440: alvos<40px (3): a 108x18, button.button.ghost 55x38, a.button.secondary 97x38 | textos<11.5px: 6
+professor-turmas@320: arrastar: nav.app-nav (682/274) | alvos<40px (9): a.app-brand 164x40, button.button.ghost 55x38, button.copiar 54x22, button.copiar 76x22, a.button.small 73x38, button.button.secondary 67x38 | textos<11.5px: 13
+professor-turmas@360: arrastar: nav.app-nav (682/314) | alvos<40px (9): a.app-brand 164x40, button.button.ghost 55x38, button.copiar 54x22, button.copiar 76x22, a.button.small 73x38, button.button.secondary 67x38 | textos<11.5px: 13
+professor-turmas@390: arrastar: nav.app-nav (682/344) | alvos<40px (9): a.app-brand 164x40, button.button.ghost 55x38, button.copiar 54x22, button.copiar 76x22, a.button.small 73x38, button.button.secondary 67x38 | textos<11.5px: 13
+professor-turmas@414: arrastar: nav.app-nav (682/368) | alvos<40px (9): a.app-brand 164x40, button.button.ghost 55x38, button.copiar 54x22, button.copiar 76x22, a.button.small 73x38, button.button.secondary 67x38 | textos<11.5px: 13
+professor-turmas@600: arrastar: nav.app-nav (682/554) | alvos<40px (9): a.app-brand 164x40, button.button.ghost 55x38, button.copiar 54x22, button.copiar 76x22, a.button.small 73x38, button.button.secondary 67x38 | textos<11.5px: 14
+professor-turmas@768: alvos<40px (9): a.app-brand 164x40, button.button.ghost 55x38, button.copiar 54x22, button.copiar 76x22, a.button.small 73x38, button.button.secondary 67x38 | textos<11.5px: 14
+professor-turmas@900: alvos<40px (9): a.app-brand 66x40, button.button.ghost 55x38, button.copiar 54x22, button.copiar 76x22, a.button.small 73x38, button.button.secondary 67x38 | textos<11.5px: 15
+professor-turmas@1024: alvos<40px (9): a.app-brand 66x40, button.button.ghost 55x38, button.copiar 54x22, button.copiar 76x22, a.button.small 73x38, button.button.secondary 67x38 | textos<11.5px: 15
+professor-turmas@1280: alvos<40px (9): a 108x18, button.button.ghost 55x38, button.copiar 54x22, button.copiar 76x22, a.button.small 73x38, button.button.secondary 67x38 | textos<11.5px: 15
+professor-turmas@1440: alvos<40px (9): a 108x18, button.button.ghost 55x38, button.copiar 54x22, button.copiar 76x22, a.button.small 73x38, button.button.secondary 67x38 | textos<11.5px: 15
+professor-alunos@320: arrastar: nav.app-nav (682/274), div.table-wrap (720/298) | alvos<40px (2): a.app-brand 164x40, button.button.ghost 55x38 | textos<11.5px: 1
+professor-alunos@360: arrastar: nav.app-nav (682/314), div.table-wrap (720/338) | alvos<40px (2): a.app-brand 164x40, button.button.ghost 55x38 | textos<11.5px: 1
+professor-alunos@390: arrastar: nav.app-nav (682/344), div.table-wrap (720/368) | alvos<40px (2): a.app-brand 164x40, button.button.ghost 55x38 | textos<11.5px: 1
+professor-alunos@414: arrastar: nav.app-nav (682/368), div.table-wrap (720/392) | alvos<40px (2): a.app-brand 164x40, button.button.ghost 55x38 | textos<11.5px: 1
+professor-alunos@600: arrastar: nav.app-nav (682/554), div.table-wrap (720/578) | alvos<40px (2): a.app-brand 164x40, button.button.ghost 55x38 | textos<11.5px: 2
+professor-alunos@768: alvos<40px (2): a.app-brand 164x40, button.button.ghost 55x38 | textos<11.5px: 2
+professor-alunos@900: alvos<40px (2): a.app-brand 66x40, button.button.ghost 55x38 | textos<11.5px: 3
+professor-alunos@1024: alvos<40px (2): a.app-brand 66x40, button.button.ghost 55x38 | textos<11.5px: 3
+professor-alunos@1280: alvos<40px (2): a 108x18, button.button.ghost 55x38 | textos<11.5px: 3
+professor-alunos@1440: alvos<40px (2): a 108x18, button.button.ghost 55x38 | textos<11.5px: 3
+professor-exercicios@320: arrastar: nav.app-nav (683/274) | alvos<40px (2): a.app-brand 164x40, button.button.ghost 55x38 | textos<11.5px: 1
+professor-exercicios@360: arrastar: nav.app-nav (683/314) | alvos<40px (2): a.app-brand 164x40, button.button.ghost 55x38 | textos<11.5px: 1
+professor-exercicios@390: arrastar: nav.app-nav (683/344) | alvos<40px (2): a.app-brand 164x40, button.button.ghost 55x38 | textos<11.5px: 1
+professor-exercicios@414: arrastar: nav.app-nav (683/368) | alvos<40px (2): a.app-brand 164x40, button.button.ghost 55x38 | textos<11.5px: 1
+professor-exercicios@600: arrastar: nav.app-nav (683/554) | alvos<40px (2): a.app-brand 164x40, button.button.ghost 55x38 | textos<11.5px: 2
+professor-exercicios@768: alvos<40px (2): a.app-brand 164x40, button.button.ghost 55x38 | textos<11.5px: 2
+professor-exercicios@900: alvos<40px (2): a.app-brand 66x40, button.button.ghost 55x38 | textos<11.5px: 3
+professor-exercicios@1024: alvos<40px (2): a.app-brand 66x40, button.button.ghost 55x38 | textos<11.5px: 3
+professor-exercicios@1280: alvos<40px (2): a 108x18, button.button.ghost 55x38 | textos<11.5px: 3
+professor-exercicios@1440: alvos<40px (2): a 108x18, button.button.ghost 55x38 | textos<11.5px: 3
+professor-relatorios@320: arrastar: nav.app-nav (683/274), div.table-wrap (720/256) | alvos<40px (2): a.app-brand 164x40, button.button.ghost 55x38 | textos<11.5px: 4
+professor-relatorios@360: arrastar: nav.app-nav (683/314), div.table-wrap (720/296) | alvos<40px (2): a.app-brand 164x40, button.button.ghost 55x38 | textos<11.5px: 4
+professor-relatorios@390: arrastar: nav.app-nav (683/344), div.table-wrap (720/326) | alvos<40px (2): a.app-brand 164x40, button.button.ghost 55x38 | textos<11.5px: 4
+professor-relatorios@414: arrastar: nav.app-nav (683/368), div.table-wrap (720/350) | alvos<40px (2): a.app-brand 164x40, button.button.ghost 55x38 | textos<11.5px: 4
+professor-relatorios@600: arrastar: nav.app-nav (683/554), div.table-wrap (720/536) | alvos<40px (2): a.app-brand 164x40, button.button.ghost 55x38 | textos<11.5px: 5
+professor-relatorios@768: arrastar: div.table-wrap (720/704) | alvos<40px (2): a.app-brand 164x40, button.button.ghost 55x38 | textos<11.5px: 5
+professor-relatorios@900: alvos<40px (2): a.app-brand 66x40, button.button.ghost 55x38 | textos<11.5px: 6
+professor-relatorios@1024: alvos<40px (2): a.app-brand 66x40, button.button.ghost 55x38 | textos<11.5px: 6
+professor-relatorios@1280: alvos<40px (2): a 108x18, button.button.ghost 55x38 | textos<11.5px: 6
+professor-relatorios@1440: alvos<40px (2): a 108x18, button.button.ghost 55x38 | textos<11.5px: 6
+professor-perfil@320: arrastar: nav.app-nav (682/274) | alvos<40px (2): a.app-brand 164x40, button.button.ghost 55x38 | textos<11.5px: 1
+professor-perfil@360: arrastar: nav.app-nav (682/314) | alvos<40px (2): a.app-brand 164x40, button.button.ghost 55x38 | textos<11.5px: 1
+professor-perfil@390: arrastar: nav.app-nav (682/344) | alvos<40px (2): a.app-brand 164x40, button.button.ghost 55x38 | textos<11.5px: 1
+professor-perfil@414: arrastar: nav.app-nav (682/368) | alvos<40px (2): a.app-brand 164x40, button.button.ghost 55x38 | textos<11.5px: 1
+professor-perfil@600: arrastar: nav.app-nav (682/554) | alvos<40px (2): a.app-brand 164x40, button.button.ghost 55x38 | textos<11.5px: 2
+professor-perfil@768: alvos<40px (2): a.app-brand 164x40, button.button.ghost 55x38 | textos<11.5px: 2
+professor-perfil@900: alvos<40px (2): a.app-brand 66x40, button.button.ghost 55x38 | textos<11.5px: 3
+professor-perfil@1024: alvos<40px (2): a.app-brand 66x40, button.button.ghost 55x38 | textos<11.5px: 3
+professor-perfil@1280: alvos<40px (2): a 108x18, button.button.ghost 55x38 | textos<11.5px: 3
+professor-perfil@1440: alvos<40px (2): a 108x18, button.button.ghost 55x38 | textos<11.5px: 3
