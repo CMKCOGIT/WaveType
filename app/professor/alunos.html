@@ -21,6 +21,16 @@
     </form>
     <div class="table-wrap"><table class="data-table"><thead><tr><th>Aluno</th><th>Sessões</th><th>WPM médio</th><th>Precisão média</th><th>Atividades concluídas</th><th>Última prática</th><th>Ponto de partida</th><th></th></tr></thead><tbody data-tabela-alunos><tr><td colspan="8">Carregando…</td></tr></tbody></table></div>
     <p class="auth-demo" style="margin-top:12px">Remover um aluno não apaga os resultados dele: a matrícula fica inativa e pode ser reativada adicionando o aluno de novo.</p>
+    <dialog class="dialogo" data-dialogo-login aria-labelledby="titulo-trocar-login">
+        <form method="dialog" class="perfil-form" data-form-trocar-login novalidate>
+            <h2 id="titulo-trocar-login">Trocar usuário</h2>
+            <p data-texto-trocar-login>O progresso e a senha continuam os mesmos. Só muda o que o aluno digita para entrar.</p>
+            <label class="field"><span>Novo usuário</span><input name="login" autocomplete="off" autocapitalize="none" spellcheck="false" maxlength="50" required></label>
+            <p class="auth-demo" data-previa-trocar-login></p>
+            <p class="feedback is-erro" data-feedback-trocar-login hidden role="alert"></p>
+            <div class="form-actions"><button class="button" type="submit" value="salvar">Salvar usuário</button><button class="button secondary" type="button" data-cancelar-login>Cancelar</button></div>
+        </form>
+    </dialog>
 </main></div></div>
 <script type="module" src="../../js/pages/professor-alunos.js"></script><script type="module" src="../../js/motion.js"></script><script type="module" src="../../js/ui/plataforma.js"></script>
 </body></html>

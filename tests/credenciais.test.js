@@ -65,3 +65,12 @@ test('lista colada: um nome por linha, sem vazias nem repetidas', () => {
   assert.deepEqual(nomesDaLista('Maria Silva\n\n  João  Souza \nmaria silva\nx'), ['Maria Silva', 'João Souza']);
   assert.equal(normalizarNome('Ação'), 'acao');
 });
+
+test('troca de usuário: normaliza o que o professor digitou', async () => {
+  const { normalizarLoginEscolhido } = await import('../js/contas/credenciais.js');
+  assert.equal(normalizarLoginEscolhido('Maria Silva'), 'maria.silva');
+  assert.equal(normalizarLoginEscolhido(' maria..silva_santos '), 'maria.silva.santos');
+  assert.equal(normalizarLoginEscolhido('João-Pedro'), 'joao.pedro');
+  assert.equal(normalizarLoginEscolhido('ab'), '');
+  assert.equal(normalizarLoginEscolhido('!!!'), '');
+});

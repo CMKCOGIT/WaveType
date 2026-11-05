@@ -98,3 +98,18 @@ export function nomesDaLista(texto) {
       return true;
     });
 }
+
+/**
+ * Usuário escolhido pelo professor ao trocar: aceita "Maria Silva" ou
+ * "maria.silva" e devolve no formato do banco (minúsculas, sem acento,
+ * partes separadas por ponto), ou '' se não sobrar nada válido.
+ */
+export function normalizarLoginEscolhido(texto) {
+  const login = normalizarNome(String(texto ?? '').replace(/[._-]+/g, ' '))
+    .split(' ')
+    .filter(Boolean)
+    .join('.')
+    .slice(0, LOGIN_MAXIMO)
+    .replace(/\.+$/, '');
+  return LOGIN_VALIDO.test(login) && login.length >= 3 ? login : '';
+}

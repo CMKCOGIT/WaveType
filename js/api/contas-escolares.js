@@ -51,3 +51,10 @@ export async function transferirContaEscolar() {
   const { error } = await supabase.rpc('transferir_conta_escolar');
   if (error) throw traduzErro(error);
 }
+
+/** Professor: troca o usuário da escola. Devolve o usuário final (com sufixo se já existir). */
+export async function alterarLoginDoAluno(alunoId, login) {
+  const { data, error } = await supabase.rpc('professor_alterar_login_aluno', { p_aluno_id: alunoId, p_login: login });
+  if (error) throw traduzErro(error);
+  return data;
+}

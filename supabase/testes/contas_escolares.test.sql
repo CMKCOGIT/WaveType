@@ -88,6 +88,23 @@ do $$ begin
   assert (select count(*) from public.contas_escolares) = 2, 'professor vê as contas dos alunos da turma';
 end $$;
 
+-- Professor troca o usuário: colisão ganha sufixo, senha e histórico continuam
+do $$ begin
+  assert public.professor_alterar_login_aluno((select valor::uuid from t_ctx where chave='aluno1'), 'Maria.Silva.Santos2') = 'maria.silva.santos22', 'colisão com outro aluno → sufixo';
+  assert public.professor_alterar_login_aluno((select valor::uuid from t_ctx where chave='aluno1'), 'maria.santos') = 'maria.santos';
+  assert public.login_escolar('maria.santos', 'bola592') is not null, 'novo usuário entra com a mesma senha';
+  assert public.login_escolar('maria.silva.santos', 'bola592') is null, 'usuário antigo deixa de valer';
+  assert (select count(*) from public.resultados where aluno_id = (select valor::uuid from t_ctx where chave='aluno1')) = 1, 'histórico intacto';
+  assert public.professor_alterar_login_aluno((select valor::uuid from t_ctx where chave='aluno1'), 'maria.silva.santos') = 'maria.silva.santos', 'volta ao original';
+end $$;
+do $$
+declare negado boolean := false;
+begin
+  begin perform public.professor_alterar_login_aluno((select valor::uuid from t_ctx where chave='aluno1'), 'Maria Silva');
+  exception when others then negado := sqlerrm like 'Usuário inválido%'; end;
+  assert negado, 'formato inválido é recusado';
+end $$;
+
 -- Outro professor não redefine senha de aluno que não é dele
 select null from set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-0000000000a2', true);
 do $$
@@ -96,6 +113,10 @@ begin
   begin perform public.professor_redefinir_senha_aluno((select valor::uuid from t_ctx where chave='aluno1'), 'pato222');
   exception when others then negado := true; end;
   assert negado, 'professor de outra turma não redefine';
+  negado := false;
+  begin perform public.professor_alterar_login_aluno((select valor::uuid from t_ctx where chave='aluno1'), 'hack.er');
+  exception when others then negado := true; end;
+  assert negado, 'professor de outra turma não troca o usuário';
   assert (select count(*) from public.contas_escolares) = 0, 'outro professor não vê as contas';
 end $$;
 
@@ -134,5 +155,5 @@ do $$ begin
   assert not exists (select 1 from public.matriculas where aluno_id = (select valor::uuid from t_ctx where chave='aluno1') and ativa), 'saiu das turmas';
 end $$;
 
-\echo 'ok - contas escolares: criação, colisão, login, bloqueio, redefinição, permissões, vínculo e transferência'
+\echo 'ok - contas escolares: criação, colisão, login, bloqueio, redefinição, troca de usuário, permissões, vínculo e transferência'
 rollback;

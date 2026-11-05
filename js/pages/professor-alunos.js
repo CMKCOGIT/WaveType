@@ -1,8 +1,8 @@
 // js/pages/professor-alunos.js
 import { exigirPapel } from '../auth.js';
 import { listarMinhasTurmas, listarAlunosDaTurma, adicionarAluno, removerAlunoDaTurma } from '../api/turmas.js';
-import { criarAlunosNaTurma, redefinirSenhaDoAluno, loginsDosAlunos } from '../api/contas-escolares.js';
-import { nomesDaLista, sugerirLogins } from '../contas/credenciais.js';
+import { criarAlunosNaTurma, redefinirSenhaDoAluno, loginsDosAlunos, alterarLoginDoAluno } from '../api/contas-escolares.js';
+import { nomesDaLista, sugerirLogins, normalizarLoginEscolhido } from '../contas/credenciais.js';
 import { nivelamentoDosAlunos } from '../api/nivelamento.js';
 import { NIVEIS_RECOMENDADOS } from '../nivelamento/config.js';
 
@@ -70,7 +70,7 @@ function renderizarTabela() {
             <td class="mono">${a.atividades_concluidas}</td>
             <td>${a.ultima_pratica ? new Date(a.ultima_pratica).toLocaleDateString('pt-BR') : '—'}</td>
             <td>${celulaPontoDePartida(a.aluno_id)}</td>
-            <td class="row-actions">${loginsEscola.has(a.aluno_id) ? `<button type="button" class="button secondary small" data-nova-senha="${a.aluno_id}">Nova senha</button>` : ''}<button type="button" class="button ghost small" data-remover="${a.aluno_id}">Remover</button></td>
+            <td class="row-actions">${loginsEscola.has(a.aluno_id) ? `<button type="button" class="button secondary small" data-nova-senha="${a.aluno_id}">Nova senha</button><button type="button" class="button ghost small" data-trocar-login="${a.aluno_id}">Trocar usuário</button>` : ''}<button type="button" class="button ghost small" data-remover="${a.aluno_id}">Remover</button></td>
           </tr>`
         )
         .join('')
@@ -80,6 +80,8 @@ function renderizarTabela() {
 corpo.addEventListener('click', async (evento) => {
   const novaSenha = evento.target.closest('[data-nova-senha]');
   if (novaSenha) return gerarNovaSenha(novaSenha);
+  const trocarLogin = evento.target.closest('[data-trocar-login]');
+  if (trocarLogin) return abrirTrocaDeLogin(trocarLogin.dataset.trocarLogin);
   const botao = evento.target.closest('[data-remover]');
   if (!botao) return;
   const aluno = alunosCarregados.find((a) => a.aluno_id === botao.dataset.remover);
@@ -240,3 +242,53 @@ function celulaPontoDePartida(alunoId) {
   }
   return `<div class="table-name">${partes.join('')}</div>`;
 }
+
+// ---------- Trocar o usuário da escola ----------
+
+const dialogo = document.querySelector('[data-dialogo-login]');
+const formLogin = document.querySelector('[data-form-trocar-login]');
+const previaLogin = document.querySelector('[data-previa-trocar-login]');
+const feedbackLogin = document.querySelector('[data-feedback-trocar-login]');
+let alunoDaTroca = null;
+
+function abrirTrocaDeLogin(alunoId) {
+  alunoDaTroca = alunosCarregados.find((a) => a.aluno_id === alunoId) ?? null;
+  if (!alunoDaTroca) return;
+  const atual = loginsEscola.get(alunoId) ?? '';
+  document.querySelector('[data-texto-trocar-login]').textContent =
+    `${alunoDaTroca.nome} entra hoje como “${atual}”. O progresso e a senha continuam os mesmos; só muda o que é digitado para entrar.`;
+  formLogin.elements.login.value = atual;
+  previaLogin.textContent = '';
+  feedbackLogin.hidden = true;
+  dialogo.showModal();
+  formLogin.elements.login.select();
+}
+
+formLogin.elements.login.addEventListener('input', () => {
+  const login = normalizarLoginEscolhido(formLogin.elements.login.value);
+  previaLogin.textContent = login ? `Vai ficar: ${login} (se já existir, ganha um número no fim).` : 'Use pelo menos 3 letras ou números.';
+});
+document.querySelector('[data-cancelar-login]').addEventListener('click', () => dialogo.close());
+
+formLogin.addEventListener('submit', async (evento) => {
+  evento.preventDefault();
+  const login = normalizarLoginEscolhido(formLogin.elements.login.value);
+  if (!login) {
+    feedbackLogin.textContent = 'Usuário inválido. Use letras, números e pontos (ex.: maria.silva).';
+    feedbackLogin.hidden = false;
+    return;
+  }
+  const botao = formLogin.querySelector('button[type="submit"]');
+  botao.disabled = true;
+  try {
+    const final = await alterarLoginDoAluno(alunoDaTroca.aluno_id, login);
+    dialogo.close();
+    await carregarAlunos();
+    alert(`Pronto! ${alunoDaTroca.nome} agora entra como “${final}”, com a mesma senha.`);
+  } catch (erro) {
+    feedbackLogin.textContent = erro.message;
+    feedbackLogin.hidden = false;
+  } finally {
+    botao.disabled = false;
+  }
+});

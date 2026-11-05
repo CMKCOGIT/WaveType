@@ -1541,3 +1541,20 @@ body[data-page="treinar"] .typing-shell {
   margin: 0;
   font-weight: 650;
 }
+
+/* Diálogo simples da plataforma (ex.: trocar usuário do aluno) */
+.dialogo {
+  width: min(460px, calc(100vw - 32px));
+  padding: 24px;
+  color: var(--p-text, var(--wt-text));
+  background: var(--p-surface, var(--wt-surface));
+  border: 1px solid var(--wt-line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--wt-shadow-2);
+}
+.dialogo::backdrop {
+  background: rgba(14, 23, 48, 0.45);
+}
+.dialogo h2 {
+  margin: 0 0 6px;
+}
