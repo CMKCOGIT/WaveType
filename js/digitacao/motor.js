@@ -38,6 +38,7 @@ export function criarMotor({ palavras = [], modo = MODOS_ERRO.fluxo, errosParaSu
   let errosSeguidos = 0;
   let ultimoErrado = null;
   const errosPorTecla = new Map();
+  const tentativasPorTecla = new Map(); // vezes em que cada tecla era a esperada
   const palavrasProblema = new Set();
   const tempos = [];
 
@@ -50,6 +51,11 @@ export function criarMotor({ palavras = [], modo = MODOS_ERRO.fluxo, errosParaSu
 
   function registrarTempo(t) {
     if (Number.isFinite(t)) tempos.push(t);
+  }
+
+  function contarTentativa(teclaEsperada) {
+    const chave = chaveDaTecla(teclaEsperada);
+    tentativasPorTecla.set(chave, (tentativasPorTecla.get(chave) || 0) + 1);
   }
 
   function registrarErro(teclaEsperada, p) {
@@ -75,6 +81,7 @@ export function criarMotor({ palavras = [], modo = MODOS_ERRO.fluxo, errosParaSu
     teclas += 1;
     const i = p.digitado.length;
     const esperado = i < p.texto.length ? p.texto[i] : ' ';
+    contarTentativa(esperado);
 
     if (modo === MODOS_ERRO.correcao) {
       if (caractere === esperado) {
@@ -110,6 +117,7 @@ export function criarMotor({ palavras = [], modo = MODOS_ERRO.fluxo, errosParaSu
     // Espaço no começo da palavra é ignorado (evita espaços duplos).
     if (!p || p.digitado.length === 0) return { tipo: 'ignorada' };
     const completa = p.digitado.length >= p.texto.length;
+    contarTentativa(completa ? ' ' : p.texto[p.digitado.length]);
 
     if (modo === MODOS_ERRO.correcao && !completa) {
       registrarTempo(t);
@@ -251,6 +259,8 @@ export function criarMotor({ palavras = [], modo = MODOS_ERRO.fluxo, errosParaSu
       pausas: ritmo.pausas,
       ...texto,
       errosPorTecla: [...errosPorTecla.entries()].sort((a, b) => b[1] - a[1]),
+      // [[tecla, { tentativas, erros }]]: base da sugestão por teclas (Etapa 4.2)
+      desempenhoPorTecla: [...tentativasPorTecla.entries()].map(([tecla, tentativas]) => [tecla, { tentativas, erros: errosPorTecla.get(tecla) || 0 }]),
       palavrasProblema: [...palavrasProblema],
     };
   }

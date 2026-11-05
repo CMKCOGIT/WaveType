@@ -172,16 +172,31 @@ export function licaoRecomendadaAtual(licaoDoNivelamento, decisoes = []) {
 }
 
 /**
+ * Teclas muito abaixo do esperado numa tentativa (a partir do desempenho
+ * por tecla do motor). Devolve as teclas, da pior para a melhor.
+ */
+export function teclasMuitoAbaixo(desempenhoPorTecla = []) {
+  return desempenhoPorTecla
+    .filter(([tecla, d]) => tecla !== 'espaço' && d.tentativas >= SUGESTAO.tentativasMinimas && d.erros / d.tentativas >= SUGESTAO.taxaErro)
+    .sort((a, b) => b[1].erros / b[1].tentativas - a[1].erros / a[1].tentativas)
+    .map(([tecla]) => tecla);
+}
+
+/**
  * Deve sugerir um exercício mais fácil? Só quando a pessoa foi mal em N
  * tentativas seguidas DESTE exercício e ele está acima do recomendado.
  *   precisoes: precisões das tentativas deste exercício, a mais recente por último.
  * Devolve { recomendado } ou null. Sem nivelamento, sugere fazer o teste.
  */
-export function sugestaoDuranteTreino({ exercicio, precisoes, recomendada }) {
+export function sugestaoDuranteTreino({ exercicio, precisoes, recomendada, teclasAbaixo = [] }) {
   if (!exercicio || exercicio.atividade) return null; // atividade do professor: não sugerimos trocar
   const ultimas = precisoes.slice(-SUGESTAO.tentativasSeguidas);
-  if (ultimas.length < SUGESTAO.tentativasSeguidas || ultimas.some((p) => p >= SUGESTAO.precisaoBaixa)) return null;
-  if (!recomendada) return { fazerNivelamento: true };
+  const precisaoBaixa = ultimas.length >= SUGESTAO.tentativasSeguidas && ultimas.every((p) => p < SUGESTAO.precisaoBaixa);
+  const muitasTeclas = teclasAbaixo.length >= SUGESTAO.teclasMinimas;
+  if (!precisaoBaixa && !muitasTeclas) return null;
+  const motivo = precisaoBaixa ? 'precisao' : 'teclas';
+  const teclas = teclasAbaixo.slice(0, 3);
+  if (!recomendada) return { fazerNivelamento: true, motivo, teclas };
   if (posicao({ nivel: exercicio.nivel, ordem: exercicio.ordem }) <= posicao(recomendada)) return null;
-  return { recomendado: { ...recomendada } };
+  return { recomendado: { ...recomendada }, motivo, teclas };
 }

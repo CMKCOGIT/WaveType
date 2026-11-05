@@ -554,7 +554,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 acertos: stats.teclasCorretas,
                 erros: stats.erros,
                 tempo_seg: Math.round(elapsedSeconds),
-                concluiu_texto: !tempoEsgotado
+                concluiu_texto: !tempoEsgotado,
+                desempenho_teclas: stats.desempenhoPorTecla
             }
         }));
 

@@ -12,7 +12,7 @@ import { modosDeErroDasTurmas } from '../api/turmas.js';
 import { NIVEIS } from '../exercicios-dados.js';
 import { PRECISAO_MINIMA_TRILHA, resultadoConcluiu, motivoNaoConcluiu, formatarTempo } from '../regras.js';
 import { avisarConquistas } from '../ui/toast-conquista.js';
-import { sugestaoDuranteTreino } from '../nivelamento/avaliacao.js';
+import { sugestaoDuranteTreino, teclasMuitoAbaixo } from '../nivelamento/avaliacao.js';
 import { licaoRecomendada, registrarDecisaoDeSugestao } from '../api/nivelamento.js';
 
 export function iniciarTreino(papel) {
@@ -43,7 +43,7 @@ export function iniciarTreino(papel) {
       definirTexto('[data-salvo]', 'Resultado salvo no seu histórico.');
       await explicarResultado(aviso, exercicio, resultado);
       avisarConquistas(novasConquistas);
-      sugerirSeDificil(aviso, exercicio, Number(resultado.precisao)).catch((erro) => console.warn('Sugestão indisponível:', erro));
+      sugerirSeDificil(aviso, exercicio, Number(resultado.precisao), evento.detail.desempenho_teclas).catch((erro) => console.warn('Sugestão indisponível:', erro));
     } catch (erro) {
       console.error('Falha ao salvar o resultado:', erro);
       definirTexto('[data-salvo]', 'Não foi possível salvar este resultado.');
@@ -240,23 +240,26 @@ function registrarTentativa(exercicioId, precisao) {
   return lista;
 }
 
-async function sugerirSeDificil(aviso, exercicio, precisao) {
+async function sugerirSeDificil(aviso, exercicio, precisao, desempenhoTeclas = []) {
   document.querySelectorAll('.sugestao-nivel').forEach((antiga) => antiga.remove());
   if (!exercicio || exercicio.atividade || !Number.isFinite(precisao)) return;
   const precisoes = registrarTentativa(exercicio.id, precisao);
   const recomendada = await licaoRecomendada();
-  const sugestao = sugestaoDuranteTreino({ exercicio, precisoes, recomendada });
+  const sugestao = sugestaoDuranteTreino({ exercicio, precisoes, recomendada, teclasAbaixo: teclasMuitoAbaixo(desempenhoTeclas) });
   if (!sugestao) return;
 
   let destino = '../../nivelamento.html';
-  let texto = 'Esse exercício parece difícil agora. Quer fazer o teste de nivelamento para achar o melhor ponto de partida?';
+  const motivo = sugestao.motivo === 'teclas'
+    ? `As teclas ${sugestao.teclas.map((t) => `“${t}”`).join(', ')} estão dando bastante trabalho neste exercício.`
+    : 'Esse exercício parece difícil agora.';
+  let texto = `${motivo} Quer fazer o teste de nivelamento para achar o melhor ponto de partida?`;
   let rotulo = 'Fazer o teste de nivelamento';
   if (sugestao.recomendado) {
     const alvo = (await listarExercicios()).find((e) => e.nivel === sugestao.recomendado.nivel && e.ordem === sugestao.recomendado.ordem);
     if (!alvo) return;
     const nivel = NIVEIS.find((n) => n.nivel === alvo.nivel);
     destino = `treinar.html?id=${alvo.id}`;
-    texto = `Esse exercício parece difícil agora. Quer começar pelo “${alvo.titulo}” (nível ${alvo.nivel}${nivel ? `, ${nivel.titulo}` : ''})? Depois você volta para este.`;
+    texto = `${motivo} Quer começar pelo “${alvo.titulo}” (nível ${alvo.nivel}${nivel ? `, ${nivel.titulo}` : ''})? Depois você volta para este.`;
     rotulo = 'Ir para o recomendado';
   }
 

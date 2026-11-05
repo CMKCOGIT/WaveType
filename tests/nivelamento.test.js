@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { regiaoDaTecla, resumirEtapa, deveAvancar, recomendar, licaoRecomendadaAtual, sugestaoDuranteTreino } from '../js/nivelamento/avaliacao.js';
+import { regiaoDaTecla, resumirEtapa, deveAvancar, recomendar, licaoRecomendadaAtual, sugestaoDuranteTreino, teclasMuitoAbaixo } from '../js/nivelamento/avaliacao.js';
 import { criarMotor } from '../js/digitacao/motor.js';
 import { ETAPAS, PRECISAO_PARA_AVANCAR } from '../js/nivelamento/config.js';
 
@@ -77,8 +77,39 @@ test('sugestão no treino: só depois de 2 tentativas ruins acima do recomendado
   const recomendada = { nivel: 2, ordem: 1 };
   assert.equal(sugestaoDuranteTreino({ exercicio, precisoes: [50], recomendada }), null);
   assert.equal(sugestaoDuranteTreino({ exercicio, precisoes: [50, 75], recomendada }), null);
-  assert.deepEqual(sugestaoDuranteTreino({ exercicio, precisoes: [90, 50, 60], recomendada }), { recomendado: recomendada });
+  assert.deepEqual(sugestaoDuranteTreino({ exercicio, precisoes: [90, 50, 60], recomendada }), { recomendado: recomendada, motivo: 'precisao', teclas: [] });
   assert.equal(sugestaoDuranteTreino({ exercicio: { nivel: 1, ordem: 5 }, precisoes: [50, 60], recomendada }), null, 'abaixo do recomendado não sugere');
-  assert.deepEqual(sugestaoDuranteTreino({ exercicio, precisoes: [50, 60], recomendada: null }), { fazerNivelamento: true });
+  assert.deepEqual(sugestaoDuranteTreino({ exercicio, precisoes: [50, 60], recomendada: null }), { fazerNivelamento: true, motivo: 'precisao', teclas: [] });
   assert.equal(sugestaoDuranteTreino({ exercicio: { ...exercicio, atividade: true }, precisoes: [10, 10], recomendada }), null);
+});
+
+test('teclas muito abaixo do esperado: taxa de erro alta com amostra mínima', () => {
+  const d = [
+    ['q', { tentativas: 4, erros: 3 }],
+    ['p', { tentativas: 5, erros: 2 }],
+    ['z', { tentativas: 2, erros: 2 }], // poucas aparições: não conta
+    ['a', { tentativas: 20, erros: 1 }],
+    ['espaço', { tentativas: 10, erros: 9 }], // espaço fica de fora
+  ];
+  assert.deepEqual(teclasMuitoAbaixo(d), ['q', 'p']);
+});
+
+test('sugestão por teclas: 3 teclas muito abaixo sugerem mesmo com precisão boa', () => {
+  const exercicio = { nivel: 4, ordem: 10, atividade: false };
+  const recomendada = { nivel: 2, ordem: 1 };
+  assert.equal(sugestaoDuranteTreino({ exercicio, precisoes: [85], recomendada, teclasAbaixo: ['q', 'p'] }), null);
+  assert.deepEqual(sugestaoDuranteTreino({ exercicio, precisoes: [85], recomendada, teclasAbaixo: ['q', 'p', 'z', 'x'] }), {
+    recomendado: recomendada,
+    motivo: 'teclas',
+    teclas: ['q', 'p', 'z'],
+  });
+});
+
+test('motor conta tentativas por tecla para a sugestão', () => {
+  const m = criarMotor({ palavras: ['qa', 'qa', 'qa'] });
+  let t = 0;
+  for (const c of 'xa xa qa ') m.digitar(c, (t += 100));
+  const q = new Map(m.estatisticas(10).desempenhoPorTecla).get('q');
+  assert.deepEqual(q, { tentativas: 3, erros: 2 });
+  assert.deepEqual(teclasMuitoAbaixo(m.estatisticas(10).desempenhoPorTecla), ['q']);
 });

@@ -79,4 +79,10 @@ export const SUGESTAO = {
   // Depois de ignorar esta quantidade de sugestões seguidas, o nível
   // recomendado sobe uma etapa (a pessoa mostrou que quer avançar).
   ignoradasParaSubir: 3,
+  // "Muito abaixo do esperado em N teclas": numa tentativa, pelo menos
+  // `teclasMinimas` teclas erradas em `taxaErro` (40%) ou mais das vezes,
+  // cada uma com `tentativasMinimas` aparições (para não julgar por 1 erro).
+  teclasMinimas: 3,
+  taxaErro: 0.4,
+  tentativasMinimas: 3,
 };
