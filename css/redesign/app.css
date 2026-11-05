@@ -5,11 +5,7 @@
    ========================================================================== */
 
 :root {
-  --wt-wave-line: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 16'%3E%3Cpath d='M0 8c10 0 10-6 20-6s10 12 20 12 10-12 20-12 10 12 20 12 10-12 20-12 10 6 20 6' fill='none' stroke='%23000' stroke-width='2'/%3E%3C/svg%3E");
   /* Uma escala de raio para site e plataforma */
-  --radius-sm: var(--wt-radius-sm);
-  --radius: var(--wt-radius-lg);
-  --radius-lg: var(--wt-radius-xl);
   --muted: var(--wt-text-muted);
   --line: var(--wt-line);
   --shadow-soft: var(--wt-shadow-1);
@@ -37,7 +33,7 @@ body {
 
 /* ---- Botões ---- */
 .button {
-  border-radius: var(--wt-radius-pill);
+  border-radius: var(--radius-sm);
   transition:
     transform var(--wt-dur-fast) var(--wt-ease-out),
     background-color var(--wt-dur-fast) var(--wt-ease-standard),
@@ -97,33 +93,10 @@ body {
 }
 /* Arcos antigos dão lugar a ondas contínuas na base do painel */
 .auth-aside::before {
-  left: 0;
-  right: 0;
-  bottom: 18px;
-  width: auto;
-  height: 22px;
-  border: 0;
-  border-radius: 0;
-  background: rgba(255, 255, 255, 0.5);
-  -webkit-mask: var(--wt-wave-line) left center / 120px 100% repeat-x;
-  mask: var(--wt-wave-line) left center / 120px 100% repeat-x;
-  opacity: 0.5;
-  transform: none;
+  content: none; /* substituído por <wave-background> */
 }
 .auth-aside::after {
-  top: auto;
-  left: 0;
-  right: 0;
-  bottom: 44px;
-  width: auto;
-  height: 16px;
-  border: 0;
-  border-radius: 0;
-  background: var(--wt-aqua-300);
-  -webkit-mask: var(--wt-wave-line) 30px center / 80px 100% repeat-x;
-  mask: var(--wt-wave-line) 30px center / 80px 100% repeat-x;
-  opacity: 0.45;
-  transform: none;
+  content: none;
 }
 .auth-copy > p {
   color: rgba(255, 255, 255, 0.94); /* era 0,78 → 4,09:1; agora ≥ 5:1 */
@@ -196,7 +169,7 @@ body {
   bottom: 10px;
   width: var(--wt-nav-indicador);
   background: var(--wt-nav-indicador-cor);
-  border-radius: 0 4px 4px 0;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
 }
 .app-topbar {
   position: sticky;

@@ -36,13 +36,13 @@
   padding: 4px;
   background: var(--wt-surface-sunken);
   border: 1px solid var(--wt-line);
-  border-radius: var(--wt-radius-pill);
+  border-radius: var(--radius-sm);
 }
 .segment {
   min-height: 40px;
   padding: 8px 14px;
   color: var(--wt-text-muted);
-  border-radius: var(--wt-radius-pill);
+  border-radius: var(--radius-sm);
   transition:
     color var(--wt-dur-fast) var(--wt-ease-standard),
     background-color var(--wt-dur-fast) var(--wt-ease-standard),
@@ -70,7 +70,7 @@
   color: var(--wt-text);
   background: var(--wt-surface);
   border-color: var(--wt-line);
-  border-radius: var(--wt-radius-pill);
+  border-radius: var(--radius-sm);
   transition: background-color var(--wt-dur-fast) var(--wt-ease-standard), border-color var(--wt-dur-fast);
 }
 .accessibility-menu summary:hover,
@@ -110,7 +110,7 @@ html[data-theme="dark"] .preference-toggle i {
   color: var(--wt-accent);
 }
 .restart-button {
-  border-radius: var(--wt-radius-pill);
+  border-radius: var(--radius-sm);
   transition: color var(--wt-dur-fast), background-color var(--wt-dur-fast);
 }
 
@@ -156,7 +156,7 @@ html[data-theme="dark"] .typing-shell.focused .typing-stage {
 
 .letter.incorrect {
   color: var(--wt-danger);
-  border-radius: 3px;
+  border-radius: var(--radius-xs);
 }
 .letter.missed {
   color: var(--wt-danger);
@@ -219,7 +219,7 @@ body.high-contrast .typing-shell.focused .typing-stage {
 .word.bloqueada {
   color: var(--wt-danger);
   background: color-mix(in srgb, var(--wt-danger) 14%, transparent);
-  border-radius: 3px;
+  border-radius: var(--radius-xs);
 }
 @media (prefers-reduced-motion: no-preference) {
   body:not(.reduce-motion) .letter.bloqueada,

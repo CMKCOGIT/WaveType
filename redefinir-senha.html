@@ -19,6 +19,7 @@
 <body>
     <main class="auth-page">
         <aside class="auth-aside">
+            <wave-background variante="clara"></wave-background>
             <a href="index.html"><img class="auth-logo" src="assets/images/brand/wavetype-logo-white.svg" alt="WaveType"></a>
             <div class="auth-copy">
                 <span class="eyebrow">Seu ritmo continua aqui</span>
@@ -29,7 +30,7 @@
         </aside>
         <section class="auth-main" aria-labelledby="titulo-pagina">
             <div class="auth-card">
-                <div class="auth-carregando" role="status" aria-live="polite"><span class="auth-spinner" aria-hidden="true"></span>Validando o link…</div>
+                <div class="auth-carregando" role="status" aria-live="polite"><wave-loader></wave-loader>Validando o link…</div>
                 <a class="eyebrow" href="login.html">← Voltar ao login</a>
                 <h2 id="titulo-pagina">Crie uma nova senha</h2>
                 <p data-instrucao>Escolha uma senha com 8 ou mais caracteres, com letras e números.</p>

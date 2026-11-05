@@ -1,3 +1,5 @@
+import './ui/onda.js';
+
 document.addEventListener('DOMContentLoaded', () => {
     const themeToggle = document.getElementById('theme-toggle');
     const themeMeta = document.querySelector('meta[name="theme-color"]');

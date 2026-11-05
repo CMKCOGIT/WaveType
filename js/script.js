@@ -1,4 +1,6 @@
 import { criarMotor } from './digitacao/motor.js';
+import { caminhoSuave } from './ui/onda-caminho.js';
+import './ui/onda.js';
 import { METRICAS, MODOS_ERRO, MODO_ERROS_POR_NIVEL, modoErrosDoExercicio } from './digitacao/config.js';
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -411,7 +413,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const y = bottom - ((Math.min(value, maxValue) / maxValue) * (bottom - top));
             return [x, y];
         });
-        const line = points.map(([x, y], index) => `${index === 0 ? 'M' : 'L'} ${x.toFixed(1)} ${y.toFixed(1)}`).join(' ');
+        // Traço em onda (curva suave entre as amostras), parte da identidade.
+        const line = caminhoSuave(points);
         elements.chartLine.setAttribute('d', line);
         elements.chartArea.setAttribute('d', `${line} L ${right} ${bottom} L ${left} ${bottom} Z`);
     }
@@ -498,6 +501,16 @@ document.addEventListener('DOMContentLoaded', () => {
         elements.resultRaw.textContent = String(rawWpm);
         elements.resultAccuracy.textContent = accuracy == null ? '—' : `${accuracy}%`;
         elements.resultConsistency.textContent = consistencyLabel(consistency);
+        // Onda do indicador: calma quando o ritmo é estável, agitada quando oscila.
+        const cartaoConsistencia = elements.resultConsistency.closest('.result-metric');
+        if (cartaoConsistencia) {
+            let medidor = cartaoConsistencia.querySelector('wave-meter');
+            if (!medidor) {
+                medidor = document.createElement('wave-meter');
+                cartaoConsistencia.append(medidor);
+            }
+            medidor.setAttribute('valor', consistency == null ? '' : String(consistency));
+        }
         const notaConsistencia = elements.resultConsistency.nextElementSibling;
         if (notaConsistencia) {
             notaConsistencia.textContent = consistency == null ? 'digite um pouco mais para medir' : 'estabilidade do ritmo';

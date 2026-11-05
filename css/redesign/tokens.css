@@ -62,13 +62,33 @@
   --wt-space-16: 64px;
   --wt-section: clamp(64px, 9vw, 120px);
 
-  /* ---- Raios (uma escala só para site e plataforma) ---- */
-  --wt-radius-xs: 6px;
-  --wt-radius-sm: 10px;
-  --wt-radius-md: 14px;
-  --wt-radius-lg: 20px;
-  --wt-radius-xl: 28px;
-  --wt-radius-pill: 999px;
+  /* ---- Formas da onda (fonte única; os componentes em js/ui/onda.js
+     desenham as versões em SVG inline) ---- */
+  --wt-wave-svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 80' preserveAspectRatio='none'%3E%3Cpath d='M0 48c120-26 240-38 360-24s240 46 360 46 240-34 360-46 240 6 360 22v34H0z' fill='%23000'/%3E%3C/svg%3E");
+  --wt-wave-line: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 16'%3E%3Cpath d='M0 8c10 0 10-6 20-6s10 12 20 12 10-12 20-12 10 12 20 12 10-12 20-12 10 6 20 6' fill='none' stroke='%23000' stroke-width='2'/%3E%3C/svg%3E");
+
+  --wt-wave-line-grossa: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 16'%3E%3Cpath d='M0 8c5 0 5-5 10-5s5 10 10 10 5-10 10-10 5 5 10 5' fill='none' stroke='%23000' stroke-width='4.5' stroke-linecap='round'/%3E%3C/svg%3E");
+
+  /* ---- Raios: identidade "Wave" (cantos discretos; a curva fica na onda) ----
+     Controles (botões, campos, seletores): --radius-sm.
+     Cartões e painéis: --radius-md / --radius-lg.
+     Pílula: só tags, selos e indicadores pequenos. */
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-pill: 999px;
+  /* Nomes antigos apontam para a mesma escala */
+  --radius: var(--radius-lg);
+  --wt-radius-xs: var(--radius-sm);
+  --wt-radius-sm: var(--radius-md);
+  --wt-radius-md: var(--radius-md);
+  --wt-radius-lg: var(--radius-lg);
+  --wt-radius-xl: var(--radius-lg);
+  --wt-radius-pill: var(--radius-pill);
+  --p-radius: var(--radius-lg);
+  --p-radius-sm: var(--radius-md);
+  --p-radius-xs: var(--radius-sm);
 
   /* ---- Tipografia ---- */
   --wt-font-sans: "Manrope", system-ui, sans-serif;

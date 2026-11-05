@@ -4,11 +4,6 @@
    Só aparência. Nenhum seletor usado pelo JS muda de nome.
    ========================================================================== */
 
-/* Onda reutilizável (SVG em linha, sem requisição externa) */
-:root {
-  --wt-wave-svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 80' preserveAspectRatio='none'%3E%3Cpath d='M0 48c120-26 240-38 360-24s240 46 360 46 240-34 360-46 240 6 360 22v34H0z' fill='%23000'/%3E%3C/svg%3E");
-  --wt-wave-line: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 16'%3E%3Cpath d='M0 8c10 0 10-6 20-6s10 12 20 12 10-12 20-12 10 12 20 12 10-12 20-12 10 6 20 6' fill='none' stroke='%23000' stroke-width='2'/%3E%3C/svg%3E");
-}
 
 body {
   font-family: var(--wt-font-sans);
@@ -22,12 +17,12 @@ body {
 :focus-visible {
   outline: 3px solid var(--wt-focus);
   outline-offset: 3px;
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
 }
 
 /* ---- Botões ---- */
 .button {
-  border-radius: var(--wt-radius-pill);
+  border-radius: var(--radius-sm);
   transition:
     transform var(--wt-dur-fast) var(--wt-ease-out),
     background-color var(--wt-dur-fast) var(--wt-ease-standard),
@@ -72,7 +67,7 @@ body {
   position: relative;
   padding: 0 12px;
   color: var(--wt-text-muted);
-  border-radius: var(--wt-radius-pill);
+  border-radius: var(--radius-sm);
   transition: color var(--wt-dur-fast), background-color var(--wt-dur-fast);
 }
 .desktop-nav a:hover {
@@ -88,7 +83,7 @@ body {
   bottom: 6px;
   height: var(--wt-nav-indicador);
   background: var(--wt-nav-indicador-cor);
-  border-radius: var(--wt-radius-pill);
+  border-radius: var(--radius-pill);
 }
 .desktop-nav a[aria-current="page"]:hover {
   color: var(--wt-accent);
@@ -118,7 +113,7 @@ body {
   bottom: 12px;
   width: var(--wt-nav-indicador);
   background: var(--wt-nav-indicador-cor);
-  border-radius: 0 var(--wt-radius-pill) var(--wt-radius-pill) 0;
+  border-radius: 0 var(--radius-pill) var(--radius-pill) 0;
 }
 
 /* ---- Cabeçalho conforme a sessão (js/sessao/cabecalho.js) ---- */
@@ -129,7 +124,7 @@ body {
   width: 132px;
   height: 40px;
   margin-left: 8px;
-  border-radius: var(--wt-radius-pill);
+  border-radius: var(--radius-pill);
   background: linear-gradient(90deg, var(--wt-surface-sunken), var(--wt-surface-tint), var(--wt-surface-sunken));
   background-size: 200% 100%;
 }
@@ -171,7 +166,7 @@ html[data-sessao="conectado"] [data-so-visitante] {
   font-size: 0.92rem;
   background: var(--wt-surface);
   border: 1px solid var(--wt-line);
-  border-radius: var(--wt-radius-pill);
+  border-radius: var(--radius-sm);
   cursor: pointer;
 }
 .conta-botao:hover {
@@ -304,7 +299,7 @@ html[data-sessao="conectado"] [data-so-visitante] {
 }
 .theme-toggle {
   border-color: var(--wt-line);
-  border-radius: var(--wt-radius-pill);
+  border-radius: var(--radius-sm);
   transition: background-color var(--wt-dur-fast), border-color var(--wt-dur-fast), transform var(--wt-dur-base) var(--wt-ease-out);
 }
 .theme-toggle:hover {
@@ -373,21 +368,12 @@ body.high-contrast .page-hero h1 span {
 }
 /* Onda que fecha a seção */
 .typing-section::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: -1px;
-  height: clamp(28px, 4vw, 56px);
-  background: var(--wt-surface);
-  -webkit-mask: var(--wt-wave-svg) center / 100% 100% no-repeat;
-  mask: var(--wt-wave-svg) center / 100% 100% no-repeat;
-  pointer-events: none;
+  content: none; /* substituído por <wave-divider> na seção seguinte */
 }
 /* Os blocos de "ritmo" viram ondulações suaves */
 .typing-rhythm span {
   height: 14px;
-  border-radius: var(--wt-radius-pill);
+  border-radius: var(--radius-pill);
   opacity: 0.22;
 }
 .typing-rhythm span:nth-child(1) {
@@ -510,7 +496,7 @@ body.high-contrast .page-hero h1 span {
   background: color-mix(in srgb, var(--wt-aqua-500) 9%, transparent);
   width: fit-content;
   align-self: flex-start;
-  border-radius: var(--wt-radius-pill);
+  border-radius: var(--radius-pill);
   font-size: 0.9rem;
 }
 html[data-theme="dark"] .step-item b {
@@ -526,7 +512,7 @@ html[data-theme="dark"] .step-item b {
   box-shadow: var(--wt-shadow-3);
 }
 .preview-tab-btn {
-  border-radius: var(--wt-radius-pill);
+  border-radius: var(--radius-sm);
   transition: background-color var(--wt-dur-fast), color var(--wt-dur-fast), box-shadow var(--wt-dur-fast);
 }
 .p-nav-icon {
@@ -566,16 +552,7 @@ html[data-theme="dark"] .preview-action-tag {
   border-bottom: 0;
 }
 .page-hero::after {
-  width: auto;
-  height: clamp(24px, 3.5vw, 48px);
-  left: 0;
-  right: 0;
-  bottom: -1px;
-  background: var(--wt-surface);
-  border-radius: 0;
-  opacity: 1;
-  -webkit-mask: var(--wt-wave-svg) center / 100% 100% no-repeat;
-  mask: var(--wt-wave-svg) center / 100% 100% no-repeat;
+  content: none; /* substituído por <wave-divider> na seção seguinte */
 }
 
 /* ---- Chamadas finais ---- */
@@ -606,14 +583,7 @@ body.high-contrast .plain-cta {
   border-top: 1px solid var(--wt-line);
 }
 .site-footer::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: -1px;
-  height: 3px;
-  background: var(--wt-gradient-wave);
-  opacity: 0.8;
+  content: none; /* substituído por <wave-divider tipo="linha"> */
 }
 /* Rodapé enxuto: a navegação fica só no cabeçalho (que é fixo). */
 .site-footer .footer-inner {
@@ -665,7 +635,7 @@ body.high-contrast .plain-cta {
     color: var(--wt-on-accent);
     background: var(--wt-accent);
     border-bottom: 0;
-    border-radius: var(--wt-radius-pill);
+    border-radius: var(--radius-sm);
   }
 }
 @media (max-width: 380px) {
@@ -692,7 +662,7 @@ body.high-contrast .plain-cta {
   letter-spacing: 0.02em;
   background: var(--wt-surface-sunken);
   border: 1px dashed var(--wt-line-strong);
-  border-radius: var(--wt-radius-pill);
+  border-radius: var(--radius-pill);
 }
 .preview-caption {
   line-height: 1.5;

@@ -42,7 +42,7 @@
   gap: 12px;
   padding: 10px 12px;
   border: 1px solid var(--line);
-  border-radius: 10px;
+  border-radius: var(--radius-md);
 }
 
 .etapa-numero {
@@ -52,7 +52,7 @@
   width: 30px;
   height: 30px;
   flex-shrink: 0;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   background: var(--surface-soft);
   font-weight: 700;
   color: var(--action);
@@ -85,7 +85,7 @@
   max-width: 260px;
   height: 4px;
   overflow: hidden;
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   background: var(--surface-soft);
 }
 
@@ -107,7 +107,7 @@
   justify-content: center;
   flex-shrink: 0;
   padding: 8px 14px;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   background: var(--action);
   color: white;
   text-decoration: none;
@@ -155,7 +155,7 @@
   color: var(--violet);
   background: rgba(107, 92, 231, 0.1);
   border: 1px solid rgba(107, 92, 231, 0.28);
-  border-radius: 99px;
+  border-radius: var(--radius-pill);
   font-size: 0.72rem;
   font-weight: 800;
 }

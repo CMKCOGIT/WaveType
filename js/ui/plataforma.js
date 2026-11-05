@@ -7,6 +7,8 @@
 //   vire um cartão legível.
 // Não toca em dados, sessão nem formulários.
 
+import './onda.js';
+
 const CHAVE_TEMA = 'wavetype_theme';
 const raiz = document.documentElement;
 
