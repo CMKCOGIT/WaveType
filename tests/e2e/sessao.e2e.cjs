@@ -164,6 +164,21 @@ caso('abas do login funcionam pelo teclado', async (nav) => {
   await ctx.close();
 });
 
+caso('nivelamento: para na etapa difícil e guarda o resultado do visitante', async (nav) => {
+  const ctx = await novoContexto(nav, { logado: false });
+  const p = await ctx.newPage();
+  await p.goto(`${BASE}/nivelamento.html`);
+  await p.click('[data-comecar]');
+  const texto = await p.$$eval('[data-palavras] .word', (ws) => ws.map((w) => w.textContent).join(' '));
+  await p.keyboard.type(texto.replace(/[a-zç]/g, 'q'), { delay: 5 });
+  await p.waitForSelector('[data-tela="resultado"]:not([hidden])');
+  assert.match(await p.textContent('[data-resultado-titulo]'), /Iniciante/);
+  assert.match(await p.textContent('[data-resultado-licao]'), /Nível 1/);
+  await p.waitForFunction(() => Boolean(localStorage.getItem('wavetype_nivelamento_pendente')));
+  assert.ok(await p.isVisible('[data-resultado-acoes] a[href="cadastro.html"]'));
+  await ctx.close();
+});
+
 (async () => {
   const nav = await chromium.launch();
   let falhas = 0;

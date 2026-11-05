@@ -1,6 +1,7 @@
 // js/pages/aluno-inicio.js
 import { exigirPapel } from '../auth.js';
 import { carregarDashboardAluno } from '../api/dashboard.js';
+import { mostrarPontoDePartida } from '../ui/ponto-de-partida.js';
 import { listarExerciciosDisponiveis } from '../api/exercicios.js';
 import { buscarRankingExercicio } from '../api/ranking.js';
 
@@ -11,6 +12,7 @@ async function iniciar() {
   if (!perfil) return; // exigirPapel já redirecionou
 
   document.getElementById('saudacao').textContent = `Olá, ${primeiroNome(perfil.nome)}.`;
+  mostrarPontoDePartida().catch((erro) => console.error('Falha ao carregar o ponto de partida:', erro));
 
   // O ranking não depende do resumo: os dois carregam ao mesmo tempo.
   const ranking = preencherAmostraRanking().catch((erro) => console.error('Falha ao carregar o ranking:', erro));

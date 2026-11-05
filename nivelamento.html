@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#315FD6">
+    <meta name="description" content="Descubra em 2 a 4 minutos por onde começar a treinar digitação na WaveType.">
+    <link rel="canonical" href="https://wavetype.com.br/nivelamento.html">
+    <title>Teste de nivelamento | WaveType</title>
+    <link rel="icon" type="image/svg+xml" href="assets/images/icons/favicon.svg">
+    <link rel="icon" type="image/png" sizes="96x96" href="assets/images/icons/favicon-96x96.png">
+    <link rel="shortcut icon" href="assets/images/icons/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/images/icons/apple-touch-icon.png">
+    <link rel="manifest" href="site.webmanifest">
+    <script>document.documentElement.dataset.theme = localStorage.getItem('wavetype_theme') || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');</script>
+    <script>try{document.documentElement.dataset.sessao=Object.keys(localStorage).some(function(k){return /^sb-.+-auth-token$/.test(k)})?'carregando':'visitante'}catch(e){document.documentElement.dataset.sessao='visitante'}</script>
+    <link rel="preload" href="assets/fonts/Manrope-Variable.ttf" as="font" type="font/ttf" crossorigin>
+    <link rel="preload" href="assets/fonts/IBMPlexMono-Regular.ttf" as="font" type="font/ttf" crossorigin>
+    <link rel="stylesheet" href="css/redesign/nivelamento.css">
+</head>
+<body>
+    <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+    <header class="site-header" id="inicio">
+        <div class="container header-inner">
+            <a class="brand" href="index.html" aria-label="WaveType, página de digitação">
+                <img class="brand-logo brand-logo-light" src="assets/images/brand/wavetype-logo.svg" alt="WaveType">
+                <img class="brand-logo brand-logo-dark" src="assets/images/brand/wavetype-logo-dark.svg" alt="">
+            </a>
+            <nav class="desktop-nav" aria-label="Navegação principal">
+                <a href="index.html">Página inicial</a>
+                <a href="escolas.html">Para as escolas</a>
+                <a href="como-funciona.html">Como funciona</a>
+                <a href="sobre.html">Sobre</a>
+            </nav>
+            <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Ativar tema escuro" aria-pressed="false"><span aria-hidden="true"></span></button>
+            <a class="header-auth-link" href="login.html">Entrar</a>
+            <a class="button button-small header-cta" href="cadastro.html">Criar conta</a>
+            <span class="header-conta-carregando" aria-hidden="true"></span>
+            <div class="header-conta" data-header-conta hidden></div>
+            <button class="menu-button" id="menu-button" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="mobile-nav"><span></span><span></span><span></span></button>
+        </div>
+        <nav class="mobile-nav" id="mobile-nav" aria-label="Navegação móvel" hidden>
+            <a href="index.html">Página inicial</a>
+            <a href="escolas.html">Para as escolas</a>
+            <a href="como-funciona.html">Como funciona</a>
+            <a href="sobre.html">Sobre</a>
+            <a href="login.html" data-so-visitante>Entrar</a>
+            <a href="cadastro.html" data-so-visitante>Criar conta</a>
+            <div class="mobile-conta" data-mobile-conta hidden></div>
+        </nav>
+    </header>
+
+    <main id="conteudo">
+        <section class="page-hero nivelamento-hero" aria-labelledby="nivel-titulo">
+            <wave-background variante="suave"></wave-background>
+            <div class="container">
+                <span class="section-kicker">Testar conhecimento · 2 a 4 minutos</span>
+                <h1 id="nivel-titulo">Descubra por onde começar. <span>Sem pressa, no seu ritmo.</span></h1>
+                <p class="page-lede">São até 5 etapas curtas, da fileira base às frases. Se uma etapa ficar difícil, o teste para ali e mostra o melhor ponto de partida para você.</p>
+
+                <div class="nivel-cartao" data-nivelamento>
+                    <div data-tela="inicio">
+                        <ol class="nivel-etapas-lista" data-lista-etapas></ol>
+                        <button class="button" type="button" data-comecar>Começar o teste</button>
+                        <p class="nivel-nota">Visitante também pode fazer. Com conta, o resultado fica salvo.</p>
+                    </div>
+
+                    <div data-tela="etapa" hidden>
+                        <div class="nivel-topo">
+                            <div><span class="section-kicker" data-etapa-contador>Etapa 1 de 5</span><h2 data-etapa-titulo>Fileira base</h2><p data-etapa-instrucao></p></div>
+                            <div class="nivel-relogio" aria-live="off"><strong data-tempo>35</strong><span>segundos</span></div>
+                        </div>
+                        <div class="progress-track nivel-progresso" aria-hidden="true"><div class="progress-fill" data-progresso style="width:0%"></div></div>
+                        <div class="typing-stage nivel-palco" data-palco>
+                            <p class="sr-only" id="nivel-instrucoes">Digite o texto mostrado. Espaço avança para a próxima palavra e Backspace corrige.</p>
+                            <textarea class="typing-input" data-entrada rows="1" autocapitalize="none" autocomplete="off" autocorrect="off" spellcheck="false" aria-label="Campo do teste de nivelamento" aria-describedby="nivel-instrucoes"></textarea>
+                            <div class="words-viewport" aria-hidden="true"><div class="words-wrapper" data-palavras></div></div>
+                        </div>
+                        <p class="sr-only" role="status" aria-live="polite" data-status></p>
+                    </div>
+
+                    <div data-tela="pausa" hidden>
+                        <h2 data-pausa-titulo>Etapa concluída</h2>
+                        <p data-pausa-texto></p>
+                        <button class="button" type="button" data-proxima>Próxima etapa</button>
+                    </div>
+
+                    <div data-tela="resultado" hidden>
+                        <span class="section-kicker">Seu ponto de partida</span>
+                        <h2 tabindex="-1" data-resultado-titulo>Nível</h2>
+                        <p class="nivel-licao" data-resultado-licao></p>
+                        <p data-resultado-explicacao></p>
+                        <div class="nivel-frageis"><span>Teclas para dar atenção</span><div class="key-list" data-resultado-teclas></div></div>
+                        <div class="table-scroll"><table class="nivel-tabela"><thead><tr><th>Etapa</th><th>Precisão</th><th>PPM</th><th>Consistência</th></tr></thead><tbody data-resultado-etapas></tbody></table></div>
+                        <p class="nivel-salvo" data-resultado-salvo role="status"></p>
+                        <div class="nivel-acoes" data-resultado-acoes></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <wave-divider tipo="linha"></wave-divider>
+        <div class="container footer-inner">
+            <a class="brand" href="index.html" aria-label="WaveType, página inicial">
+                <img class="brand-logo footer-logo brand-logo-light" src="assets/images/brand/wavetype-logo.svg" alt="WaveType">
+                <img class="brand-logo footer-logo brand-logo-dark" src="assets/images/brand/wavetype-logo-dark.svg" alt="">
+            </a>
+            <p>Aprenda no seu ritmo. Evolua a cada tecla.</p>
+            <small class="footer-copy">© 2026 WaveType</small>
+        </div>
+    </footer>
+    <script type="module" src="js/site.js"></script>
+    <script type="module" src="js/sessao/cabecalho.js"></script>
+    <script type="module" src="js/pages/nivelamento.js"></script>
+    <script type="module" src="js/motion.js"></script>
+</body>
+</html>
+

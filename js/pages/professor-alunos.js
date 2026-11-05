@@ -3,6 +3,8 @@ import { exigirPapel } from '../auth.js';
 import { listarMinhasTurmas, listarAlunosDaTurma, adicionarAluno, removerAlunoDaTurma } from '../api/turmas.js';
 import { criarAlunosNaTurma, redefinirSenhaDoAluno, loginsDosAlunos } from '../api/contas-escolares.js';
 import { nomesDaLista, sugerirLogins } from '../contas/credenciais.js';
+import { nivelamentoDosAlunos } from '../api/nivelamento.js';
+import { NIVEIS_RECOMENDADOS } from '../nivelamento/config.js';
 
 const seletorTurma = document.querySelector('[data-select-turma]');
 const busca = document.querySelector('[data-table-search]');
@@ -13,6 +15,7 @@ const feedbackAdicionar = document.querySelector('[data-feedback-adicionar]');
 const IDENTIFICADOR = /^([A-HJ-NP-Z2-9]{6}|[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$/i;
 let alunosCarregados = [];
 let loginsEscola = new Map();
+let nivelamentos = { niveis: new Map(), sugestoes: new Map() };
 let turmasCarregadas = [];
 
 iniciar();
@@ -26,7 +29,7 @@ async function iniciar() {
   if (!turmas.length) {
     seletorTurma.innerHTML = '<option value="">Nenhuma turma</option>';
     formAdicionar.hidden = true;
-    corpo.innerHTML = '<tr><td colspan="7">Crie uma turma primeiro. <a href="turmas.html">Ir para turmas</a></td></tr>';
+    corpo.innerHTML = '<tr><td colspan="8">Crie uma turma primeiro. <a href="turmas.html">Ir para turmas</a></td></tr>';
     return;
   }
 
@@ -42,13 +45,14 @@ async function iniciar() {
 }
 
 async function carregarAlunos() {
-  corpo.innerHTML = '<tr><td colspan="7">Carregando…</td></tr>';
+  corpo.innerHTML = '<tr><td colspan="8">Carregando…</td></tr>';
   try {
     alunosCarregados = await listarAlunosDaTurma(Number(seletorTurma.value));
-    loginsEscola = await loginsDosAlunos(alunosCarregados.map((a) => a.aluno_id));
+    const ids = alunosCarregados.map((a) => a.aluno_id);
+    [loginsEscola, nivelamentos] = await Promise.all([loginsDosAlunos(ids), nivelamentoDosAlunos(ids)]);
     renderizarTabela();
   } catch (erro) {
-    corpo.innerHTML = `<tr><td colspan="7">${escapar(erro.message)}</td></tr>`;
+    corpo.innerHTML = `<tr><td colspan="8">${escapar(erro.message)}</td></tr>`;
   }
 }
 
@@ -65,11 +69,12 @@ function renderizarTabela() {
             <td class="mono">${a.precisao_media != null ? `${a.precisao_media}%` : '—'}</td>
             <td class="mono">${a.atividades_concluidas}</td>
             <td>${a.ultima_pratica ? new Date(a.ultima_pratica).toLocaleDateString('pt-BR') : '—'}</td>
+            <td>${celulaPontoDePartida(a.aluno_id)}</td>
             <td class="row-actions">${loginsEscola.has(a.aluno_id) ? `<button type="button" class="button secondary small" data-nova-senha="${a.aluno_id}">Nova senha</button>` : ''}<button type="button" class="button ghost small" data-remover="${a.aluno_id}">Remover</button></td>
           </tr>`
         )
         .join('')
-    : `<tr><td colspan="7">${alunosCarregados.length ? 'Nenhum aluno encontrado.' : 'Nenhum aluno nesta turma ainda. Compartilhe o código ou adicione pelo ID.'}</td></tr>`;
+    : `<tr><td colspan="8">${alunosCarregados.length ? 'Nenhum aluno encontrado.' : 'Nenhum aluno nesta turma ainda. Compartilhe o código ou adicione pelo ID.'}</td></tr>`;
 }
 
 corpo.addEventListener('click', async (evento) => {
@@ -218,4 +223,20 @@ function avisarCriar(mensagem, erro = false) {
   feedbackCriar.textContent = mensagem;
   feedbackCriar.hidden = false;
   feedbackCriar.classList.toggle('is-erro', erro);
+}
+
+// Nível de partida (teste de nivelamento) e sugestões aceitas/ignoradas.
+function celulaPontoDePartida(alunoId) {
+  const nivel = nivelamentos.niveis.get(alunoId);
+  const sugestoes = nivelamentos.sugestoes.get(alunoId);
+  const partes = [];
+  partes.push(
+    nivel
+      ? `<strong>${escapar(NIVEIS_RECOMENDADOS[nivel.nivel]?.rotulo ?? nivel.nivel)}</strong><small>Nível ${nivel.licao_nivel}, lição ${nivel.licao_ordem}</small>`
+      : '<small>Sem teste de nivelamento</small>'
+  );
+  if (sugestoes) {
+    partes.push(`<small title="Sugestões de exercício mais fácil durante o treino">Sugestões: ${sugestoes.aceitou} aceita${sugestoes.aceitou === 1 ? '' : 's'}, ${sugestoes.ignorou} ignorada${sugestoes.ignorou === 1 ? '' : 's'}</small>`);
+  }
+  return `<div class="table-name">${partes.join('')}</div>`;
 }

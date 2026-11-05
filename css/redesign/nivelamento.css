@@ -1,0 +1,147 @@
+/* Entrada de CSS do teste de nivelamento (site público + palco de digitação). */
+@import "../style.css";
+@import "./tokens.css";
+@import "./typing.css";
+@import "./site.css";
+@import "./onda.css";
+@import "./motion.css";
+
+.nivel-cartao {
+  position: relative;
+  z-index: 1;
+  margin-top: var(--wt-space-8);
+  padding: clamp(20px, 3vw, 32px);
+  background: var(--wt-surface);
+  border: 1px solid var(--wt-line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--wt-shadow-2);
+}
+.nivel-cartao [hidden] {
+  display: none !important;
+}
+.nivel-cartao h2 {
+  margin: 4px 0 6px;
+}
+.nivel-etapas-lista {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 10px;
+  margin: 0 0 20px;
+  padding: 0;
+  list-style: none;
+  counter-reset: etapa;
+}
+.nivel-etapas-lista li {
+  counter-increment: etapa;
+  padding: 12px;
+  background: var(--wt-surface-sunken);
+  border-radius: var(--radius-md);
+  font-weight: 700;
+}
+.nivel-etapas-lista li::before {
+  content: counter(etapa, decimal-leading-zero);
+  display: block;
+  color: var(--wt-accent);
+  font-family: var(--wt-font-mono, monospace);
+  font-size: 0.8rem;
+}
+.nivel-etapas-lista small {
+  display: block;
+  color: var(--wt-text-muted);
+  font-weight: 500;
+}
+.nivel-nota,
+.nivel-salvo {
+  color: var(--wt-text-muted);
+  font-size: 0.88rem;
+}
+.nivel-topo {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+}
+.nivel-topo p {
+  margin: 0;
+  color: var(--wt-text-muted);
+}
+.nivel-relogio {
+  display: grid;
+  justify-items: center;
+  min-width: 72px;
+}
+.nivel-relogio strong {
+  color: var(--wt-accent);
+  font-family: var(--wt-font-mono, monospace);
+  font-size: 2rem;
+}
+.nivel-relogio span {
+  color: var(--wt-text-subtle);
+  font-size: 0.75rem;
+}
+.nivel-progresso {
+  margin: 14px 0;
+}
+.nivel-palco {
+  min-height: 170px;
+  cursor: text;
+}
+.nivel-palco .words-viewport {
+  height: auto;
+  max-height: none;
+}
+.nivel-palco .words-wrapper {
+  transform: none !important;
+}
+.nivel-licao {
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+.nivel-frageis {
+  display: grid;
+  gap: 6px;
+  margin: 16px 0;
+}
+.nivel-frageis > span {
+  color: var(--wt-text-muted);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+.nivel-tabela {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+.nivel-tabela th,
+.nivel-tabela td {
+  padding: 8px 6px;
+  text-align: left;
+  border-bottom: 1px solid var(--wt-line);
+}
+.nivel-tabela td:not(:first-child) {
+  font-family: var(--wt-font-mono, monospace);
+}
+.table-scroll {
+  overflow-x: auto;
+}
+.nivel-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 16px;
+}
+@media (max-width: 640px) {
+  .nivel-acoes {
+    flex-direction: column;
+  }
+  .nivel-acoes .button {
+    width: 100%;
+    justify-content: center;
+  }
+}
+.nivel-cartao [tabindex="-1"]:focus {
+  outline: none;
+}
+.nivel-salvo {
+  margin: 16px 0 0;
+}

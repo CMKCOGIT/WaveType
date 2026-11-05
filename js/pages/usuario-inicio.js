@@ -1,6 +1,7 @@
 // js/pages/usuario-inicio.js
 import { exigirPapel } from '../auth.js';
 import { carregarDashboardAluno } from '../api/dashboard.js';
+import { mostrarPontoDePartida } from '../ui/ponto-de-partida.js';
 
 iniciar();
 
@@ -9,6 +10,7 @@ async function iniciar() {
   if (!perfil) return; // exigirPapel já redirecionou
 
   document.getElementById('saudacao').textContent = `Olá, ${primeiroNome(perfil.nome)}.`;
+  mostrarPontoDePartida().catch((erro) => console.error('Falha ao carregar o ponto de partida:', erro));
 
   try {
     const dashboard = await carregarDashboardAluno();

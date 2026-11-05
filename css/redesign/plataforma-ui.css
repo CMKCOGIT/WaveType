@@ -1516,3 +1516,28 @@ body[data-page="treinar"] .typing-shell {
   margin-top: 2px;
   flex: 0 0 auto;
 }
+
+/* Cartão "Seu ponto de partida" (nivelamento) */
+.ponto-partida {
+  margin-bottom: 18px;
+}
+.ponto-partida .panel-title {
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Sugestão de exercício mais fácil (não bloqueia o treino) */
+.sugestao-nivel {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+  padding: 14px 16px;
+  background: var(--p-tint-violet);
+  border-left: var(--wt-nav-indicador) solid var(--wt-violet-500);
+  border-radius: var(--radius-md);
+}
+.sugestao-nivel p {
+  margin: 0;
+  font-weight: 650;
+}
