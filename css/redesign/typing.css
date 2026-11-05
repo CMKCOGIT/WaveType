@@ -322,3 +322,9 @@ body.high-contrast .typing-shell.focused .typing-stage {
     white-space: normal;
   }
 }
+
+/* O título do resultado recebe foco por script (leitores de tela anunciam o
+   resultado); não é um controle, então não precisa do anel de foco. */
+#result-title:focus {
+  outline: none;
+}

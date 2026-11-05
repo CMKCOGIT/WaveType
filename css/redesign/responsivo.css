@@ -520,3 +520,20 @@
     padding-inline: 10px;
   }
 }
+
+/* Telas de acesso no tablet/celular: o painel azul fica compacto (sem a
+   lista de pontos) para o formulário aparecer logo na primeira tela. */
+@media (max-width: 820px) {
+  .auth-aside .auth-points {
+    display: none;
+  }
+  .auth-aside {
+    justify-content: flex-start;
+  }
+  .auth-copy {
+    padding-top: 18px;
+  }
+  .auth-copy h1 {
+    margin: 12px 0 8px;
+  }
+}
