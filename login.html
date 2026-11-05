@@ -30,15 +30,31 @@
                 <a class="eyebrow" href="index.html">← Voltar ao teste</a>
                 <h2 id="login-title">Bem-vindo de volta</h2>
                 <p>Entre para retomar seu progresso na WaveType.</p>
-                <form class="auth-form" data-auth-form="login" novalidate>
-                    <label class="field"><span>E-mail</span><input type="email" name="email" autocomplete="email" maxlength="190" placeholder="voce@exemplo.com" required></label>
-                    <label class="field"><span>Senha</span><input type="password" name="senha" autocomplete="current-password" minlength="8" placeholder="Sua senha" required></label>
-                    <a class="auth-esqueci" href="recuperar-senha.html" data-link-recuperar>Esqueci minha senha</a>
-                    <button class="button auth-submit" type="submit">Entrar na WaveType</button>
-                    <p class="auth-demo" data-form-feedback hidden role="status"></p>
-                </form>
-                <div class="auth-separator">ou</div>
-                <button class="button auth-google" type="button" data-google-auth="login">Continuar com o Google</button>
+                <div class="auth-modos" role="tablist" aria-label="Como você quer entrar">
+                    <button type="button" role="tab" id="modo-email" aria-selected="true" aria-controls="painel-email" data-modo="email">E-mail ou Google</button>
+                    <button type="button" role="tab" id="modo-escola" aria-selected="false" aria-controls="painel-escola" data-modo="escola" tabindex="-1">Sou aluno com usuário da escola</button>
+                </div>
+                <div class="auth-painel" role="tabpanel" id="painel-email" aria-labelledby="modo-email">
+                    <form class="auth-form" data-auth-form="login" novalidate>
+                        <label class="field"><span>E-mail</span><input type="email" name="email" autocomplete="email" maxlength="190" placeholder="voce@exemplo.com" required></label>
+                        <label class="field"><span>Senha</span><input type="password" name="senha" autocomplete="current-password" minlength="8" placeholder="Sua senha" required></label>
+                        <a class="auth-esqueci" href="recuperar-senha.html" data-link-recuperar>Esqueci minha senha</a>
+                        <button class="button auth-submit" type="submit">Entrar na WaveType</button>
+                        <p class="auth-demo" data-form-feedback hidden role="status"></p>
+                    </form>
+                    <div class="auth-separator">ou</div>
+                    <button class="button auth-google" type="button" data-google-auth="login">Continuar com o Google</button>
+                </div>
+                <div class="auth-painel" role="tabpanel" id="painel-escola" aria-labelledby="modo-escola" hidden>
+                    <form class="auth-form" data-auth-form="escola" novalidate>
+                        <p class="auth-nota">Use o usuário e a senha que o professor entregou (estão no seu cartão de acesso).</p>
+                        <label class="field"><span>Usuário da escola</span><input type="text" name="login" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" maxlength="60" placeholder="ex.: maria.silva.santos" required></label>
+                        <label class="field"><span>Senha</span><input type="password" name="senha" autocomplete="current-password" maxlength="40" placeholder="Senha do cartão" required></label>
+                        <button class="button auth-submit" type="submit">Entrar</button>
+                        <p class="auth-demo" data-feedback-escola hidden role="status"></p>
+                        <p class="auth-nota">Esqueceu a senha? Peça ao professor: ele gera uma nova sem apagar seu progresso.</p>
+                    </form>
+                </div>
                 <p class="auth-foot">Ainda não tem uma conta? <a href="cadastro.html">Criar conta</a></p>
             </div>
         </section>

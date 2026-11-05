@@ -1358,3 +1358,161 @@ body[data-page="treinar"] .typing-shell {
   font-weight: 500;
   line-height: 1.4;
 }
+
+/* Tela de login: duas formas de entrar (abas) */
+.auth-modos {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  margin: 18px 0 20px;
+  padding: 4px;
+  background: var(--p-surface-2);
+  border: 1px solid var(--p-line, var(--wt-line));
+  border-radius: var(--radius-md);
+}
+.auth-modos [role="tab"] {
+  min-height: 44px;
+  padding: 8px 10px;
+  color: var(--p-muted, var(--wt-text-muted));
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 750;
+  line-height: 1.25;
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+.auth-modos [role="tab"]:hover {
+  color: var(--p-text, var(--wt-text));
+}
+.auth-modos [role="tab"][aria-selected="true"] {
+  color: var(--p-ink-blue, var(--wt-accent));
+  background: var(--p-surface, var(--wt-surface));
+  box-shadow: 0 1px 3px rgba(23, 35, 63, 0.12);
+}
+.auth-painel[hidden] {
+  display: none;
+}
+
+/* Cartões de acesso dos alunos (tela e impressão) */
+.cartoes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 12px;
+}
+.cartao-acesso {
+  padding: 16px;
+  color: #17233f;
+  background: #ffffff;
+  border: 1.5px dashed #9fb3e8;
+  border-radius: var(--radius-md);
+  break-inside: avoid;
+}
+.cartao-acesso h3 {
+  margin: 10px 0 2px;
+  font-size: 1.05rem;
+}
+.cartao-turma {
+  margin: 0 0 8px;
+  color: #4a5675;
+  font-size: 0.85rem;
+}
+.cartao-acesso dl {
+  display: grid;
+  gap: 6px;
+  margin: 8px 0;
+}
+.cartao-acesso dl div {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 6px 8px;
+  background: #f1f4fc;
+  border-radius: var(--radius-sm);
+}
+.cartao-acesso dt {
+  color: #4a5675;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+.cartao-acesso dd {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  word-break: break-all;
+}
+.cartao-como {
+  margin: 6px 0 0;
+  color: #4a5675;
+  font-size: 0.78rem;
+  line-height: 1.4;
+}
+@media print {
+  html.imprimindo-cartoes body * {
+    visibility: hidden;
+  }
+  html.imprimindo-cartoes .cartoes-grid,
+  html.imprimindo-cartoes .cartoes-grid * {
+    visibility: visible;
+  }
+  html.imprimindo-cartoes .cartoes-grid {
+    position: absolute;
+    inset: 0 auto auto 0;
+    width: 100%;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8mm;
+    padding: 8mm;
+  }
+  html.imprimindo-cartoes .cartao-acesso {
+    border-color: #555;
+  }
+}
+
+/* Perfil: formas de entrar e transferência da conta da escola */
+.vinculos-lista {
+  display: grid;
+  gap: 8px;
+  margin: 0 0 14px;
+  padding: 0;
+  list-style: none;
+}
+.vinculos-lista li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 12px;
+  background: var(--p-surface-2);
+  border-radius: var(--radius-md);
+}
+.vinculos-lista li > span:first-child {
+  display: grid;
+}
+.vinculos-lista small {
+  color: var(--p-muted);
+}
+.vinculo-email {
+  max-width: 520px;
+}
+.transferir-aviso {
+  padding: 12px 14px;
+  background: var(--p-tint-violet);
+  border-radius: var(--radius-md);
+}
+.transferir-aviso ul {
+  margin: 6px 0 0;
+  padding-left: 18px;
+}
+.checkbox-line {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-weight: 650;
+}
+.checkbox-line input {
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+  flex: 0 0 auto;
+}

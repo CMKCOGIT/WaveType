@@ -19,6 +19,7 @@ const PREFERENCIAS = new Set([
   'wavetype_high-contrast',
   'wavetype_reduce-motion',
   'wavetype_single-line',
+  'wavetype_login_modo', // aba escolhida no login (computadores da escola)
 ]);
 
 function chaves(armazenamento) {

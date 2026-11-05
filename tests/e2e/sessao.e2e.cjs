@@ -29,6 +29,16 @@ async function simularSupabase(contexto, { usuario = ALUNO, valida = true, atras
         : rota.fulfill({ status: 403, json: { code: 403, error_code: 'session_not_found', msg: 'Session from session_id claim in JWT does not exist' } });
     }
     if (url.pathname === '/auth/v1/logout') return rota.fulfill({ status: 204, body: '' });
+    if (url.pathname === '/auth/v1/token' && url.searchParams.get('grant_type') === 'password') {
+      const corpo = rota.request().postDataJSON();
+      if (corpo.password !== 'tucano472') return rota.fulfill({ status: 400, json: { error: 'invalid_grant', error_description: 'Invalid login credentials' } });
+      const sessao = JSON.parse(token(usuario));
+      return rota.fulfill({ json: sessao });
+    }
+    if (url.pathname === '/rest/v1/rpc/login_escolar') {
+      const corpo = rota.request().postDataJSON();
+      return rota.fulfill({ json: corpo.p_login === 'maria.silva.santos' && corpo.p_senha === 'tucano472' ? usuario.email : null });
+    }
     if (url.pathname === '/auth/v1/token') return rota.fulfill({ status: 400, json: { error: 'invalid_grant' } });
     if (url.pathname === '/rest/v1/usuarios') return rota.fulfill({ json: [usuario] });
     if (url.pathname.startsWith('/rest/v1/rpc/')) return rota.fulfill({ json: [] });
@@ -124,6 +134,33 @@ caso('logout numa aba derruba a outra', async (nav) => {
   await inicio.waitForURL(/\/index\.html$/);
   await area.waitForURL(/\/login\.html\?motivo=outra_aba/);
   assert.equal(await inicio.evaluate((c) => localStorage.getItem(c), CHAVE_TOKEN), null);
+  await ctx.close();
+});
+
+caso('aluno entra com usuário da escola e vai para a área do aluno', async (nav) => {
+  const ctx = await novoContexto(nav, { logado: false });
+  const p = await ctx.newPage();
+  await p.goto(`${BASE}/login.html?modo=escola`);
+  assert.ok(await p.isVisible('[data-auth-form="escola"]'));
+  await p.fill('[data-auth-form="escola"] [name="login"]', ' Maria.Silva.Santos ');
+  await p.fill('[data-auth-form="escola"] [name="senha"]', 'errada99');
+  await p.click('[data-auth-form="escola"] .auth-submit');
+  await p.waitForSelector('[data-feedback-escola]:not([hidden])');
+  assert.match(await p.textContent('[data-feedback-escola]'), /Usuário ou senha incorretos/);
+  await p.fill('[data-auth-form="escola"] [name="senha"]', 'tucano472');
+  await p.click('[data-auth-form="escola"] .auth-submit');
+  await p.waitForURL(/\/app\/aluno\/index\.html/);
+  await ctx.close();
+});
+
+caso('abas do login funcionam pelo teclado', async (nav) => {
+  const ctx = await novoContexto(nav, { logado: false });
+  const p = await ctx.newPage();
+  await p.goto(`${BASE}/login.html?modo=email`);
+  await p.focus('#modo-email');
+  await p.keyboard.press('ArrowRight');
+  assert.equal(await p.getAttribute('#modo-escola', 'aria-selected'), 'true');
+  assert.ok(await p.isHidden('#painel-email'));
   await ctx.close();
 });
 

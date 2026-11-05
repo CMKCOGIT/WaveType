@@ -66,6 +66,68 @@ export async function entrarComGoogle({ origem = 'login' } = {}) {
 }
 
 /**
+ * Entrada com usuário da escola (aluno sem e-mail). A RPC login_escolar
+ * confere usuário + senha com limite de tentativas e devolve o e-mail interno
+ * da conta; com ele abrimos a sessão normal do Supabase. A mensagem de erro é
+ * a mesma para usuário inexistente e senha errada (não revela quem existe).
+ */
+export async function entrarComUsuarioDaEscola({ login, senha }) {
+  const erroGenerico = new Error('Usuário ou senha incorretos. Confira e tente de novo, ou peça ajuda ao professor.');
+  const { data: email, error } = await supabase.rpc('login_escolar', { p_login: login, p_senha: senha });
+  if (error) throw traduzErro(error);
+  if (!email) throw erroGenerico;
+  const { data, error: erroSessao } = await supabase.auth.signInWithPassword({ email, password: senha });
+  if (erroSessao) throw erroSessao.status === 429 ? traduzErro(erroSessao) : erroGenerico;
+  return data;
+}
+
+/**
+ * Vincula a conta Google à conta atual (mesmo user_id). Exige "Manual
+ * linking" ligado no Supabase (Authentication > Sign In / Providers).
+ */
+export async function vincularGoogle({ voltarPara = window.location.pathname } = {}) {
+  const { error } = await supabase.auth.linkIdentity({
+    provider: 'google',
+    options: { redirectTo: `${window.location.origin}${voltarPara}?vinculo=google` },
+  });
+  if (!error) return;
+  if (/manual linking|linking is disabled/i.test(error.message)) {
+    throw new Error('A vinculação com o Google ainda não está ativada no WaveType. Avise o administrador do site.');
+  }
+  if (/already linked|identity_already_exists|already been linked/i.test(error.message)) {
+    throw new Error('Essa conta Google já está ligada a outra conta do WaveType.');
+  }
+  throw traduzErro(error);
+}
+
+/**
+ * Vincula um e-mail real (aluno da escola): o Supabase envia um link de
+ * confirmação para o novo endereço; depois de confirmado, o e-mail passa a
+ * valer para entrar e recuperar a senha. Requer "Secure email change"
+ * desligado, porque o e-mail interno da escola não recebe mensagens.
+ */
+export async function vincularEmail(email, { voltarPara = window.location.pathname } = {}) {
+  const { error } = await supabase.auth.updateUser(
+    { email },
+    { emailRedirectTo: `${window.location.origin}${voltarPara}?vinculo=email` }
+  );
+  if (!error) return;
+  if (/already been registered|already registered|email_exists/i.test(error.message)) {
+    throw new Error('Esse e-mail já é usado por outra conta. Use outro endereço.');
+  }
+  if (error.status === 429 || /rate limit|security purposes/i.test(error.message)) {
+    throw new Error('Muitas solicitações seguidas. Aguarde um minuto e tente de novo.');
+  }
+  throw traduzErro(error);
+}
+
+/** Identidades ligadas à conta (ex.: ['email', 'google']). */
+export async function identidadesDaConta() {
+  const { data } = await supabase.auth.getUserIdentities();
+  return (data?.identities ?? []).map((i) => i.provider);
+}
+
+/**
  * "Esqueci minha senha": o Supabase envia um link de uso único que volta para
  * /redefinir-senha.html. A resposta é a mesma exista ou não a conta, para não
  * revelar quais e-mails estão cadastrados.
@@ -142,19 +204,6 @@ export async function alterarSenha({ senhaAtual, novaSenha }) {
   }
   if (error.code === 'reauthentication_needed' || /reauthenticat/i.test(error.message)) {
     throw new Error('Por segurança, saia e entre de novo na sua conta antes de trocar a senha.');
-  }
-  throw traduzErro(error);
-}
-
-/**
- * Senha da conta criada com o Google, pedida na conclusão do cadastro.
- * Se a mesma senha já foi gravada numa tentativa anterior, não é erro.
- */
-export async function criarSenhaDaConta(senha) {
-  const { error } = await supabase.auth.updateUser({ password: senha });
-  if (!error || /different from the old password/i.test(error.message)) return;
-  if (error.code === 'weak_password' || /weak|at least/i.test(error.message)) {
-    throw new Error('Essa senha é fraca demais. Use 8+ caracteres, com letra e número.');
   }
   throw traduzErro(error);
 }

@@ -1,6 +1,7 @@
 // js/pages/perfil.js
 // Página Perfil das três áreas (usuário, aluno, professor). A área vem do
 // data-role do <body>.
+import { montarVinculos } from './perfil-vinculos.js';
 import { exigirPapel, metodosDeLogin, atualizarNome, alterarSenha, validarSenha, alterarTipoConta, DESTINOS } from '../auth.js';
 
 const TIPOS = { usuario: 'Usuário', aluno: 'Aluno', professor: 'Professor' };
@@ -39,6 +40,7 @@ async function iniciar() {
   }
 
   prepararTrocaDeTipo(perfil);
+  montarVinculos(perfil).catch((erro) => console.error('Falha ao carregar as formas de entrar:', erro));
 
   const link = document.querySelector('[data-link-recuperar]');
   if (link && perfil.email) link.href = `../../recuperar-senha.html?email=${encodeURIComponent(perfil.email)}`;

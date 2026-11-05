@@ -12,7 +12,6 @@ import {
   sair,
   TIPO_PENDENTE,
   validarSenha,
-  criarSenhaDaConta,
 } from '../auth.js';
 import { protegerPaginaDeAcesso, guardarRedirect } from '../sessao/sessao.js';
 
@@ -48,8 +47,8 @@ async function iniciar() {
   if (resultado.acao === 'erro') {
     mostrarFeedback(feedback, 'Não foi possível confirmar sua sessão. Tente novamente.', 'erro');
   } else if (resultado.estado === 'valida' && cadastroIncompleto(resultado.perfil)) {
-    // O Google dá nome e e-mail; falta o tipo de conta (já marcado se foi
-    // escolhido antes de ir ao Google) e a senha, que o Google não fornece.
+    // O Google dá nome e e-mail; falta só o tipo de conta (já marcado se
+    // foi escolhido antes de ir ao Google).
     mostrarEtapaDeConclusao(resultado.perfil, localStorage.getItem(TIPO_PENDENTE));
   }
   pararCarregamento();
@@ -74,20 +73,13 @@ formCompletar.addEventListener('submit', async (evento) => {
   const dados = new FormData(formCompletar);
   const tipo = dados.get('tipo');
   const nome = String(dados.get('nome') || '').trim();
-  const senha = String(dados.get('senha') || '');
-  const confirmacao = String(dados.get('confirmacao') || '');
   if (!tipo) return mostrarFeedback(feedbackCompletar, MSG_TIPO, 'erro');
   if (nome.length < 2) return mostrarFeedback(feedbackCompletar, 'Digite seu nome completo.', 'erro');
-  const erroSenha = validarSenha(senha);
-  if (erroSenha) return mostrarFeedback(feedbackCompletar, erroSenha, 'erro');
-  if (senha !== confirmacao) return mostrarFeedback(feedbackCompletar, 'As senhas não são iguais.', 'erro');
 
   botaoCompletar.disabled = true;
   botaoCompletar.textContent = 'Salvando...';
   try {
-    // Senha primeiro: se ela já tiver sido gravada numa tentativa anterior,
-    // a nova tentativa segue normalmente (ver criarSenhaDaConta).
-    await criarSenhaDaConta(senha);
+    // Entrou com o Google: nunca pedimos senha. Criar uma é opcional, em Perfil.
     const perfil = await concluirCadastro({ tipo, nome });
     localStorage.removeItem(TIPO_PENDENTE);
     irParaArea(perfil);
