@@ -674,3 +674,24 @@ body.high-contrast .plain-cta {
     width: 128px;
   }
 }
+
+/* Página Para as escolas: o painel é ilustrativo e diz isso logo no topo */
+.classroom-preview {
+  position: relative;
+}
+.exemplo-selo {
+  display: inline-flex;
+  align-items: center;
+  margin-bottom: var(--wt-space-3);
+  padding: 4px 10px;
+  color: var(--wt-text);
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  background: var(--wt-surface-sunken);
+  border: 1px dashed var(--wt-line-strong);
+  border-radius: var(--wt-radius-pill);
+}
+.preview-caption {
+  line-height: 1.5;
+}
