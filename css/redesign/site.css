@@ -403,12 +403,25 @@ body.high-contrast .plain-cta {
   background: var(--wt-gradient-wave);
   opacity: 0.8;
 }
-.footer-links a {
-  color: var(--wt-text-muted);
-  transition: color var(--wt-dur-fast);
+/* Rodapé enxuto: a navegação fica só no cabeçalho (que é fixo). */
+.site-footer .footer-inner {
+  grid-template-columns: auto 1fr auto;
+  gap: 24px;
+  padding: 0;
 }
-.footer-links a:hover {
-  color: var(--wt-accent);
+.site-footer {
+  padding: 32px 0;
+}
+.footer-copy {
+  color: var(--wt-text-muted);
+  font-size: 0.8rem;
+}
+@media (max-width: 640px) {
+  .site-footer .footer-inner {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    justify-items: start;
+  }
 }
 .page-hero + .content-section.surface {
   border-top: 0;
