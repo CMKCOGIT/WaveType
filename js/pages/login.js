@@ -2,13 +2,14 @@
 import {
   entrarComEmailSenha,
   entrarComGoogle,
-  obterSessao,
   obterPerfil,
   irParaArea,
   lerErroDoRetornoOAuth,
   limparUrlDoOAuth,
   TIPO_PENDENTE,
 } from '../auth.js';
+import { protegerPaginaDeAcesso, mensagemDoMotivo, guardarRedirect } from '../sessao/sessao.js';
+import { MENSAGENS_MOTIVO } from '../sessao/regras.js';
 
 const form = document.querySelector('[data-auth-form="login"]');
 const botaoGoogle = document.querySelector('[data-google-auth]');
@@ -22,26 +23,29 @@ document.querySelector('[data-link-recuperar]')?.addEventListener('click', (even
   if (email) evento.currentTarget.href = `recuperar-senha.html?email=${encodeURIComponent(email)}`;
 });
 
-// Ao voltar do Google (ou se já houver sessão), segue direto para a área certa.
+// Ao voltar do Google (ou se já houver sessão válida), segue direto para a
+// área certa: a tela de login nunca fica "parada" com alguém conectado.
 async function iniciar() {
   if (new URLSearchParams(location.search).get('senha') === 'redefinida') {
     mostrarFeedback('Senha alterada. Entre com a nova senha.', 'sucesso');
   }
+  const motivo = mensagemDoMotivo();
+  if (motivo) mostrarFeedback(motivo, 'erro');
+
   const erroOAuth = lerErroDoRetornoOAuth();
   if (erroOAuth) {
     limparUrlDoOAuth();
     pararCarregamento();
     return mostrarFeedback(erroOAuth, 'erro');
   }
-  try {
-    if (await obterSessao()) {
-      mostrarCarregamento();
-      await redirecionarConformePapel();
-      return;
-    }
-  } catch (erro) {
-    console.error('Falha ao confirmar a sessão:', erro);
-    mostrarFeedback('Não foi possível confirmar sua sessão. Tente entrar novamente.', 'erro');
+
+  mostrarCarregamento();
+  const resultado = await protegerPaginaDeAcesso();
+  if (resultado.acao === 'redirecionando') return;
+  if (resultado.acao === 'erro') {
+    mostrarFeedback('Não foi possível confirmar sua sessão. Verifique a conexão e tente novamente.', 'erro');
+  } else if (resultado.acao === 'limpar' && !motivo) {
+    mostrarFeedback(MENSAGENS_MOTIVO[resultado.motivo] ?? MENSAGENS_MOTIVO.expirada, 'erro');
   }
   pararCarregamento();
 }
@@ -67,6 +71,7 @@ form.addEventListener('submit', async (evento) => {
 botaoGoogle.addEventListener('click', async () => {
   esconderFeedback();
   localStorage.removeItem(TIPO_PENDENTE); // evita sobra de um cadastro abandonado
+  guardarRedirect(new URLSearchParams(location.search).get('redirect')); // volta do Google sem perder o destino
   travarBotao(botaoGoogle, true, 'Abrindo o Google...');
   try {
     await entrarComGoogle({ origem: 'login' }); // o Supabase redireciona a página

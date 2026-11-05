@@ -86,9 +86,219 @@ body {
   left: 14px;
   right: 14px;
   bottom: 6px;
-  height: 3px;
-  background: var(--wt-gradient-tide);
+  height: var(--wt-nav-indicador);
+  background: var(--wt-nav-indicador-cor);
   border-radius: var(--wt-radius-pill);
+}
+.desktop-nav a[aria-current="page"]:hover {
+  color: var(--wt-accent);
+}
+.desktop-nav a:focus-visible,
+.mobile-nav a:focus-visible {
+  outline-offset: -3px;
+}
+/* Menu do celular: mesmo ativo (cor + traço de 3 px), na lateral */
+.mobile-nav a {
+  position: relative;
+}
+.mobile-nav a:hover {
+  color: var(--wt-text);
+  background: var(--wt-surface-tint);
+}
+.mobile-nav a[aria-current="page"] {
+  color: var(--wt-accent);
+  font-weight: 800;
+}
+.mobile-nav a[aria-current="page"]::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 12px;
+  bottom: 12px;
+  width: var(--wt-nav-indicador);
+  background: var(--wt-nav-indicador-cor);
+  border-radius: 0 var(--wt-radius-pill) var(--wt-radius-pill) 0;
+}
+
+/* ---- Cabeçalho conforme a sessão (js/sessao/cabecalho.js) ---- */
+/* Com token salvo, "Entrar/Criar conta" não aparece nem por um instante:
+   um espaço reservado ocupa o lugar até a sessão ser confirmada. */
+.header-conta-carregando {
+  display: none;
+  width: 132px;
+  height: 40px;
+  margin-left: 8px;
+  border-radius: var(--wt-radius-pill);
+  background: linear-gradient(90deg, var(--wt-surface-sunken), var(--wt-surface-tint), var(--wt-surface-sunken));
+  background-size: 200% 100%;
+}
+@media (prefers-reduced-motion: no-preference) {
+  body:not(.reduce-motion) .header-conta-carregando {
+    animation: wt-esqueleto 1.4s linear infinite;
+  }
+}
+@keyframes wt-esqueleto {
+  to { background-position: -200% 0; }
+}
+html[data-sessao="carregando"] .header-conta-carregando {
+  display: block;
+}
+html[data-sessao="carregando"] .header-auth-link,
+html[data-sessao="carregando"] .header-cta,
+html[data-sessao="conectado"] .header-auth-link,
+html[data-sessao="conectado"] .header-cta,
+html[data-sessao="carregando"] [data-so-visitante],
+html[data-sessao="conectado"] [data-so-visitante] {
+  display: none !important;
+}
+.header-conta {
+  position: relative;
+  margin-left: 8px;
+}
+.header-conta[hidden] {
+  display: none;
+}
+.conta-botao {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 4px 12px 4px 4px;
+  color: var(--wt-text);
+  font: inherit;
+  font-weight: 700;
+  font-size: 0.92rem;
+  background: var(--wt-surface);
+  border: 1px solid var(--wt-line);
+  border-radius: var(--wt-radius-pill);
+  cursor: pointer;
+}
+.conta-botao:hover {
+  border-color: var(--wt-line-strong);
+}
+.conta-botao::after {
+  content: "";
+  width: 8px;
+  height: 8px;
+  margin-left: 2px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: translateY(-2px) rotate(45deg);
+  opacity: 0.6;
+}
+.conta-avatar {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  color: var(--wt-on-accent);
+  font-size: 0.78rem;
+  background: var(--wt-accent);
+  border-radius: 50%;
+}
+.conta-nome {
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.conta-menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 8px);
+  z-index: 60;
+  display: grid;
+  min-width: 220px;
+  padding: 8px;
+  background: var(--wt-surface);
+  border: 1px solid var(--wt-line);
+  border-radius: var(--wt-radius-md);
+  box-shadow: var(--wt-shadow-2);
+}
+.conta-menu[hidden] {
+  display: none;
+}
+.conta-identidade {
+  display: grid;
+  margin: 0 0 6px;
+  padding: 8px 10px 10px;
+  border-bottom: 1px solid var(--wt-line);
+}
+.conta-identidade small {
+  color: var(--wt-text-muted);
+}
+.conta-menu a,
+.conta-menu button {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 10px;
+  color: var(--wt-text);
+  font: inherit;
+  font-weight: 650;
+  text-align: left;
+  background: none;
+  border: 0;
+  border-radius: var(--wt-radius-sm);
+  cursor: pointer;
+}
+.conta-menu a:hover,
+.conta-menu button:hover {
+  background: var(--wt-surface-tint);
+}
+.mobile-conta {
+  display: grid;
+}
+.mobile-conta[hidden] {
+  display: none;
+}
+.mobile-conta a,
+.mobile-conta button {
+  display: flex;
+  align-items: center;
+  min-height: 52px;
+  color: var(--wt-text);
+  font: inherit;
+  font-weight: 650;
+  text-align: left;
+  background: none;
+  border: 0;
+  border-bottom: 1px solid var(--wt-line);
+  cursor: pointer;
+}
+@media (max-width: 980px) {
+  .header-conta,
+  .header-conta-carregando {
+    display: none !important;
+  }
+}
+
+/* "Não é você? Sair" na página inicial */
+.sessao-aviso {
+  margin: 0 0 var(--wt-space-4);
+  padding: var(--wt-space-3) var(--wt-space-4);
+  color: var(--wt-text-muted);
+  background: var(--wt-surface);
+  border: 1px solid var(--wt-line);
+  border-radius: var(--wt-radius-sm);
+}
+.sessao-aviso[hidden] {
+  display: none;
+}
+.sessao-aviso strong {
+  color: var(--wt-text);
+}
+.sessao-aviso a,
+.sessao-aviso button {
+  color: var(--wt-accent);
+  font: inherit;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
 }
 .theme-toggle {
   border-color: var(--wt-line);

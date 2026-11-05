@@ -194,8 +194,8 @@ body {
   left: -18px;
   top: 10px;
   bottom: 10px;
-  width: 4px;
-  background: var(--wt-gradient-wave);
+  width: var(--wt-nav-indicador);
+  background: var(--wt-nav-indicador-cor);
   border-radius: 0 4px 4px 0;
 }
 .app-topbar {

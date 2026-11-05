@@ -634,7 +634,7 @@ html.wt-trocando-tema *::after {
   left: -14px;
   top: 12px;
   bottom: 12px;
-  width: 4px;
+  width: var(--wt-nav-indicador);
 }
 .app-nav a:active {
   transform: scale(0.98);

@@ -14,6 +14,7 @@ import {
   validarSenha,
   criarSenhaDaConta,
 } from '../auth.js';
+import { protegerPaginaDeAcesso, guardarRedirect } from '../sessao/sessao.js';
 
 const form = document.querySelector('[data-auth-form="cadastro"]');
 const feedback = document.querySelector('[data-form-feedback]');
@@ -39,22 +40,17 @@ async function iniciar() {
     return mostrarFeedback(feedback, erroOAuth, 'erro');
   }
 
-  try {
-    if (!(await obterSessao())) return pararCarregamento();
-    document.documentElement.dataset.autenticando = '1';
-
-    const perfil = await obterPerfil();
-    if (!cadastroIncompleto(perfil)) {
-      localStorage.removeItem(TIPO_PENDENTE);
-      return irParaArea(perfil);
-    }
-
+  document.documentElement.dataset.autenticando = '1';
+  // Com sessão válida e cadastro completo, vai para a área (nunca fica aqui).
+  // Cadastro incompleto (primeira entrada com Google) fica para concluir.
+  const resultado = await protegerPaginaDeAcesso({ naConclusaoDoCadastro: true });
+  if (resultado.acao === 'redirecionando') return;
+  if (resultado.acao === 'erro') {
+    mostrarFeedback(feedback, 'Não foi possível confirmar sua sessão. Tente novamente.', 'erro');
+  } else if (resultado.estado === 'valida' && cadastroIncompleto(resultado.perfil)) {
     // O Google dá nome e e-mail; falta o tipo de conta (já marcado se foi
     // escolhido antes de ir ao Google) e a senha, que o Google não fornece.
-    mostrarEtapaDeConclusao(perfil, localStorage.getItem(TIPO_PENDENTE));
-  } catch (erro) {
-    console.error('Falha ao confirmar a sessão:', erro);
-    mostrarFeedback(feedback, 'Não foi possível confirmar sua sessão. Tente novamente.', 'erro');
+    mostrarEtapaDeConclusao(resultado.perfil, localStorage.getItem(TIPO_PENDENTE));
   }
   pararCarregamento();
 }
@@ -104,7 +100,7 @@ formCompletar.addEventListener('submit', async (evento) => {
 
 document.querySelector('[data-trocar-conta]')?.addEventListener('click', () => {
   localStorage.removeItem(TIPO_PENDENTE);
-  sair();
+  sair({ destino: '/cadastro.html' });
 });
 
 form.addEventListener('submit', async (evento) => {
@@ -124,7 +120,10 @@ form.addEventListener('submit', async (evento) => {
 
   travarBotao(true);
   try {
-    await cadastrarUsuario({ nome, email, senha, tipo });
+    const dados = await cadastrarUsuario({ nome, email, senha, tipo });
+    // Sem confirmação de e-mail no Supabase, o cadastro já abre a sessão:
+    // segue direto para a área certa.
+    if (dados?.session) return irParaArea(await obterPerfil());
     mostrarFeedback(feedback, 'Conta criada! Confira seu e-mail para confirmar o acesso.', 'sucesso');
     form.reset();
   } catch (erro) {
@@ -142,6 +141,7 @@ botaoGoogle.addEventListener('click', async () => {
   // Sem tipo, ele é pedido na etapa de conclusão, ao voltar.
   if (tipo) localStorage.setItem(TIPO_PENDENTE, tipo);
   else localStorage.removeItem(TIPO_PENDENTE);
+  guardarRedirect(new URLSearchParams(location.search).get('redirect'));
 
   travarGoogle(true);
   try {

@@ -275,3 +275,50 @@ body.high-contrast .typing-shell.focused .typing-stage {
   color: var(--wt-text-muted);
   font-size: 0.85rem;
 }
+
+/* ---- Fim do teste público: convite para criar conta ----
+   Um primário e um secundário no mesmo eixo; no celular, largura total,
+   empilhados. O "Recomeçar teste" fica no cabeçalho do resultado. */
+.resultado-convite {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--wt-space-4);
+  margin: 0 0 var(--wt-space-6);
+  padding: var(--wt-space-4) var(--wt-space-5);
+  border: 1px solid var(--wt-line-strong);
+  border-radius: var(--wt-radius-md);
+  background: var(--wt-surface-sunken);
+}
+.resultado-convite p {
+  flex: 1 1 280px;
+  margin: 0;
+  color: var(--wt-text-muted);
+}
+.resultado-convite p strong {
+  color: var(--wt-text);
+}
+.resultado-convite-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--wt-space-3);
+}
+.resultado-convite-acoes .button {
+  min-height: 44px;
+  white-space: nowrap;
+}
+@media (max-width: 640px) {
+  .resultado-convite-acoes {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+  }
+  .resultado-convite-acoes .button {
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+    white-space: normal;
+  }
+}

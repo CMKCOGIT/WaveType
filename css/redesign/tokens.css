@@ -44,6 +44,9 @@
   --wt-focus: var(--wt-blue-500);
   --wt-gradient-wave: linear-gradient(100deg, var(--wt-blue-600) 0%, var(--wt-blue-500) 48%, var(--wt-violet-500) 100%);
   --wt-gradient-tide: linear-gradient(90deg, var(--wt-blue-500), var(--wt-aqua-500));
+  /* Navegação: um só tratamento de item ativo em todo o site e na plataforma */
+  --wt-nav-indicador: 3px;
+  --wt-nav-indicador-cor: var(--wt-gradient-tide);
   --wt-glow: radial-gradient(60% 60% at 50% 40%, rgba(79, 124, 255, 0.16), transparent 70%);
 
   /* ---- Espaçamento (base 4 px) ---- */

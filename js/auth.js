@@ -3,13 +3,21 @@
 // entre cadastro.html, login.html e as páginas internas.
 
 import { supabase } from './supabaseClient.js';
+import {
+  obterSessao,
+  obterPerfil,
+  exigirPapel,
+  sair,
+  irParaArea,
+  atualizarPapelDaSessao,
+  cadastroIncompleto,
+  destinoDoPerfil,
+} from './sessao/sessao.js';
+import { DESTINOS, PAGINA_COMPLETAR_CADASTRO } from './sessao/regras.js';
 
-export const DESTINOS = {
-  usuario: '/app/usuario/index.html',
-  aluno: '/app/aluno/index.html',
-  professor: '/app/professor/index.html',
-};
-export const PAGINA_COMPLETAR_CADASTRO = '/cadastro.html?completar=1';
+// A sessão (validar, proteger rotas, sair) mora em js/sessao/. Reexportada
+// aqui para as páginas que já importam de auth.js.
+export { obterSessao, obterPerfil, exigirPapel, sair, irParaArea, cadastroIncompleto, destinoDoPerfil, DESTINOS, PAGINA_COMPLETAR_CADASTRO };
 export const TIPO_PENDENTE = 'wavetype_tipo_pendente';
 
 /**
@@ -99,6 +107,7 @@ export async function metodosDeLogin() {
 export async function alterarTipoConta(tipo) {
   const { error } = await supabase.rpc('alterar_tipo_conta', { p_tipo: tipo });
   if (error) throw traduzErro(error);
+  atualizarPapelDaSessao(tipo);
 }
 
 /** Altera o nome exibido (a única coluna do perfil que o próprio usuário edita). */
@@ -158,81 +167,6 @@ export function validarSenha(senha) {
   return null;
 }
 
-export async function sair({ destino = '/login.html' } = {}) {
-  try {
-    sessionStorage.removeItem(PERFIL_ENTREGUE);
-  } catch {
-    /* nada a limpar */
-  }
-  await supabase.auth.signOut();
-  window.location.href = destino;
-}
-
-/** Retorna a sessão atual (ou null) sem lançar erro. */
-export async function obterSessao() {
-  const { data } = await supabase.auth.getSession();
-  return data.session;
-}
-
-/**
- * Busca o perfil (tabela usuarios) do usuário logado, ou null se não
- * houver sessão/perfil.
- */
-export async function obterPerfil() {
-  const sessao = await obterSessao();
-  if (!sessao) return null;
-  const { data, error } = await supabase
-    .from('usuarios')
-    .select('*')
-    .eq('id', sessao.user.id)
-    .maybeSingle();
-  if (error) throw error;
-  return data;
-}
-
-/** Perfil sem tipo escolhido (ex.: primeira entrada com Google). */
-export function cadastroIncompleto(perfil) {
-  return !perfil || perfil.tipo_definido === false || !DESTINOS[perfil.tipo];
-}
-
-/** Para onde a pessoa deve ir depois de entrar. */
-export function destinoDoPerfil(perfil) {
-  return cadastroIncompleto(perfil) ? PAGINA_COMPLETAR_CADASTRO : DESTINOS[perfil.tipo];
-}
-
-// Entrega do perfil entre o login e a primeira página interna: a área logada
-// reaproveita o perfil que o login acabou de ler, em vez de buscá-lo de novo
-// (economiza uma ida ao Supabase logo depois do Google). Vale uma vez só, por
-// poucos segundos, nesta aba e para o mesmo usuário. É só para a navegação:
-// quem protege os dados continua sendo a RLS.
-const PERFIL_ENTREGUE = 'wavetype_perfil_entregue';
-const VALIDADE_ENTREGA_MS = 15000;
-
-/** Vai para a área certa levando o perfil já carregado. */
-export function irParaArea(perfil) {
-  if (!cadastroIncompleto(perfil)) {
-    try {
-      sessionStorage.setItem(PERFIL_ENTREGUE, JSON.stringify({ em: Date.now(), perfil }));
-    } catch {
-      /* sem sessionStorage: a página seguinte busca o perfil normalmente */
-    }
-  }
-  window.location.replace(destinoDoPerfil(perfil));
-}
-
-function receberPerfilEntregue(usuarioId) {
-  try {
-    const bruto = sessionStorage.getItem(PERFIL_ENTREGUE);
-    sessionStorage.removeItem(PERFIL_ENTREGUE);
-    if (!bruto) return null;
-    const { em, perfil } = JSON.parse(bruto);
-    const recente = Date.now() - em < VALIDADE_ENTREGA_MS;
-    return recente && perfil?.id === usuarioId ? perfil : null;
-  } catch {
-    return null;
-  }
-}
-
 /**
  * Grava tipo e nome de um cadastro incompleto (RPC concluir_cadastro) e
  * confere no banco se ficou gravado. Sem essa conferência, uma falha
@@ -274,70 +208,6 @@ export function limparUrlDoOAuth() {
   ['code', 'error', 'error_code', 'error_description', 'state'].forEach((p) => url.searchParams.delete(p));
   url.hash = '';
   window.history.replaceState(null, '', url.pathname + url.search);
-}
-
-/**
- * Chame no topo de cada página interna (usuário, aluno ou professor).
- * - Sem sessão: vai para login.html.
- * - Cadastro incompleto: vai para a conclusão do cadastro.
- * - Papel diferente do esperado: vai para a área correta.
- * IMPORTANTE: isso é UX. A segurança de verdade é a RLS no banco.
- */
-export async function exigirPapel(papelEsperado) {
-  let perfil = null;
-  try {
-    const sessao = await obterSessao();
-    if (!sessao) {
-      window.location.replace('/login.html');
-      return null;
-    }
-    perfil = receberPerfilEntregue(sessao.user.id) ?? (await obterPerfil());
-  } catch (erro) {
-    console.error('Falha ao carregar o perfil:', erro);
-    window.location.replace('/login.html');
-    return null;
-  }
-
-  if (cadastroIncompleto(perfil)) {
-    window.location.replace(PAGINA_COMPLETAR_CADASTRO);
-    return null;
-  }
-  if (perfil.tipo !== papelEsperado) {
-    const destino = DESTINOS[perfil.tipo];
-    if (window.location.pathname !== destino) window.location.replace(destino);
-    return null;
-  }
-
-  montarPerfilNaInterface(perfil);
-  return perfil;
-}
-
-// Nome, iniciais e botão "Sair" no topo de toda página interna.
-function montarPerfilNaInterface(perfil) {
-  const avatar = document.querySelector('.topbar-avatar');
-  if (avatar) avatar.textContent = iniciais(perfil.nome);
-
-  const nomeTopo = document.querySelector('.topbar-profile strong');
-  if (nomeTopo) nomeTopo.textContent = perfil.nome;
-
-  const topo = document.querySelector('.app-topbar');
-  if (topo && !topo.querySelector('[data-sair]')) {
-    const botao = document.createElement('button');
-    botao.type = 'button';
-    botao.className = 'button ghost small app-sair';
-    botao.dataset.sair = '';
-    botao.textContent = 'Sair';
-    botao.addEventListener('click', sair);
-    topo.append(botao);
-  }
-}
-
-function iniciais(nome) {
-  const partes = String(nome || '').trim().split(/\s+/).filter(Boolean);
-  if (!partes.length) return 'WT';
-  const primeira = partes[0][0];
-  const ultima = partes.length > 1 ? partes[partes.length - 1][0] : partes[0][1] || '';
-  return (primeira + ultima).toUpperCase();
 }
 
 export function traduzErro(error) {

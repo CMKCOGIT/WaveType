@@ -20,6 +20,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="assets/images/icons/apple-touch-icon.png">
     <link rel="manifest" href="site.webmanifest">
     <script>document.documentElement.dataset.theme = localStorage.getItem('wavetype_theme') || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');</script>
+    <script>try{document.documentElement.dataset.sessao=Object.keys(localStorage).some(function(k){return /^sb-.+-auth-token$/.test(k)})?'carregando':'visitante'}catch(e){document.documentElement.dataset.sessao='visitante'}</script>
     <link rel="preload" href="assets/fonts/Manrope-Variable.ttf" as="font" type="font/ttf" crossorigin>
     <link rel="preload" href="assets/fonts/IBMPlexMono-Regular.ttf" as="font" type="font/ttf" crossorigin>
     <link rel="stylesheet" href="css/redesign/publico.css">
@@ -41,6 +42,8 @@
             <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Ativar tema escuro" aria-pressed="false"><span aria-hidden="true"></span></button>
             <a class="header-auth-link" href="login.html">Entrar</a>
             <a class="button button-small header-cta" href="cadastro.html">Criar conta</a>
+            <span class="header-conta-carregando" aria-hidden="true"></span>
+            <div class="header-conta" data-header-conta hidden></div>
             <button class="menu-button" id="menu-button" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="mobile-nav"><span></span><span></span><span></span></button>
         </div>
         <nav class="mobile-nav" id="mobile-nav" aria-label="Navegação móvel" hidden>
@@ -48,8 +51,9 @@
             <a href="escolas.html" aria-current="page">Para as escolas</a>
             <a href="como-funciona.html">Como funciona</a>
             <a href="sobre.html">Sobre</a>
-            <a href="login.html">Entrar</a>
-            <a href="cadastro.html">Criar conta</a>
+            <a href="login.html" data-so-visitante>Entrar</a>
+            <a href="cadastro.html" data-so-visitante>Criar conta</a>
+            <div class="mobile-conta" data-mobile-conta hidden></div>
         </nav>
     </header>
 
@@ -242,6 +246,7 @@
         </div>
     </footer>
     <script type="module" src="js/site.js"></script>
+    <script type="module" src="js/sessao/cabecalho.js"></script>
     <script type="module" src="js/motion.js"></script>
 </body>
 </html>
