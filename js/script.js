@@ -1,3 +1,6 @@
+import { criarMotor } from './digitacao/motor.js';
+import { METRICAS, MODOS_ERRO, MODO_ERROS_POR_NIVEL, modoErrosDoExercicio } from './digitacao/config.js';
+
 document.addEventListener('DOMContentLoaded', () => {
     const dictionaries = {
         easy: ['casa', 'mesa', 'livro', 'gato', 'água', 'sol', 'luz', 'paz', 'bom', 'dia', 'noite', 'bolo', 'café', 'pão', 'suco', 'tela', 'vida', 'amor', 'dedo', 'linha', 'som', 'mapa', 'bola', 'rede'],
@@ -45,15 +48,20 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     let state;
+    let motor; // estado da digitação (js/digitacao/motor.js)
+    let wordEls = [];
     let exercicioTexto = null; // texto do exercício vindo do banco (null = prática livre)
     let exercicioLimite = null; // tempo máximo do exercício em segundos (null = sem limite)
     let exercicioRepete = true; // trilha repete textos curtos; atividade de professor não
+    let modoErrosTravado = false; // true quando o professor definiu o modo para a turma
 
     function freshState(settings = {}) {
+        const level = settings.level || state?.level || 'medium';
         return {
             mode: settings.mode || state?.mode || 'words',
-            level: settings.level || state?.level || 'medium',
+            level,
             duration: settings.duration || state?.duration || 30,
+            errorMode: settings.errorMode || state?.errorMode || MODO_ERROS_POR_NIVEL[level] || MODOS_ERRO.fluxo,
             timeLeft: settings.duration || state?.duration || 30,
             started: false,
             finished: false,
@@ -61,17 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
             timer: null,
             lastSampleSecond: 0,
             lastSampleKeypresses: 0,
-            currentWordIndex: 0,
-            currentLetterIndex: 0,
             wrapperOffset: 0,
-            keypresses: 0,
-            correct: 0,
-            wrong: 0,
-            missed: 0,
-            extra: 0,
-            corrected: 0,
-            errorKeys: new Map(),
-            problemWords: new Set(),
             speedSamples: []
         };
     }
@@ -87,6 +85,12 @@ document.addEventListener('DOMContentLoaded', () => {
             word.appendChild(letter);
         });
         elements.wrapper.appendChild(word);
+        wordEls.push(word);
+    }
+
+    function addWords(list) {
+        list.forEach(createWord);
+        motor.adicionarPalavras(list);
     }
 
     const MIN_CHARS_EXERCICIO = 150;
@@ -99,11 +103,11 @@ document.addEventListener('DOMContentLoaded', () => {
         // e cada rodada tem exatamente o mesmo tamanho do texto original.
         const tamanhoCiclo = palavras.join(' ').length + 1;
         const vezes = exercicioRepete ? Math.max(1, Math.ceil(MIN_CHARS_EXERCICIO / tamanhoCiclo)) : 1;
-        palavras.forEach(createWord);
+        addWords(palavras);
         let anterior = palavras;
         for (let i = 1; i < vezes; i += 1) {
             anterior = variarRodada(palavras, anterior);
-            anterior.forEach(createWord);
+            addWords(anterior);
         }
     }
 
@@ -151,37 +155,58 @@ document.addEventListener('DOMContentLoaded', () => {
     function appendWords(amount) {
         if (exercicioTexto) return; // exercício do banco: texto fixo, sem repetir
         const source = state.mode === 'sentences' ? dictionaries.sentences[state.level] : dictionaries[state.level];
+        const novas = [];
         for (let index = 0; index < amount; index += 1) {
             const item = source[Math.floor(Math.random() * source.length)];
-            if (state.mode === 'sentences') item.split(' ').forEach(createWord);
-            else createWord(item);
+            if (state.mode === 'sentences') novas.push(...item.split(' '));
+            else novas.push(item);
         }
+        addWords(novas);
     }
 
     function generateWords() {
         elements.wrapper.replaceChildren();
+        wordEls = [];
+        motor = criarMotor({ modo: state.errorMode });
         if (exercicioTexto) {
-            appendExercicio(1);
+            appendExercicio();
             return;
         }
         appendWords(state.mode === 'sentences' ? 22 : 150);
     }
 
-    function currentWord() {
-        return elements.wrapper.querySelectorAll('.word')[state.currentWordIndex];
+    // ---------- Desenho do texto a partir do motor ----------
+
+    const CLASSE_DO_ESTADO = { correta: 'correct', incorreta: 'incorrect', omitida: 'missed', pendente: '' };
+
+    function renderWord(index) {
+        const word = wordEls[index];
+        if (!word) return;
+        Array.from(word.children).forEach((letter, li) => {
+            const classe = CLASSE_DO_ESTADO[motor.estadoLetra(index, li)];
+            letter.classList.remove('correct', 'incorrect', 'missed');
+            if (classe) letter.classList.add(classe);
+        });
+        definirExtras(word, motor.extras(index));
+    }
+
+    function renderAround(index) {
+        renderWord(index - 1);
+        renderWord(index);
+        renderWord(index + 1);
     }
 
     function updateTypingPosition() {
-        const words = elements.wrapper.querySelectorAll('.word');
-        const word = words[state.currentWordIndex];
+        const word = wordEls[motor.palavraAtual];
         if (!word) return;
 
         elements.wrapper.querySelectorAll('.letter.current').forEach((letter) => letter.classList.remove('current'));
         elements.wrapper.querySelectorAll('.word.active, .word.caret-at-end').forEach((item) => item.classList.remove('active', 'caret-at-end'));
 
         word.classList.add('active');
-        const letters = word.querySelectorAll('.letter');
-        if (state.currentLetterIndex < letters.length) letters[state.currentLetterIndex].classList.add('current');
+        const letters = word.children;
+        const letraAtual = motor.letraAtual;
+        if (letraAtual < letters.length) letters[letraAtual].classList.add('current');
         else word.classList.add('caret-at-end');
 
         const singleLine = document.body.classList.contains('single-line');
@@ -194,7 +219,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             // Mede pela letra atual: uma palavra longa pode ocupar mais de uma linha.
             const lineHeight = parseFloat(getComputedStyle(elements.wrapper).lineHeight);
-            const alvo = letters[Math.min(state.currentLetterIndex, letters.length - 1)] ?? word;
+            const alvo = letters[Math.min(letraAtual, letters.length - 1)] ?? word;
             const topo = alvo.getBoundingClientRect().top - elements.wrapper.getBoundingClientRect().top;
             desiredOffset = Math.max(0, topo - lineHeight);
         }
@@ -208,13 +233,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    function elapsedNow() {
+        return state.started ? (performance.now() - state.startTime) / 1000 : 0;
+    }
+
     function setLiveMetrics(elapsedSeconds) {
-        const safeElapsed = Math.max(elapsedSeconds, 1);
-        const raw = Math.round((state.keypresses / 5) / (safeElapsed / 60));
-        const accuracyBase = state.keypresses + state.missed;
-        const accuracy = accuracyBase ? Math.round((state.correct / accuracyBase) * 100) : 100;
-        elements.liveWpm.textContent = String(Math.max(0, raw));
-        elements.liveAccuracy.textContent = `${Math.max(0, Math.min(100, accuracy))}%`;
+        const stats = motor.estatisticas(elapsedSeconds);
+        elements.liveWpm.textContent = String(stats.ppmBruto);
+        // Com poucas teclas a precisão ainda não diz nada: mostra "—".
+        elements.liveAccuracy.textContent = stats.precisao == null ? '—' : `${stats.precisao}%`;
     }
 
     function startTest() {
@@ -229,7 +256,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function tick() {
-        const elapsed = (performance.now() - state.startTime) / 1000;
+        const elapsed = elapsedNow();
         // Exercício do banco: contagem regressiva do tempo máximo (ou cronômetro, se não houver limite).
         const remaining = !exercicioTexto
             ? Math.max(0, Math.ceil(state.duration - elapsed))
@@ -243,56 +270,42 @@ document.addEventListener('DOMContentLoaded', () => {
         const sampleSecond = Math.floor(elapsed);
         if (sampleSecond > state.lastSampleSecond) {
             const intervalSeconds = sampleSecond - state.lastSampleSecond;
-            const intervalKeys = state.keypresses - state.lastSampleKeypresses;
+            const intervalKeys = motor.teclas - state.lastSampleKeypresses;
             state.speedSamples.push(Math.round((intervalKeys / 5) / (intervalSeconds / 60)));
             state.lastSampleSecond = sampleSecond;
-            state.lastSampleKeypresses = state.keypresses;
+            state.lastSampleKeypresses = motor.teclas;
         }
         if (!exercicioTexto && elapsed >= state.duration) endTest();
         if (exercicioTexto && exercicioLimite && elapsed >= exercicioLimite) endTest({ tempoEsgotado: true });
     }
 
-    function addErrorKey(key) {
-        const normalized = key === ' ' ? 'espaço' : key.toLocaleLowerCase('pt-BR');
-        state.errorKeys.set(normalized, (state.errorKeys.get(normalized) || 0) + 1);
-    }
-    function removeErrorKey(key) {
-        const normalized = key === ' ' ? 'espaço' : key.toLocaleLowerCase('pt-BR');
-        const atual = state.errorKeys.get(normalized) || 0;
-        if (atual > 1) state.errorKeys.set(normalized, atual - 1);
-        else state.errorKeys.delete(normalized);
-    }
+    // ---------- Teclas ----------
 
-    function voltarPalavra() {
-        if (state.currentWordIndex <= 0) return;
-        const previous = elements.wrapper.querySelectorAll('.word')[state.currentWordIndex - 1];
-        if (!previous) return;
-
-        // Só volta se a palavra anterior tiver erro (letra errada, extra ou faltando)
-        if (!previous.querySelector('.letter.incorrect, .letter.missed') && !extrasDaPalavra(previous)) return;
-
-        // Desfaz as letras "puladas" para o contador de erros não ficar duplicado
-        previous.querySelectorAll('.letter.missed').forEach((letter) => {
-            letter.classList.remove('missed');
-            state.missed = Math.max(0, state.missed - 1);
-            removeErrorKey(letter.textContent);
-        });
-
-        state.currentWordIndex -= 1;
-        state.currentLetterIndex = Number(previous.dataset.typedLen || 0);
-        updateTypingPosition();
+    function sinalizarBloqueio() {
+        const word = wordEls[motor.palavraAtual];
+        const alvo = word?.children[motor.letraAtual] ?? word;
+        if (!alvo) return;
+        alvo.classList.remove('bloqueada');
+        void alvo.offsetWidth; // reinicia a animação
+        alvo.classList.add('bloqueada');
+        window.setTimeout(() => alvo.classList.remove('bloqueada'), 400);
     }
 
-    function markCurrentWordProblem() {
-        const word = currentWord();
-        if (word?.dataset.text) state.problemWords.add(word.dataset.text);
-    }
+    function afterKey(resultado, indiceAntes) {
+        if (resultado.tipo === 'ignorada') return;
+        if (resultado.tipo === 'bloqueada') {
+            sinalizarBloqueio();
+            if (resultado.sugerirSeguir) mostrarAvisoTravou(true);
+        } else {
+            mostrarAvisoTravou(false);
+        }
+        renderAround(indiceAntes);
+        if (motor.palavraAtual !== indiceAntes) renderAround(motor.palavraAtual);
 
-    function terminouExercicio() {
-        const words = elements.wrapper.querySelectorAll('.word');
-        if (!words.length || state.currentWordIndex !== words.length - 1) return false;
-        const letters = words[words.length - 1].querySelectorAll('.letter:not(.extra-letter)');
-        return state.currentLetterIndex >= letters.length;
+        if (motor.palavraAtual > wordEls.length - 35) appendWords(state.mode === 'sentences' ? 8 : 70);
+        setLiveMetrics(elapsedNow());
+        requestAnimationFrame(updateTypingPosition);
+        if (exercicioTexto && motor.terminou()) endTest();
     }
 
     function processCharacter(character) {
@@ -302,91 +315,20 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
         if (!state.started) startTest();
-
-        const word = currentWord();
-        if (!word) return;
-        const originalLetters = Array.from(word.querySelectorAll('.letter:not(.extra-letter)'));
-        state.keypresses += 1;
-
-        if (state.currentLetterIndex < originalLetters.length) {
-            const letter = originalLetters[state.currentLetterIndex];
-            if (character === letter.textContent) {
-                letter.classList.add('correct');
-                state.correct += 1;
-            } else {
-                letter.classList.add('incorrect');
-                letter.dataset.typed = character;
-                state.wrong += 1;
-                addErrorKey(letter.textContent);
-                markCurrentWordProblem();
-            }
-        } else {
-            // Letra a mais: não entra no texto (isso alargava a palavra e deslocava
-            // o texto de referência). Fica contada na palavra e aparece como "+N".
-            definirExtras(word, extrasDaPalavra(word) + 1);
-            state.extra += 1;
-            addErrorKey('extra');
-            markCurrentWordProblem();
-        }
-        state.currentLetterIndex += 1;
-        setLiveMetrics((performance.now() - state.startTime) / 1000);
-        updateTypingPosition();
-        if (exercicioTexto && terminouExercicio()) endTest();
+        const antes = motor.palavraAtual;
+        afterKey(motor.digitar(character, performance.now()), antes);
     }
 
     function submitWord() {
-        if (!state.started || state.currentLetterIndex === 0 || state.finished) return;
-        const word = currentWord();
-        if (!word) return;
-        const originalLetters = Array.from(word.querySelectorAll('.letter:not(.extra-letter)'));
-        if (state.currentLetterIndex < originalLetters.length) {
-            markCurrentWordProblem();
-            for (let index = state.currentLetterIndex; index < originalLetters.length; index += 1) {
-                originalLetters[index].classList.add('missed');
-                state.missed += 1;
-                addErrorKey(originalLetters[index].textContent);
-            }
-        }
-
-        word.dataset.typedLen = String(state.currentLetterIndex);
-        state.currentWordIndex += 1;
-        state.currentLetterIndex = 0;
-        const words = elements.wrapper.querySelectorAll('.word');
-        if (exercicioTexto && state.currentWordIndex >= words.length) {
-            endTest();
-            return;
-        }
-        if (state.currentWordIndex > words.length - 35) appendWords(state.mode === 'sentences' ? 8 : 70);
-        setLiveMetrics((performance.now() - state.startTime) / 1000);
-        requestAnimationFrame(updateTypingPosition);
+        if (!state.started || state.finished) return;
+        const antes = motor.palavraAtual;
+        afterKey(motor.espaco(performance.now()), antes);
     }
 
     function handleBackspace() {
         if (!state.started || state.finished) return;
-        if (state.currentLetterIndex <= 0) {
-            voltarPalavra();
-            return;
-        }
-        const word = currentWord();
-        if (!word) return;
-        const letters = Array.from(word.querySelectorAll('.letter'));
-        if (state.currentLetterIndex > letters.length) {
-            // Apaga uma letra a mais
-            definirExtras(word, extrasDaPalavra(word) - 1);
-            state.corrected += 1;
-        } else {
-            const target = letters[state.currentLetterIndex - 1];
-            if (!target) return;
-            if (target.classList.contains('incorrect')) state.corrected += 1;
-            target.classList.remove('correct', 'incorrect');
-            delete target.dataset.typed;
-        }
-        state.currentLetterIndex -= 1;
-        updateTypingPosition();
-    }
-
-    function extrasDaPalavra(word) {
-        return Number(word.dataset.extras || 0);
+        const antes = motor.palavraAtual;
+        afterKey(motor.apagar(performance.now()), antes);
     }
 
     function definirExtras(word, quantidade) {
@@ -396,14 +338,65 @@ document.addEventListener('DOMContentLoaded', () => {
         word.classList.toggle('has-extra', total > 0);
     }
 
-    function consistencyScore(samples) {
-        const usable = samples.filter((value) => Number.isFinite(value));
-        if (usable.length < 2) return usable.length ? 100 : 0;
-        const mean = usable.reduce((sum, value) => sum + value, 0) / usable.length;
-        if (mean === 0) return 0;
-        const variance = usable.reduce((sum, value) => sum + ((value - mean) ** 2), 0) / usable.length;
-        const deviation = Math.sqrt(variance);
-        return Math.max(0, Math.min(100, Math.round(100 - ((deviation / mean) * 100))));
+    // ---------- Modo de erros (seguir / corrigir antes de avançar) ----------
+
+    function montarSeletorDeErros() {
+        const toolbar = elements.shell.querySelector('.typing-toolbar');
+        if (!toolbar || toolbar.querySelector('[data-control="errors"]')) return;
+        const fieldset = document.createElement('fieldset');
+        fieldset.className = 'segmented-control';
+        fieldset.dataset.control = 'errors';
+        fieldset.innerHTML = '<legend>Erros</legend>'
+            + `<button type="button" class="segment" data-value="${MODOS_ERRO.fluxo}" aria-pressed="false" title="O cursor avança mesmo com erro; use Backspace para corrigir">Seguir</button>`
+            + `<button type="button" class="segment" data-value="${MODOS_ERRO.correcao}" aria-pressed="false" title="O cursor só avança com a tecla certa">Corrigir antes</button>`
+            + '<span class="segmented-note" hidden>definido pelo professor</span>';
+        const nivel = toolbar.querySelector('[data-control="level"]');
+        if (nivel) nivel.after(fieldset);
+        else toolbar.prepend(fieldset);
+    }
+
+    function sincronizarSeletorDeErros() {
+        const fieldset = elements.shell.querySelector('[data-control="errors"]');
+        if (!fieldset) return;
+        fieldset.querySelectorAll('.segment').forEach((botao) => {
+            const ativo = botao.dataset.value === state.errorMode;
+            botao.classList.toggle('active', ativo);
+            botao.setAttribute('aria-pressed', String(ativo));
+            botao.disabled = modoErrosTravado;
+        });
+        fieldset.querySelector('.segmented-note').hidden = !modoErrosTravado;
+        elements.shell.dataset.modoErros = state.errorMode;
+    }
+
+    function montarAvisoTravou() {
+        if (document.getElementById('aviso-travou')) return;
+        const aviso = document.createElement('div');
+        aviso.className = 'aviso-travou';
+        aviso.id = 'aviso-travou';
+        aviso.setAttribute('role', 'status');
+        aviso.hidden = true;
+        aviso.innerHTML = '<p>Essa tecla está difícil agora. Quer seguir e voltar a ela depois?</p>'
+            + '<div><button type="button" class="button button-small" data-travou="seguir">Seguir mesmo assim</button>'
+            + '<button type="button" class="button button-small button-secondary" data-travou="repetir">Tentar de novo</button></div>';
+        elements.stage.after(aviso);
+        aviso.addEventListener('click', (event) => {
+            const acao = event.target.closest('[data-travou]')?.dataset.travou;
+            if (!acao) return;
+            const antes = motor.palavraAtual;
+            if (acao === 'seguir') afterKey(motor.seguirMesmoAssim(), antes);
+            else motor.tentarDeNovo();
+            mostrarAvisoTravou(false);
+            elements.input.focus();
+        });
+    }
+
+    function mostrarAvisoTravou(visivel) {
+        const aviso = document.getElementById('aviso-travou');
+        if (aviso && aviso.hidden === visivel) aviso.hidden = !visivel;
+    }
+
+    function consistencyLabel(valor) {
+        return valor == null ? '—' : `${valor}%`;
     }
 
     function buildChart(samples) {
@@ -439,12 +432,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function setDiagnosis(result) {
-        if (result.accuracy < 90) {
+        if (result.accuracy != null && result.accuracy < 90) {
             elements.diagnosisTitle.textContent = 'Priorize precisão antes de acelerar';
             elements.diagnosisText.textContent = 'Reduza um pouco o ritmo e procure terminar cada palavra corretamente. Velocidade virá com a repetição.';
-        } else if (result.consistency < 72) {
+        } else if (result.consistency != null && result.consistency < METRICAS.consistenciaRitmoIrregular) {
             elements.diagnosisTitle.textContent = 'Busque um ritmo mais constante';
-            elements.diagnosisText.textContent = 'Você alternou entre trechos rápidos e pausas. Tente manter uma cadência confortável do início ao fim.';
+            elements.diagnosisText.textContent = 'Você alternou entre trechos rápidos e lentos. Tente manter uma cadência confortável do início ao fim.';
         } else if (result.netWpm < 30) {
             elements.diagnosisTitle.textContent = 'Sua base está ficando mais segura';
             elements.diagnosisText.textContent = 'A precisão está no caminho certo. Pratique sessões curtas e frequentes para ganhar automatização.';
@@ -454,15 +447,33 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function renderProblemKeys() {
+    function renderProblemKeys(errosPorTecla) {
         elements.problemKeys.replaceChildren();
-        const entries = [...state.errorKeys.entries()].sort((a, b) => b[1] - a[1]).slice(0, 5);
+        const entries = errosPorTecla.slice(0, 5);
         if (!entries.length) entries.push(['—', 0]);
-        entries.forEach(([key]) => {
+        entries.forEach(([key, total]) => {
             const badge = document.createElement('kbd');
             badge.textContent = key;
+            if (total) badge.title = `${total} ${total === 1 ? 'erro' : 'erros'}`;
             elements.problemKeys.appendChild(badge);
         });
+    }
+
+    function renderErrorSummary(stats) {
+        const card = elements.charsCorrect?.closest('.detail-card');
+        if (!card) return;
+        let resumo = card.querySelector('[data-resumo-erros]');
+        if (!resumo) {
+            resumo = document.createElement('p');
+            resumo.className = 'erros-resumo';
+            resumo.dataset.resumoErros = '';
+            card.append(resumo);
+        }
+        resumo.textContent = !stats.erros
+            ? 'Nenhum erro digitado.'
+            : `${stats.erros} ${stats.erros === 1 ? 'erro digitado' : 'erros digitados'}: `
+              + `${stats.errosCorrigidos} ${stats.errosCorrigidos === 1 ? 'corrigido' : 'corrigidos'} e `
+              + `${stats.errosNaoCorrigidos} ${stats.errosNaoCorrigidos === 1 ? 'não corrigido' : 'não corrigidos'}.`;
     }
 
     function endTest({ tempoEsgotado = false } = {}) {
@@ -470,32 +481,37 @@ document.addEventListener('DOMContentLoaded', () => {
         window.clearInterval(state.timer);
         state.finished = true;
         state.timeLeft = 0;
+        mostrarAvisoTravou(false);
         const elapsedSeconds = exercicioTexto
-            ? Math.max(Math.min((performance.now() - state.startTime) / 1000, exercicioLimite || Infinity), 1)
+            ? Math.max(Math.min(elapsedNow(), exercicioLimite || Infinity), 1)
             : state.duration;
-        const elapsedMinutes = elapsedSeconds / 60;
-        const netWpm = Math.max(0, Math.round((state.correct / 5) / elapsedMinutes));
-        const rawWpm = Math.max(0, Math.round((state.keypresses / 5) / elapsedMinutes));
-        const accuracyBase = state.keypresses + state.missed;
-        const accuracy = accuracyBase ? Math.max(0, Math.min(100, Math.round((state.correct / accuracyBase) * 100))) : 0;
-        const consistency = consistencyScore(state.speedSamples);
+        const stats = motor.estatisticas(elapsedSeconds);
+        const netWpm = stats.ppmLiquido;
+        const rawWpm = stats.ppmBruto;
+        const accuracy = stats.precisao; // null com amostra pequena
+        const consistency = stats.consistencia; // null com amostra pequena
         const result = { netWpm, rawWpm, accuracy, consistency };
         const history = readHistory();
 
         elements.liveTime.textContent = exercicioTexto ? String(Math.round(elapsedSeconds)) : '0';
         elements.resultWpm.textContent = String(netWpm);
         elements.resultRaw.textContent = String(rawWpm);
-        elements.resultAccuracy.textContent = `${accuracy}%`;
-        elements.resultConsistency.textContent = `${consistency}%`;
-        elements.charsCorrect.textContent = String(state.correct);
-        elements.charsWrong.textContent = String(state.wrong);
-        elements.charsMissed.textContent = String(state.missed);
-        elements.charsExtra.textContent = String(state.extra);
+        elements.resultAccuracy.textContent = accuracy == null ? '—' : `${accuracy}%`;
+        elements.resultConsistency.textContent = consistencyLabel(consistency);
+        const notaConsistencia = elements.resultConsistency.nextElementSibling;
+        if (notaConsistencia) {
+            notaConsistencia.textContent = consistency == null ? 'digite um pouco mais para medir' : 'estabilidade do ritmo';
+        }
+        elements.charsCorrect.textContent = String(stats.corretasNoTexto);
+        elements.charsWrong.textContent = String(stats.incorretas);
+        elements.charsMissed.textContent = String(stats.omitidas);
+        elements.charsExtra.textContent = String(stats.extras);
+        renderErrorSummary(stats);
         elements.chartDuration.textContent = `${Math.round(elapsedSeconds)} segundos`;
         elements.resultSummary.textContent = tempoEsgotado
             ? 'O tempo máximo acabou antes do fim do texto. Respire e tente de novo.'
-            : state.corrected
-            ? `Você corrigiu ${state.corrected} ${state.corrected === 1 ? 'erro durante' : 'erros durante'} o teste. Isso também faz parte da precisão.`
+            : stats.errosCorrigidos
+            ? `Você corrigiu ${stats.errosCorrigidos} ${stats.errosCorrigidos === 1 ? 'erro durante' : 'erros durante'} o teste. Os erros corrigidos também contam na precisão.`
             : 'Veja o que manter e o que praticar no próximo teste.';
 
         if (history.length) {
@@ -508,22 +524,22 @@ document.addEventListener('DOMContentLoaded', () => {
             elements.resultComparison.textContent = 'Primeiro resultado neste dispositivo';
         }
 
-        const difficultWords = [...state.problemWords].slice(0, 6);
+        const difficultWords = stats.palavrasProblema.slice(0, 6);
         elements.problemWords.textContent = difficultWords.length ? difficultWords.join(' · ') : 'Nenhuma palavra problemática identificada.';
-        renderProblemKeys();
+        renderProblemKeys(stats.errosPorTecla);
         setDiagnosis(result);
         buildChart([...state.speedSamples, rawWpm]);
-        saveResult(result);
+        saveResult({ netWpm, accuracy: stats.precisaoBruta });
 
         // Avisa a página que o teste terminou. Na área logada, o
-        // usuario-treinar.js escuta este evento e salva no Supabase.
-        // Na página pública ninguém escuta, então nada muda por lá.
+        // treino.js escuta este evento e salva no Supabase.
+        // Na página pública, o teste-publico.js mostra o convite para entrar.
         document.dispatchEvent(new CustomEvent('wavetype:resultado', {
             detail: {
                 ppm: netWpm,
-                precisao: accuracy,
-                acertos: state.correct,
-                erros: state.wrong + state.missed + state.extra,
+                precisao: stats.precisaoBruta,
+                acertos: stats.teclasCorretas,
+                erros: stats.erros,
                 tempo_seg: Math.round(elapsedSeconds),
                 concluiu_texto: !tempoEsgotado
             }
@@ -533,18 +549,23 @@ document.addEventListener('DOMContentLoaded', () => {
         elements.shell.classList.remove('focused');
         elements.resultPanel.hidden = false;
         elements.input.blur();
-        elements.status.textContent = `Teste concluído. ${netWpm} palavras por minuto, ${accuracy}% de precisão e ${consistency}% de consistência.`;
+        elements.status.textContent = `Teste concluído. ${netWpm} palavras por minuto`
+            + (accuracy == null ? '' : `, ${accuracy}% de precisão`)
+            + (consistency == null ? '' : ` e ${consistency}% de consistência`) + '.';
         requestAnimationFrame(() => elements.resultTitle.focus());
     }
 
     function initTest({ focus = false } = {}) {
         if (state?.timer) window.clearInterval(state.timer);
-        const settings = state ? { mode: state.mode, level: state.level, duration: state.duration } : {};
+        const settings = state ? { mode: state.mode, level: state.level, duration: state.duration, errorMode: state.errorMode } : {};
         state = freshState(settings);
+        mostrarAvisoTravou(false);
+        sincronizarSeletorDeErros();
         generateWords();
+        renderAround(0);
         elements.wrapper.style.transform = 'translateY(0)';
         elements.liveWpm.textContent = '0';
-        elements.liveAccuracy.textContent = '100%';
+        elements.liveAccuracy.textContent = '—';
         elements.liveTime.textContent = exercicioTexto ? String(exercicioLimite || 0) : String(state.duration);
         elements.input.value = '';
         elements.resultPanel.hidden = true;
@@ -553,6 +574,9 @@ document.addEventListener('DOMContentLoaded', () => {
         requestAnimationFrame(updateTypingPosition);
         if (focus) requestAnimationFrame(() => elements.input.focus());
     }
+
+    montarSeletorDeErros();
+    montarAvisoTravou();
 
     elements.input.addEventListener('focus', () => elements.shell.classList.add('focused'));
     elements.input.addEventListener('blur', () => elements.shell.classList.remove('focused'));
@@ -592,6 +616,17 @@ document.addEventListener('DOMContentLoaded', () => {
         Array.from(fallbackText).forEach(processCharacter);
     });
 
+    // Esc recomeça também depois do resultado (o campo de digitação perde o foco).
+    // Não interfere em menus abertos: eles tratam o próprio Esc antes.
+    document.addEventListener('keydown', (event) => {
+        if (event.key !== 'Escape' || event.defaultPrevented || event.target === elements.input) return;
+        if (event.target instanceof Element && event.target.closest('details[open], [role="menu"], dialog')) return;
+        const posicao = elements.shell.getBoundingClientRect();
+        if (posicao.bottom <= 0 || posicao.top >= window.innerHeight) return;
+        event.preventDefault();
+        initTest({ focus: true });
+    });
+
     document.addEventListener('keydown', (event) => {
         if (event.defaultPrevented || state.finished || event.ctrlKey || event.metaKey || event.altKey || event.isComposing) return;
         if (event.key.length !== 1 || event.key === ' ') return;
@@ -609,7 +644,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.segmented-control').forEach((control) => {
         control.addEventListener('click', (event) => {
             const button = event.target.closest('.segment');
-            if (!button) return;
+            if (!button || button.disabled) return;
             control.querySelectorAll('.segment').forEach((item) => {
                 const active = item === button;
                 item.classList.toggle('active', active);
@@ -617,8 +652,13 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             const type = control.dataset.control;
             if (type === 'mode') state.mode = button.dataset.value;
-            if (type === 'level') state.level = button.dataset.value;
+            if (type === 'level') {
+                state.level = button.dataset.value;
+                // Cada nível tem seu modo de erros padrão (Fácil: corrigir antes de avançar).
+                state.errorMode = MODO_ERROS_POR_NIVEL[state.level] || MODOS_ERRO.fluxo;
+            }
             if (type === 'time') state.duration = Number(button.dataset.value);
+            if (type === 'errors') state.errorMode = button.dataset.value;
             initTest();
         });
     });
@@ -647,10 +687,15 @@ document.addEventListener('DOMContentLoaded', () => {
         exercicioLimite = Number(exercicio.tempo_limite_seg) > 0 ? Number(exercicio.tempo_limite_seg) : null;
         exercicioRepete = !exercicio.atividade;
 
-        // Exercício do banco: esconde modo, tempo e nível (não se aplicam aqui)
-        document.querySelectorAll('.segmented-control').forEach((control) => {
+        // Exercício do banco: esconde modo, tempo e nível (não se aplicam aqui).
+        // O modo de erros continua visível; se o professor definiu um para a
+        // turma, ele vale e o seletor fica travado.
+        document.querySelectorAll('.segmented-control:not([data-control="errors"])').forEach((control) => {
             control.style.display = 'none';
         });
+        const modoDaTurma = exercicio.modo_erros_turma ?? null;
+        modoErrosTravado = Boolean(modoDaTurma);
+        state.errorMode = modoErrosDoExercicio(exercicio, modoDaTurma);
 
         initTest();
     }

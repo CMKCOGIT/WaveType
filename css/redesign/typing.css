@@ -211,3 +211,67 @@ body.high-contrast .typing-shell.focused .typing-stage {
   border-color: #000814;
   box-shadow: none;
 }
+
+/* ---- Modo "corrigir antes de avançar" ---- */
+/* Tecla errada: a letra esperada pisca em vermelho (e balança, se o
+   movimento estiver liberado). */
+.letter.bloqueada,
+.word.bloqueada {
+  color: var(--wt-danger);
+  background: color-mix(in srgb, var(--wt-danger) 14%, transparent);
+  border-radius: 3px;
+}
+@media (prefers-reduced-motion: no-preference) {
+  body:not(.reduce-motion) .letter.bloqueada,
+  body:not(.reduce-motion) .word.bloqueada {
+    animation: wt-tecla-bloqueada 0.28s var(--wt-ease-standard);
+  }
+}
+@keyframes wt-tecla-bloqueada {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-2px); }
+  75% { transform: translateX(2px); }
+}
+
+.segmented-control .segment:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+.segmented-note {
+  align-self: center;
+  margin-left: var(--wt-space-2);
+  color: var(--wt-text-subtle);
+  font-size: 0.75rem;
+}
+
+/* Sugestão depois de vários erros seguidos na mesma tecla */
+.aviso-travou {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--wt-space-3);
+  margin-top: var(--wt-space-3);
+  padding: var(--wt-space-3) var(--wt-space-4);
+  border: 1px solid var(--wt-line);
+  border-radius: var(--wt-radius-sm);
+  background: var(--wt-surface);
+}
+.aviso-travou[hidden] {
+  display: none;
+}
+.aviso-travou p {
+  margin: 0;
+  font-weight: 600;
+}
+.aviso-travou div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--wt-space-2);
+}
+
+.erros-resumo {
+  margin: var(--wt-space-3) 0 0;
+  color: var(--wt-text-muted);
+  font-size: 0.85rem;
+}

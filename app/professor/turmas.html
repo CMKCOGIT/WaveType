@@ -7,7 +7,7 @@
         <div class="form-grid">
             <label class="field"><span>Nome da turma</span><input name="nome" maxlength="120" required placeholder="Ex.: 3º Ano A"></label>
             <label class="field"><span>Ano/semestre</span><input name="ano_letivo" maxlength="20" placeholder="Ex.: 2026 · 1º semestre"></label>
-            <label class="field full"><span>Descrição</span><textarea name="descricao" rows="2" maxlength="500" placeholder="Ex.: Turma da manhã, laboratório de informática"></textarea></label>
+            <label class="field"><span>Erros na digitação</span><select name="modo_erros"><option value="">Padrão do exercício</option><option value="correcao">Corrigir antes de avançar</option><option value="fluxo">Seguir mesmo com erro</option></select><small class="field-hint">“Corrigir antes de avançar” ajuda quem está aprendendo a posição das teclas.</small></label><label class="field full"><span>Descrição</span><textarea name="descricao" rows="2" maxlength="500" placeholder="Ex.: Turma da manhã, laboratório de informática"></textarea></label>
         </div>
         <div class="form-actions" style="margin-top:14px"><button class="button" type="submit" data-salvar-turma>Criar turma</button><button class="button secondary" type="button" data-cancelar-turma>Cancelar</button></div>
         <p class="feedback is-erro" data-feedback-form hidden role="alert"></p>

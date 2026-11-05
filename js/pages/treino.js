@@ -8,6 +8,7 @@
 import { exigirPapel } from '../auth.js';
 import { registrarResultado } from '../api/resultados.js';
 import { buscarExercicio, listarExercicios } from '../api/exercicios.js';
+import { modosDeErroDasTurmas } from '../api/turmas.js';
 import { NIVEIS } from '../exercicios-dados.js';
 import { PRECISAO_MINIMA_TRILHA, resultadoConcluiu, motivoNaoConcluiu, formatarTempo } from '../regras.js';
 import { avisarConquistas } from '../ui/toast-conquista.js';
@@ -21,7 +22,7 @@ export function iniciarTreino(papel) {
   const pronto = (async () => {
     const perfil = await exigirPapel(papel); // redireciona se não puder estar aqui
     if (!perfil || !idDoExercicio) return perfil;
-    exercicio = await carregarExercicio(idDoExercicio);
+    exercicio = await carregarExercicio(idDoExercicio, turmaDaUrl);
     return perfil;
   })();
 
@@ -52,7 +53,7 @@ export function iniciarTreino(papel) {
   });
 }
 
-async function carregarExercicio(id) {
+async function carregarExercicio(id, turmaId = null) {
   const info = document.querySelector('[data-exercicio-info]');
   let exercicio = null;
   try {
@@ -88,6 +89,11 @@ async function carregarExercicio(id) {
   info.hidden = false;
   info.innerHTML = '';
   info.append(Object.assign(document.createElement('a'), { href: 'exercicios.html', textContent: '← Trocar exercício' }));
+
+  // Atividade da turma: o professor pode ter definido o modo de erros.
+  if (exercicio.atividade && turmaId) {
+    exercicio.modo_erros_turma = (await modosDeErroDasTurmas([turmaId])).get(turmaId) ?? null;
+  }
 
   // Entrega o exercício para o motor do teste (js/script.js).
   window.wavetypeExercicio = exercicio;

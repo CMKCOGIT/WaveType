@@ -1353,3 +1353,11 @@ body[data-page="treinar"] .typing-shell {
 .metric-card:has(> strong[data-metric*="turmas"]) {
   --wt-mico: var(--ico-grade-b);
 }
+
+/* Dica curta abaixo de um campo */
+.field .field-hint {
+  color: var(--wt-text-muted);
+  font-size: 0.78rem;
+  font-weight: 500;
+  line-height: 1.4;
+}

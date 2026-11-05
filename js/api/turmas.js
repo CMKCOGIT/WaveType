@@ -23,25 +23,23 @@ export async function listarMinhasMatriculas() {
 }
 
 /** Professor: cria uma turma. O código de convite é gerado pelo banco. */
-export async function criarTurma({ nome, descricao, ano_letivo }) {
+export async function criarTurma({ nome, descricao, ano_letivo, modo_erros = null }) {
   const { data: sessao } = await supabase.auth.getSession();
   const professorId = sessao.session?.user.id;
   if (!professorId) throw new Error('Sessão expirada. Entre novamente.');
 
-  const { data, error } = await supabase
-    .from('turmas')
-    .insert({ nome, descricao: descricao || null, ano_letivo: ano_letivo || null, professor_id: professorId })
-    .select()
-    .single();
+  const registro = { nome, descricao: descricao || null, ano_letivo: ano_letivo || null, professor_id: professorId };
+  if (modo_erros) registro.modo_erros = modo_erros;
+  const { data, error } = await semColunaModoErros(registro, (r) => supabase.from('turmas').insert(r).select().single());
   if (error) throw new Error('Não foi possível criar a turma.');
   return data;
 }
 
 /** Professor: edita nome, descrição, ano letivo ou status (ativa/encerrada). */
 export async function atualizarTurma(id, campos) {
-  const permitidos = ['nome', 'descricao', 'ano_letivo', 'status'];
+  const permitidos = ['nome', 'descricao', 'ano_letivo', 'status', 'modo_erros'];
   const dados = Object.fromEntries(Object.entries(campos).filter(([chave]) => permitidos.includes(chave)));
-  const { data, error } = await supabase.from('turmas').update(dados).eq('id', id).select().single();
+  const { data, error } = await semColunaModoErros(dados, (r) => supabase.from('turmas').update(r).eq('id', id).select().single());
   if (error) throw new Error('Não foi possível salvar a turma.');
   return data;
 }
@@ -87,4 +85,32 @@ export async function adicionarAlunoPorId(turmaId, alunoId) {
 export async function removerAlunoDaTurma(turmaId, alunoId) {
   const { error } = await supabase.rpc('remover_aluno_da_turma', { p_turma_id: turmaId, p_aluno_id: alunoId });
   if (error) throw new Error(error.message);
+}
+
+/**
+ * Modo de erros das turmas (id → 'fluxo' | 'correcao' | null).
+ * Banco sem a migração 08 (coluna modo_erros): devolve um mapa vazio.
+ */
+export async function modosDeErroDasTurmas(ids = null) {
+  let consulta = supabase.from('turmas').select('id, modo_erros');
+  if (ids) consulta = consulta.in('id', ids);
+  const { data, error } = await consulta;
+  if (error) {
+    if (/modo_erros/.test(error.message || '')) console.warn('Banco sem a coluna turmas.modo_erros: rode a migração 20261105000008.');
+    else console.error(error);
+    return new Map();
+  }
+  return new Map((data ?? []).map((t) => [t.id, t.modo_erros ?? null]));
+}
+
+// Banco sem a migração 08: o PostgREST recusa a coluna ANTES de gravar
+// (PGRST204), então repetir sem ela não duplica nada.
+async function semColunaModoErros(registro, enviar) {
+  let resposta = await enviar(registro);
+  if (resposta.error?.code === 'PGRST204' && /modo_erros/.test(resposta.error.message) && 'modo_erros' in registro) {
+    console.warn('Banco sem a coluna turmas.modo_erros: rode a migração 20261105000008.');
+    const { modo_erros: _ignorado, ...resto } = registro;
+    resposta = await enviar(resto);
+  }
+  return resposta;
 }

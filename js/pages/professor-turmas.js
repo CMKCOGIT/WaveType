@@ -1,6 +1,6 @@
 // js/pages/professor-turmas.js
 import { exigirPapel } from '../auth.js';
-import { listarMinhasTurmas, criarTurma, atualizarTurma, excluirTurma, regenerarCodigoTurma } from '../api/turmas.js';
+import { listarMinhasTurmas, criarTurma, atualizarTurma, excluirTurma, regenerarCodigoTurma, modosDeErroDasTurmas } from '../api/turmas.js';
 
 const botaoAbrir = document.querySelector('[data-abrir-form-turma]');
 const form = document.querySelector('[data-form-turma]');
@@ -8,6 +8,7 @@ const grid = document.querySelector('[data-grid-turmas]');
 const feedback = document.querySelector('[data-feedback]');
 const feedbackForm = document.querySelector('[data-feedback-form]');
 let turmasCarregadas = [];
+let modosDeErro = new Map();
 
 iniciar();
 
@@ -27,6 +28,7 @@ function abrirFormulario(turma = null) {
   form.elements.nome.value = turma?.nome ?? '';
   form.elements.ano_letivo.value = turma?.ano_letivo ?? '';
   form.elements.descricao.value = turma?.descricao ?? '';
+  form.elements.modo_erros.value = modosDeErro.get(turma?.id) ?? '';
   document.querySelector('[data-form-titulo]').textContent = turma ? 'Editar turma' : 'Nova turma';
   document.querySelector('[data-salvar-turma]').textContent = turma ? 'Salvar alterações' : 'Criar turma';
   form.hidden = false;
@@ -45,6 +47,7 @@ form.addEventListener('submit', async (evento) => {
     nome: String(dados.get('nome') || '').trim(),
     ano_letivo: String(dados.get('ano_letivo') || '').trim(),
     descricao: String(dados.get('descricao') || '').trim(),
+    modo_erros: String(dados.get('modo_erros') || '') || null,
   };
   if (campos.nome.length < 2) {
     feedbackForm.textContent = 'Informe o nome da turma.';
@@ -71,7 +74,7 @@ form.addEventListener('submit', async (evento) => {
 
 async function carregarTurmas() {
   try {
-    turmasCarregadas = await listarMinhasTurmas();
+    [turmasCarregadas, modosDeErro] = await Promise.all([listarMinhasTurmas(), modosDeErroDasTurmas()]);
   } catch (erro) {
     console.error('Falha ao carregar turmas:', erro);
     grid.innerHTML = '<article class="entity-card"><p>Não foi possível carregar as turmas.</p></article>';
