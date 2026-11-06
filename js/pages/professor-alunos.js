@@ -4,6 +4,7 @@ import { listarMinhasTurmas, listarAlunosDaTurma, adicionarAluno, removerAlunoDa
 import { criarAlunosNaTurma, redefinirSenhaDoAluno, loginsDosAlunos, alterarLoginDoAluno } from '../api/contas-escolares.js';
 import { nomesDaLista, sugerirLogins, normalizarLoginEscolhido } from '../contas/credenciais.js';
 import { nivelamentoDosAlunos } from '../api/nivelamento.js';
+import { htmlDosCartoes, ligarCopiar, imprimirCartoes } from '../ui/cartoes-acesso.js';
 import { NIVEIS_RECOMENDADOS } from '../nivelamento/config.js';
 
 const seletorTurma = document.querySelector('[data-select-turma]');
@@ -188,36 +189,22 @@ function nomeDaTurma() {
 }
 
 // Cartões de acesso (tela e impressão). As senhas ficam só nesta página.
+let contasNaTela = [];
+ligarCopiar(areaCartoes, () => contasNaTela);
+
 function mostrarCredenciais(contas, titulo) {
-  const turma = nomeDaTurma();
-  const endereco = `${location.host}/login.html?modo=escola`;
-  areaCartoes.innerHTML = contas
-    .map(
-      (c) => `<article class="cartao-acesso">
-        <img src="../../assets/images/brand/wavetype-logo.svg" alt="WaveType" width="120" height="24">
-        <h3>${escapar(c.nome)}</h3>
-        ${turma ? `<p class="cartao-turma">${escapar(turma)}</p>` : ''}
-        <dl>
-          <div><dt>Usuário</dt><dd class="mono">${escapar(c.login)}</dd></div>
-          <div><dt>Senha</dt><dd class="mono">${escapar(c.senha)}</dd></div>
-        </dl>
-        <p class="cartao-como">Entre em <strong>${escapar(endereco)}</strong> e escolha “Sou aluno com usuário da escola”.</p>
-      </article>`
-    )
-    .join('');
+  contasNaTela = contas;
+  areaCartoes.innerHTML = htmlDosCartoes(contas, { turma: nomeDaTurma() });
   document.querySelector('#titulo-credenciais').textContent = titulo;
   painelCredenciais.hidden = false;
   painelCredenciais.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-document.querySelector('[data-imprimir-cartoes]').addEventListener('click', () => {
-  document.documentElement.classList.add('imprimindo-cartoes');
-  window.print();
-});
-window.addEventListener('afterprint', () => document.documentElement.classList.remove('imprimindo-cartoes'));
+document.querySelector('[data-imprimir-cartoes]').addEventListener('click', () => imprimirCartoes(areaCartoes));
 document.querySelector('[data-fechar-credenciais]').addEventListener('click', () => {
   if (!confirm('Fechar? As senhas não aparecem de novo (dá para gerar novas na lista).')) return;
   areaCartoes.innerHTML = '';
+  contasNaTela = [];
   painelCredenciais.hidden = true;
 });
 
