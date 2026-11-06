@@ -304,7 +304,6 @@ html[data-sessao="conectado"] [data-so-visitante] {
 }
 .theme-toggle:hover {
   border-color: var(--wt-line-strong);
-  transform: rotate(-18deg);
 }
 .header-auth-link {
   color: var(--wt-text-muted);

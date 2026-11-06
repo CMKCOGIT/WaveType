@@ -1,23 +1,10 @@
 import './ui/onda.js';
+import { ligarBotaoTema } from './ui/tema-onda.js';
 
 document.addEventListener('DOMContentLoaded', () => {
+    // Botão de tema em onda (mesmo componente da plataforma: js/ui/tema-onda.js)
     const themeToggle = document.getElementById('theme-toggle');
-    const themeMeta = document.querySelector('meta[name="theme-color"]');
-
-    function syncThemeControl() {
-        const dark = document.documentElement.dataset.theme === 'dark';
-        themeToggle?.setAttribute('aria-pressed', String(dark));
-        themeToggle?.setAttribute('aria-label', dark ? 'Ativar tema claro' : 'Ativar tema escuro');
-        themeMeta?.setAttribute('content', dark ? '#0E1730' : '#315FD6');
-    }
-
-    themeToggle?.addEventListener('click', () => {
-        const nextTheme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
-        document.documentElement.dataset.theme = nextTheme;
-        localStorage.setItem('wavetype_theme', nextTheme);
-        syncThemeControl();
-    });
-    syncThemeControl();
+    if (themeToggle) ligarBotaoTema(themeToggle);
 
     const menuButton = document.getElementById('menu-button');
     const mobileNav = document.getElementById('mobile-nav');

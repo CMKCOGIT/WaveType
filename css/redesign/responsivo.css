@@ -537,3 +537,129 @@
     margin: 12px 0 8px;
   }
 }
+
+/* ==========================================================================
+   Telas de acesso (login, cadastro, recuperar/redefinir senha): layout final
+   Uma regra só para as quatro telas, para ficarem iguais entre si.
+   - Computador: painel azul e formulário lado a lado, com o mesmo topo e a
+     mesma altura; o formulário fica centralizado nos dois eixos e o painel
+     fica parado enquanto um formulário mais alto rola.
+   - Tablet/celular: uma coluna, margens iguais, formulário centralizado.
+   ========================================================================== */
+.auth-page {
+  --auth-margem: clamp(10px, 1.4vw, 18px);
+  display: grid;
+  align-items: start;
+  padding: var(--auth-margem);
+  gap: var(--auth-margem);
+}
+.auth-page > .auth-aside,
+.auth-page > .auth-main {
+  margin: 0;
+}
+.auth-main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(64px, 6vw, 80px) clamp(20px, 4vw, 56px) clamp(32px, 4vw, 56px);
+}
+.auth-card {
+  width: min(460px, 100%);
+  margin: 0 auto;
+  padding: 0;
+}
+/* Ritmo vertical igual nas telas */
+.auth-card > .eyebrow,
+.auth-card [data-etapa] > .eyebrow {
+  margin: 0 0 22px;
+}
+.auth-card h2 {
+  margin: 0 0 8px;
+  text-wrap: balance;
+}
+.auth-card h2 + p {
+  margin: 0 0 22px;
+}
+.auth-form {
+  gap: 16px;
+}
+.auth-form .button,
+.auth-google {
+  width: 100%;
+  justify-content: center;
+}
+.auth-foot {
+  margin: 22px 0 0;
+  text-align: center;
+}
+.auth-aviso-aluno {
+  margin: 18px 0 0;
+  padding: 12px 14px;
+  color: var(--p-muted, var(--wt-text-muted));
+  background: var(--p-surface-2, var(--wt-surface-sunken));
+  border-radius: var(--radius-md);
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
+.auth-aviso-aluno strong {
+  color: var(--p-text, var(--wt-text));
+}
+.auth-aviso-aluno a {
+  display: inline-block;
+  margin-top: 2px;
+  font-weight: 750;
+}
+/* Tipo de conta: dois cartões lado a lado (usuário e professor) */
+.auth-form .role-picker {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: stretch;
+}
+.auth-form .role-option > span {
+  height: 100%;
+}
+
+@media (min-width: 821px) {
+  .auth-page {
+    grid-template-columns: minmax(360px, 1fr) minmax(0, 1fr);
+  }
+  .auth-aside {
+    position: sticky;
+    top: var(--auth-margem);
+    height: calc(100dvh - 2 * var(--auth-margem));
+    min-height: 0;
+  }
+  .auth-main {
+    min-height: calc(100dvh - 2 * var(--auth-margem));
+  }
+}
+@media (max-width: 820px) {
+  .auth-page {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .auth-aside {
+    position: relative;
+    height: auto;
+    min-height: 0;
+  }
+  .auth-main {
+    padding: 72px 20px 32px;
+  }
+}
+@media (max-width: 380px) {
+  .auth-main {
+    padding-inline: 14px;
+  }
+  .auth-form .role-picker {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+/* Celular/tablet: as ondas do painel ficam rente à base, sem cobrir o texto */
+@media (max-width: 820px) {
+  .auth-aside {
+    padding-bottom: 64px;
+  }
+  .auth-aside wave-background {
+    height: 56px;
+  }
+}

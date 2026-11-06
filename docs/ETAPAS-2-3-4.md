@@ -8,6 +8,7 @@
    - `supabase/migrations/20261105000010_nivelamento.sql` (Etapa 4)
    - `supabase/migrations/20261105000011_transferencia_nos_relatorios.sql` (privacidade da transferência)
    - `supabase/migrations/20261105000012_trocar_usuario_aluno.sql` (trocar usuário do aluno)
+   - `supabase/migrations/20261106000013_aluno_so_pelo_professor.sql` (conta de aluno só pelo professor)
 2. Authentication → Sign In / Providers:
    - **Allow manual linking: ligado.** Sem isso, "Vincular Google" mostra
      um aviso e não vincula.
@@ -101,3 +102,32 @@ psql -f supabase/testes/contas_escolares.test.sql
 psql -f supabase/testes/nivelamento.test.sql
 psql -f supabase/testes/transferencia.test.sql
 ```
+
+## Contas de aluno só pelo professor
+
+- **Cadastro público:** oferece só Usuário e Professor, no formulário e na
+  conclusão do cadastro com o Google. Um aviso leva o aluno para "Entrar com
+  usuário da escola".
+- **Garantia no banco (migração 13), não só na tela:**
+  - um cadastro que peça "aluno" fica incompleto;
+  - `concluir_cadastro` recusa "aluno";
+  - `alterar_tipo_conta` não troca mais usuário → aluno, e a conta da escola
+    só vira pessoal pela transferência.
+- **Contas antigas:** as contas de aluno que já existem continuam iguais.
+- **Perfil do professor → "Cadastrar aluno":**
+  - nome + turma geram usuário e senha exclusivos (mesma RPC do lote);
+  - cartão com "Copiar usuário", "Copiar senha", "Copiar tudo" e "Imprimir cartão";
+  - "Meus alunos" lista os alunos das turmas ativas e como cada um entra.
+- **Login e cadastro:** um único bloco de layout em `responsivo.css`.
+  - O painel azul e o formulário têm o mesmo topo e a mesma altura, e o
+    formulário fica centralizado nos dois eixos.
+  - Corrigido o deslocamento de 18 px do painel, causado por `onda.css`.
+  - No celular, as ondas não cobrem mais o texto do painel.
+- **Tema em onda (`js/ui/tema-onda.js`, o mesmo no site e na plataforma):**
+  - no claro, a onda do ícone se move;
+  - ao ativar o escuro, uma onda desce e cobre a tela; ao voltar, ela sobe;
+  - com movimento reduzido, a troca é imediata.
+- **Testes:** `supabase/testes/aluno_so_pelo_professor.test.sql` e
+  `tests/e2e/contas.e2e.cjs` (o professor cria, o aluno entra com as mesmas
+  credenciais, o aluno não abre o painel do professor, o professor entra
+  normalmente, o tema troca nos dois sentidos).
