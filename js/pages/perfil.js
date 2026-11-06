@@ -41,6 +41,11 @@ async function iniciar() {
 
   prepararTrocaDeTipo(perfil);
   montarVinculos(perfil).catch((erro) => console.error('Falha ao carregar as formas de entrar:', erro));
+  if (perfil.tipo === 'professor') {
+    import('./professor-perfil-alunos.js')
+      .then(({ montarCadastroDeAlunos }) => montarCadastroDeAlunos())
+      .catch((erro) => console.error('Falha ao montar o cadastro de alunos:', erro));
+  }
 
   const link = document.querySelector('[data-link-recuperar]');
   if (link && perfil.email) link.href = `../../recuperar-senha.html?email=${encodeURIComponent(perfil.email)}`;
@@ -112,23 +117,26 @@ formSenha.addEventListener('submit', async (evento) => {
 });
 
 // Usuário <-> aluno. Professor não troca de tipo por aqui.
+// Aluno (conta antiga, criada pela própria pessoa) → usuário. O caminho
+// contrário não existe mais: conta de aluno é criada pelo professor. A conta
+// criada pela escola vira pessoal pela transferência (perfil-vinculos.js).
 function prepararTrocaDeTipo(perfil) {
-  if (!['usuario', 'aluno'].includes(perfil.tipo)) return;
+  if (perfil.tipo !== 'aluno') return;
   const painel = document.querySelector('[data-painel-tipo]');
   const form = document.querySelector('[data-form-tipo]');
   const feedback = document.querySelector('[data-feedback-tipo]');
   painel.hidden = false;
   document.querySelector('[data-texto-tipo]').textContent =
-    perfil.tipo === 'aluno'
-      ? 'Você está como aluno. Como usuário, você treina por conta própria; suas turmas e resultados ficam guardados se voltar a ser aluno.'
-      : 'Você está como usuário. Como aluno, você pode entrar em turmas com o código do professor e fazer as atividades dele.';
-  form.querySelector(`input[value="${perfil.tipo}"]`).checked = true;
+    'Você está como aluno. Como usuário, você treina por conta própria e seu histórico continua o mesmo. Para voltar a ser aluno depois, o professor precisa criar uma conta de aluno para você.';
+  form.querySelector('input[value="aluno"]')?.closest('.role-option')?.setAttribute('hidden', '');
+  form.querySelector('.role-picker')?.style.setProperty('grid-template-columns', 'minmax(0, 1fr)');
+  form.querySelector('input[value="usuario"]').checked = true;
+  form.querySelector('button[type="submit"]').textContent = 'Trocar para conta de usuário';
 
   form.addEventListener('submit', async (evento) => {
     evento.preventDefault();
-    const novo = new FormData(form).get('tipo');
-    if (novo === perfil.tipo) return mostrar(feedback, `Sua conta já é de ${TIPOS[novo].toLowerCase()}.`, true);
-    if (!confirm(`Trocar sua conta para ${TIPOS[novo].toLowerCase()}? Seu histórico de treinos continua o mesmo.`)) return;
+    const novo = 'usuario';
+    if (!confirm('Trocar sua conta para usuário? Seu histórico continua o mesmo, mas as atividades das turmas deixam de aparecer para você.')) return;
 
     const botao = form.querySelector('button[type="submit"]');
     botao.disabled = true;

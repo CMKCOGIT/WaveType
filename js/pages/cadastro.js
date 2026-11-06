@@ -24,8 +24,9 @@ const formCompletar = document.querySelector('[data-auth-form="completar"]');
 const feedbackCompletar = formCompletar.querySelector('[data-form-feedback]');
 const botaoCompletar = formCompletar.querySelector('.auth-submit');
 
-const TIPOS = ['usuario', 'aluno', 'professor'];
-const MSG_TIPO = 'Escolha como você quer usar o WaveType: usuário, aluno ou professor.';
+// Conta de aluno é criada só pelo professor (Perfil → Cadastrar aluno).
+const TIPOS = ['usuario', 'professor'];
+const MSG_TIPO = 'Escolha como você quer usar o WaveType: usuário ou professor.';
 
 iniciar();
 

@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#315FD6">
-    <meta name="description" content="Crie sua conta de usuário, aluno ou professor na WaveType.">
+    <meta name="description" content="Crie sua conta de usuário ou de professor na WaveType. Alunos recebem o acesso do professor.">
     <title>Criar conta | WaveType</title>
     <link rel="icon" type="image/svg+xml" href="assets/images/icons/favicon.svg">
     <link rel="preload" href="assets/fonts/Manrope-Variable.ttf" as="font" type="font/ttf" crossorigin>
@@ -26,7 +26,7 @@
                 <p>Escolha como você usará a plataforma. O conteúdo e a navegação se adaptam ao seu papel.</p>
                 <ul class="auth-points">
                     <li><i></i>Usuário: prática, velocidade e precisão</li>
-                    <li><i></i>Aluno: prática, resultados e conquistas</li>
+                    <li><i></i>Aluno: acesso criado pelo professor</li>
                     <li><i></i>Professor: turmas, exercícios e relatórios</li>
                     <li><i></i>Acesso simples e seguro pelo Supabase Auth</li>
                 </ul>
@@ -46,9 +46,6 @@
                                     value="usuario"><span><strong>Usuário</strong><small>Treinar e
                                         evoluir</small></span></label>
                             <label class="role-option"><input type="radio" name="tipo"
-                                    value="aluno"><span><strong>Aluno</strong><small>Praticar e
-                                        acompanhar</small></span></label>
-                            <label class="role-option"><input type="radio" name="tipo"
                                     value="professor"><span><strong>Professor</strong><small>Ensinar e
                                         gerenciar</small></span></label>
                         </div>
@@ -65,6 +62,7 @@
                         Google</button>
                     <p class="auth-demo" data-form-feedback hidden role="status"></p>
                 </form>
+                <p class="auth-aviso-aluno"><strong>É aluno?</strong> Sua conta é criada pelo professor, que entrega o seu usuário e a sua senha. <a href="login.html?modo=escola">Entrar com usuário da escola</a></p>
                 <p class="auth-foot">Já tem uma conta? <a href="login.html">Entrar</a></p>
                 </div>
                 <div data-etapa="completar" hidden>
@@ -75,7 +73,6 @@
                         <fieldset class="field" style="border:0;padding:0;margin:0"><span>Quero usar como</span>
                             <div class="role-picker">
                                 <label class="role-option"><input type="radio" name="tipo" value="usuario"><span><strong>Usuário</strong><small>Treinar e evoluir</small></span></label>
-                                <label class="role-option"><input type="radio" name="tipo" value="aluno"><span><strong>Aluno</strong><small>Praticar e acompanhar</small></span></label>
                                 <label class="role-option"><input type="radio" name="tipo" value="professor"><span><strong>Professor</strong><small>Ensinar e gerenciar</small></span></label>
                             </div>
                         </fieldset>
@@ -84,6 +81,7 @@
                         <button class="button auth-submit" type="submit">Concluir cadastro</button>
                         <p class="auth-demo" data-form-feedback hidden role="status"></p>
                     </form>
+                    <p class="auth-aviso-aluno"><strong>É aluno?</strong> Sua conta é criada pelo professor, que entrega o seu usuário e a sua senha. <a href="login.html?modo=escola">Entrar com usuário da escola</a></p>
                     <p class="auth-foot">Não é você? <button type="button" class="auth-link" data-trocar-conta>Usar outra conta</button></p>
                 </div>
             </div>
