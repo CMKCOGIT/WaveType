@@ -55,11 +55,32 @@ export async function regenerarCodigoTurma(id) {
   return data;
 }
 
-/** Aluno: entra numa turma usando o código do professor. */
-export async function entrarNaTurma(codigoConvite) {
-  const { data, error } = await supabase.rpc('entrar_na_turma', { p_codigo: codigoConvite });
-  if (error) throw new Error(error.message || 'Código inválido ou turma encerrada.');
+// Aluno não entra mais em turma pelo código da turma (migração 14): só o
+// professor matricula, pelo código individual do aluno.
+
+/**
+ * Professor: procura um aluno que já tem cadastro (de outra turma ou matéria)
+ * pelo código individual. Devolve dados básicos para confirmar:
+ * { aluno_id, nome, codigo_aluno, turmas_ativas, ja_na_turma, matricula_inativa }.
+ */
+export async function buscarAlunoPorCodigo(turmaId, codigo) {
+  const { data, error } = await supabase.rpc('buscar_aluno_por_codigo', { p_turma_id: turmaId, p_codigo: codigo });
+  if (error) throw new Error(error.message);
+  return data?.[0] ?? null;
+}
+
+/** Professor: liga o cadastro existente à turma. Devolve 'adicionado' | 'reativado' | 'ja_estava'. */
+export async function adicionarAlunoExistente(turmaId, codigo) {
+  const { data, error } = await supabase.rpc('adicionar_aluno_existente', { p_turma_id: turmaId, p_codigo: codigo });
+  if (error) throw new Error(error.message);
   return data;
+}
+
+/** Aluno ou professor da turma: top 5 anônimo (animais) + a posição de quem consulta. */
+export async function rankingDaTurma(turmaId) {
+  const { data, error } = await supabase.rpc('ranking_turma', { p_turma_id: turmaId });
+  if (error) throw new Error(error.message);
+  return data ?? [];
 }
 
 /** Professor: alunos ativos de uma turma, com estatísticas. */

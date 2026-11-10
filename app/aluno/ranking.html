@@ -29,31 +29,36 @@
                             aluno</strong><small>WaveType</small></span></span></header>
             <main class="app-main">
                 <header class="page-heading">
-                    <div><span class="eyebrow" id="turma-nome">Turma</span>
+                    <div><span class="eyebrow" data-turma-nome>Turma</span>
                         <h1>Ranking da turma</h1>
-                        <p>Uma comparação saudável: o ranking valoriza velocidade com precisão.</p>
+                        <p>Uma competição saudável e anônima: ninguém vê o nome de ninguém. Cada lugar do top 5 é um animal.</p>
                     </div>
-                    <div class="heading-actions"><label class="field" style="margin:0"><span
-                                class="sr-only">Exercício</span><select data-select-exercicio>
-                                <option>Carregando…</option>
-                            </select></label></div>
+                    <div class="heading-actions" data-escolha-turma hidden><label class="field" style="margin:0"><span class="sr-only">Turma</span><select data-select-turma></select></label></div>
                 </header>
-                <div class="dashboard-grid">
-                    <section class="panel panel-pad">
+                <div class="ranking-layout">
+                    <section class="panel panel-pad" aria-labelledby="titulo-top5">
                         <div class="panel-title">
                             <div>
-                                <h2 data-exercicio-titulo>Exercício</h2>
-                                <p data-exercicio-info>&nbsp;</p>
-                            </div><span class="mono">TOP 20</span>
+                                <h2 id="titulo-top5">Top 5</h2>
+                                <p data-ranking-info>Carregando…</p>
+                            </div><span class="mono">TOP 5</span>
                         </div>
-                        <ol class="ranking-list" data-ranking-list>
-                            <li>Selecione um exercício.</li>
-                        </ol>
+                        <div data-ranking-area><p class="ranking-vazio">Carregando…</p></div>
                     </section>
-                    <aside class="panel panel-pad"><span class="eyebrow">Seu momento</span>
-                        <h2 style="font-size:2.8rem;margin:0" class="mono" data-minha-posicao>–</h2>
-                        <p style="color:var(--muted)" data-minha-mensagem>Pratique este exercício para aparecer no
-                            ranking.</p>
+                    <aside class="panel panel-pad ranking-eu" aria-labelledby="titulo-meu-momento">
+                        <span class="eyebrow" id="titulo-meu-momento">Seu momento</span>
+                        <div class="ranking-eu-posicao"><span class="ranking-eu-emoji" aria-hidden="true" data-meu-emoji>🎯</span><h2 class="mono" data-minha-posicao>–</h2></div>
+                        <p data-minha-mensagem>Pratique para aparecer no ranking.</p>
+                        <dl class="ranking-eu-numeros" data-meus-numeros hidden>
+                            <div><dt>Pontos</dt><dd data-meus-pontos>–</dd></div>
+                            <div><dt>WPM</dt><dd data-meu-ppm>–</dd></div>
+                            <div><dt>Precisão</dt><dd data-minha-precisao>–</dd></div>
+                        </dl>
+                        <details class="ranking-regras">
+                            <summary>Como os pontos são calculados?</summary>
+                            <p>Pontos = WPM × precisão. Exemplo: 40 WPM com 90% de precisão valem 36 pontos. Contam os seus 20 treinos concluídos mais recentes desde que você entrou na turma (atividades da turma e trilha). Errar menos vale tanto quanto digitar rápido.</p>
+                            <p>Só aparecem animais e números: os nomes ficam em segredo, inclusive o seu para os colegas.</p>
+                        </details>
                     </aside>
                 </div>
             </main>

@@ -17,6 +17,36 @@ export async function criarAlunosNaTurma(turmaId, nomes) {
   return (data ?? []).map((linha, i) => ({ id: linha.novo_id, nome: linha.novo_nome, login: linha.novo_login, senha: pedido[i].senha }));
 }
 
+/**
+ * Professor: importa nomes de uma planilha. O banco ignora quem já está na
+ * turma e nomes repetidos; cria o resto como conta da escola (lotes de 60).
+ * Devolve { criados: [{ id, nome, login, senha }], ignorados: [{ nome, situacao }] }.
+ */
+export async function importarAlunosNaTurma(turmaId, nomes, { aoProgredir = () => {} } = {}) {
+  const criados = [];
+  const ignorados = [];
+  const sugestoes = sugerirLogins(nomes);
+  for (let inicio = 0; inicio < sugestoes.length; inicio += 60) {
+    const lote = sugestoes.slice(inicio, inicio + 60);
+    const pedido = lote.map(({ nome, login }) => ({ nome, login_base: login, senha: gerarSenha() }));
+    const { data, error } = await supabase.rpc('professor_importar_alunos', { p_turma_id: turmaId, p_alunos: pedido });
+    if (error) {
+      const erro = traduzErro(error);
+      erro.criadosAntes = criados;
+      throw erro;
+    }
+    for (const linha of data ?? []) {
+      if (linha.situacao === 'criado') {
+        criados.push({ id: linha.novo_id, nome: linha.nome, login: linha.novo_login, senha: pedido[linha.indice].senha });
+      } else {
+        ignorados.push({ nome: linha.nome, situacao: linha.situacao });
+      }
+    }
+    aoProgredir(Math.min(inicio + lote.length, sugestoes.length), sugestoes.length);
+  }
+  return { criados, ignorados };
+}
+
 /** Professor: nova senha para um aluno da escola. Devolve { login, senha }. */
 export async function redefinirSenhaDoAluno(alunoId) {
   const senha = gerarSenha();
