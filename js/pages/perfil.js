@@ -51,7 +51,12 @@ async function iniciar() {
   if (link && perfil.email) link.href = `../../recuperar-senha.html?email=${encodeURIComponent(perfil.email)}`;
 
   // Conta só com Google: não há senha atual para conferir.
-  temSenha = (await metodosDeLogin()).includes('email');
+  const metodos = await metodosDeLogin();
+  temSenha = metodos.includes('email');
+  if (!temSenha && metodos.includes('google')) {
+    const ajuda = document.querySelector('[data-ajuda-email]');
+    if (ajuda) ajuda.textContent = 'É o e-mail da sua conta Google, usado para entrar. Para trocá-lo, entre com outra conta Google.';
+  }
   if (!temSenha) {
     campoAtual.hidden = true;
     document.querySelector('[data-titulo-senha]').textContent = 'Criar uma senha (opcional)';

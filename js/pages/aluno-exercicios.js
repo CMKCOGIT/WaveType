@@ -48,7 +48,7 @@ async function carregarAtividades() {
     if (!atividades.length) {
       resumo.textContent = 'Nenhuma atividade por enquanto.';
       lista.innerHTML =
-        '<article class="practice-row"><p>Quando um professor enviar uma atividade para a sua turma, ela aparece aqui. Ainda não está em uma turma? <a href="turmas.html">Entre com o código</a>.</p></article>';
+        '<article class="practice-row"><p>Quando um professor enviar uma atividade para a sua turma, ela aparece aqui. Ainda não está em uma turma? <a href="turmas.html">Veja como o professor adiciona você</a>.</p></article>';
       return;
     }
 

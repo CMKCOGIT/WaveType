@@ -2,18 +2,13 @@ import { criarMotor } from './digitacao/motor.js';
 import { caminhoSuave } from './ui/onda-caminho.js';
 import './ui/onda.js';
 import { METRICAS, MODOS_ERRO, MODO_ERROS_POR_NIVEL, modoErrosDoExercicio } from './digitacao/config.js';
+import { completarTexto, alvoDeCaracteres, criarPraticaLivre, MIN_CARACTERES } from './digitacao/textos.js';
 
 document.addEventListener('DOMContentLoaded', () => {
-    const dictionaries = {
-        easy: ['casa', 'mesa', 'livro', 'gato', 'água', 'sol', 'luz', 'paz', 'bom', 'dia', 'noite', 'bolo', 'café', 'pão', 'suco', 'tela', 'vida', 'amor', 'dedo', 'linha', 'som', 'mapa', 'bola', 'rede'],
-        medium: ['aprendizado', 'acontece', 'quando', 'prática', 'evolução', 'caminham', 'juntas', 'tempo', 'foco', 'velocidade', 'precisão', 'escola', 'professor', 'aluno', 'desafio', 'teclado', 'sistema', 'tecnologia', 'resultados', 'acompanhar', 'melhor', 'futuro', 'simples', 'rápido', 'texto', 'palavras', 'estudo', 'atenção', 'ritmo', 'conquista'],
-        advanced: ['desenvolvimento', 'responsabilidade', 'infraestrutura', 'complexidade', 'procrastinação', 'perspectiva', 'circunstância', 'extraordinário', 'simultaneamente', 'característica', 'psicologia', 'interdisciplinar', 'acessibilidade', 'aprendizagem', 'aperfeiçoamento'],
-        sentences: {
-            easy: ['A prática cria confiança.', 'Digite com calma e atenção.', 'Cada tecla é um pequeno avanço.', 'Olhe para a tela e mantenha o ritmo.'],
-            medium: ['A precisão constrói uma velocidade mais consistente.', 'Praticar alguns minutos ajuda a formar bons hábitos.', 'Um resultado claro mostra qual deve ser o próximo foco.', 'A evolução acontece quando o treino tem intenção.'],
-            advanced: ['A fluência no teclado reduz o esforço durante atividades digitais.', 'Consistência e precisão revelam mais do que um recorde isolado.', 'Uma prática deliberada transforma dificuldade em automatização.', 'A análise dos erros orienta exercícios progressivamente mais eficientes.']
-        }
-    };
+    // Palavras e frases da prática livre: banco variado em js/digitacao/textos.js,
+    // sorteado sem repetir até esgotar (antes eram 4 frases por nível).
+    let praticaLivre = null;
+    let praticaLivreChave = '';
 
     const elements = {
         shell: document.getElementById('typing-shell'),
@@ -54,7 +49,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let wordEls = [];
     let exercicioTexto = null; // texto do exercício vindo do banco (null = prática livre)
     let exercicioLimite = null; // tempo máximo do exercício em segundos (null = sem limite)
-    let exercicioRepete = true; // trilha repete textos curtos; atividade de professor não
+    let exercicioRepete = true; // trilha completa textos curtos; atividade de professor não
+    let exercicioNivel = null; // nível da trilha (escolhe o estilo do complemento)
     let modoErrosTravado = false; // true quando o professor definiu o modo para a turma
 
     function freshState(settings = {}) {
@@ -95,75 +91,26 @@ document.addEventListener('DOMContentLoaded', () => {
         motor.adicionarPalavras(list);
     }
 
-    const MIN_CHARS_EXERCICIO = 150;
-
+    // Textos curtos da trilha são completados até o mínimo de caracteres com
+    // conteúdo NOVO e compatível com a lição (palavras com as mesmas teclas,
+    // outras frases do mesmo nível), em vez de repetir o texto. O total nunca
+    // passa do tamanho que o banco usa para o tempo máximo
+    // (tempo_limite_trilha), então o tempo continua justo.
     function appendExercicio() {
-        const palavras = exercicioTexto.split(/\s+/).filter(Boolean);
-        if (!palavras.length) return;
-        // Textos curtos da trilha ganham rodadas extras até o mínimo de caracteres.
-        // O tempo máximo (função tempo_limite_trilha no banco) conta essas rodadas,
-        // e cada rodada tem exatamente o mesmo tamanho do texto original.
-        const tamanhoCiclo = palavras.join(' ').length + 1;
-        const vezes = exercicioRepete ? Math.max(1, Math.ceil(MIN_CHARS_EXERCICIO / tamanhoCiclo)) : 1;
-        addWords(palavras);
-        let anterior = palavras;
-        for (let i = 1; i < vezes; i += 1) {
-            anterior = variarRodada(palavras, anterior);
-            addWords(anterior);
-        }
-    }
-
-    // Em vez de repetir o mesmo texto, embaralha as palavras; com poucas
-    // palavras diferentes, cria combinações novas com as mesmas letras
-    // (ex.: "asdf jklç" vira "dkas fçjl").
-    function variarRodada(palavras, anterior) {
-        const poucasPalavras = new Set(palavras.map((p) => p.toLocaleLowerCase('pt-BR'))).size < 4;
-        const letras = [...new Set(palavras.join('').replace(/[^\p{L}]/gu, ''))];
-        for (let tentativa = 0; tentativa < 6; tentativa += 1) {
-            const rodada = embaralhar(palavras).map((palavra) =>
-                poucasPalavras && letras.length > 1 ? palavraComLetras(palavra, letras) : palavra
-            );
-            if (rodada.join(' ') !== anterior.join(' ') && rodada[0] !== anterior[anterior.length - 1]) return rodada;
-        }
-        return embaralhar(palavras);
-    }
-
-    function palavraComLetras(modelo, letras) {
-        // Mesmo tamanho e mesma pontuação; só as letras mudam (sem 3 iguais seguidas).
-        let resultado = '';
-        for (const caractere of modelo) {
-            if (!/\p{L}/u.test(caractere)) {
-                resultado += caractere;
-                continue;
-            }
-            let letra;
-            do {
-                letra = letras[Math.floor(Math.random() * letras.length)];
-            } while (resultado.endsWith(letra + letra));
-            resultado += letra;
-        }
-        return resultado;
-    }
-
-    function embaralhar(lista) {
-        const copia = [...lista];
-        for (let i = copia.length - 1; i > 0; i -= 1) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [copia[i], copia[j]] = [copia[j], copia[i]];
-        }
-        return copia;
+        const palavras = exercicioRepete
+            ? completarTexto(exercicioTexto, { nivel: exercicioNivel, alvo: alvoDeCaracteres(exercicioTexto, MIN_CARACTERES) })
+            : exercicioTexto.split(/\s+/).filter(Boolean);
+        if (palavras.length) addWords(palavras);
     }
 
     function appendWords(amount) {
         if (exercicioTexto) return; // exercício do banco: texto fixo, sem repetir
-        const source = state.mode === 'sentences' ? dictionaries.sentences[state.level] : dictionaries[state.level];
-        const novas = [];
-        for (let index = 0; index < amount; index += 1) {
-            const item = source[Math.floor(Math.random() * source.length)];
-            if (state.mode === 'sentences') novas.push(...item.split(' '));
-            else novas.push(item);
+        const chave = `${state.mode}:${state.level}`;
+        if (!praticaLivre || praticaLivreChave !== chave) {
+            praticaLivre = criarPraticaLivre({ modo: state.mode, nivel: state.level });
+            praticaLivreChave = chave;
         }
-        addWords(novas);
+        addWords(praticaLivre(amount));
     }
 
     function generateWords() {
@@ -700,6 +647,7 @@ document.addEventListener('DOMContentLoaded', () => {
         exercicioTexto = String(conteudo).trim();
         exercicioLimite = Number(exercicio.tempo_limite_seg) > 0 ? Number(exercicio.tempo_limite_seg) : null;
         exercicioRepete = !exercicio.atividade;
+        exercicioNivel = Number(exercicio.nivel) || null;
 
         // Exercício do banco: esconde modo, tempo e nível (não se aplicam aqui).
         // O modo de erros continua visível; se o professor definiu um para a

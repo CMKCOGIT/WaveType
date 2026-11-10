@@ -45,7 +45,13 @@ export async function montarVinculos(perfil) {
       ${conta ? `<li><span><strong>Usuário da escola</strong><small class="mono">${escapar(conta.login)}</small></span><span class="status">Ativo</span></li>` : ''}
       <li><span><strong>Google</strong><small>${temGoogle ? 'Vinculado' : 'Entre com um clique, sem senha'}</small></span>
         ${temGoogle ? '<span class="status">Vinculado</span>' : '<button type="button" class="button secondary small" data-vincular-google>Vincular Google</button>'}</li>
-      <li><span><strong>E-mail</strong><small>${temEmailPessoal ? escapar(perfil.email) : 'Para entrar e recuperar a senha sozinho'}</small></span>
+      <li><span><strong>${temEmailPessoal ? 'E-mail de acesso' : 'E-mail pessoal'}</strong><small>${
+        !temEmailPessoal
+          ? 'Para entrar e recuperar a senha sem depender do professor'
+          : identidades.includes('email') || conta
+            ? 'Entrar com e-mail e senha (o mesmo e-mail de Dados da conta)'
+            : 'O e-mail da sua conta Google; crie uma senha acima para entrar também com ele'
+      }</small></span>
         ${temEmailPessoal ? '<span class="status">Vinculado</span>' : ''}</li>
     </ul>
     ${
@@ -101,6 +107,9 @@ function ajustarDadosDaContaEscolar(conta) {
     campoEmail.classList.add('mono');
     const rotulo = campoEmail.closest('label')?.querySelector('span');
     if (rotulo) rotulo.textContent = 'Usuário da escola';
+    campoEmail.removeAttribute('aria-describedby');
+    const ajudaCampo = form.querySelector('[data-ajuda-email]');
+    if (ajudaCampo) ajudaCampo.textContent = 'É com este usuário (e a sua senha) que você entra no WaveType. Quem cria e troca o usuário é o professor.';
     const ajudaTitulo = form.closest('section')?.querySelector('.panel-title p');
     if (ajudaTitulo) ajudaTitulo.textContent = 'Você entra com o usuário da escola. Para ter também um e-mail, use “Vincular meu e-mail ou Google”.';
   }
@@ -142,7 +151,7 @@ function montarTransferencia(grade, { podeTransferir }) {
                 <li>Você sai de todas as turmas e a conta passa a ser só sua.</li>
                 <li><strong>O professor e a escola deixam de ver seus resultados individuais</strong> a partir de agora.</li>
                 <li>Seu histórico, conquistas e progresso continuam aqui, na mesma conta.</li>
-                <li>Para voltar a uma turma, entre de novo com o código do professor.</li>
+                <li>Para voltar a uma turma, peça ao professor para adicionar você de novo.</li>
               </ul>
             </div>
             <label class="checkbox-line"><input type="checkbox" name="ciente" required> Entendi que o professor e a escola deixam de ver meus dados individuais.</label>

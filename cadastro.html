@@ -15,14 +15,14 @@
 </head>
 
 <body>
-    <main class="auth-page">
+    <main class="auth-page auth-page--compacta">
         <aside class="auth-aside">
             <wave-background variante="clara"></wave-background>
             <a href="index.html"><img class="auth-logo" src="assets/images/brand/wavetype-logo-white.svg"
                     alt="WaveType"></a>
             <div class="auth-copy">
                 <span class="eyebrow">Aprenda no seu ritmo</span>
-                <h1>Comece leve.<br>Evolua com<br>clareza.</h1>
+                <h1>Comece leve.<br> Evolua com<br> clareza.</h1>
                 <p>Escolha como você usará a plataforma. O conteúdo e a navegação se adaptam ao seu papel.</p>
                 <ul class="auth-points">
                     <li><i></i>Usuário: prática, velocidade e precisão</li>
@@ -57,9 +57,10 @@
                     <label class="field"><span>Senha</span><input type="password" name="senha"
                             autocomplete="new-password" minlength="8" placeholder="8+ caracteres, com letra e número"
                             required></label>
-                    <button class="button auth-submit" type="submit">Criar minha conta</button>
-                    <button class="button auth-google" type="button" data-google-auth="cadastro">Continuar com o
-                        Google</button>
+                    <div class="auth-acoes">
+                        <button class="button auth-submit" type="submit">Criar minha conta</button>
+                        <button class="button auth-google" type="button" data-google-auth="cadastro">Continuar com o Google</button>
+                    </div>
                     <p class="auth-demo" data-form-feedback hidden role="status"></p>
                 </form>
                 <p class="auth-aviso-aluno"><strong>É aluno?</strong> Sua conta é criada pelo professor, que entrega o seu usuário e a sua senha. <a href="login.html?modo=escola">Entrar com usuário da escola</a></p>

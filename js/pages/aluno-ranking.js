@@ -1,10 +1,12 @@
 // js/pages/aluno-ranking.js
-import { exigirPapel, obterPerfil } from '../auth.js';
-import { listarExerciciosDisponiveis } from '../api/exercicios.js';
-import { buscarRankingExercicio } from '../api/ranking.js';
+// Ranking anônimo da turma: top 5 em animais (ranking_turma, migração 14).
+import { exigirPapel } from '../auth.js';
+import { listarMinhasMatriculas, rankingDaTurma } from '../api/turmas.js';
+import { htmlDoRanking, organizarRanking, ANIMAIS } from '../ui/ranking-animais.js';
 
-const select = document.querySelector('[data-select-exercicio]');
-const lista = document.querySelector('[data-ranking-list]');
+const select = document.querySelector('[data-select-turma]');
+const area = document.querySelector('[data-ranking-area]');
+const CHAVE_TURMA = 'wavetype_ranking_turma';
 
 iniciar();
 
@@ -12,45 +14,75 @@ async function iniciar() {
   const perfil = await exigirPapel('aluno');
   if (!perfil) return;
 
-  const exercicios = await listarExerciciosDisponiveis();
-  if (!exercicios.length) {
-    select.innerHTML = '<option>Nenhum exercício disponível</option>';
-    lista.innerHTML = '<li>Entre em uma turma para ver rankings. <a href="turmas.html">Entrar com código</a></li>';
+  let turmas = [];
+  try {
+    turmas = (await listarMinhasMatriculas()).filter((m) => m.turmas).map((m) => m.turmas);
+  } catch (erro) {
+    console.error(erro);
+  }
+  if (!turmas.length) {
+    document.querySelector('[data-ranking-info]').textContent = 'Você ainda não está em uma turma.';
+    area.innerHTML = '<p class="ranking-vazio">Quando o professor adicionar você a uma turma, o ranking dela aparece aqui. <a href="turmas.html">Ver o meu código de aluno</a></p>';
     return;
   }
 
-  select.innerHTML = exercicios.map((e) => `<option value="${e.id}">${escapar(e.titulo)}</option>`).join('');
-  select.addEventListener('change', () => carregarRanking(exercicios, Number(select.value)));
-  await carregarRanking(exercicios, Number(select.value));
+  select.innerHTML = turmas.map((t) => `<option value="${t.id}">${escapar(t.nome)}</option>`).join('');
+  let salva = null;
+  try { salva = localStorage.getItem(CHAVE_TURMA); } catch { /* sem armazenamento */ }
+  if (salva && turmas.some((t) => String(t.id) === salva)) select.value = salva;
+  document.querySelector('[data-escolha-turma]').hidden = turmas.length < 2;
+  select.addEventListener('change', () => {
+    try { localStorage.setItem(CHAVE_TURMA, select.value); } catch { /* sem armazenamento */ }
+    carregar(turmas);
+  });
+  await carregar(turmas);
 }
 
-async function carregarRanking(exercicios, exercicioId) {
-  const exercicio = exercicios.find((e) => e.id === exercicioId);
-  document.querySelector('[data-exercicio-titulo]').textContent = exercicio?.titulo ?? '';
-  document.querySelector('[data-exercicio-info]').textContent = exercicio?.turma_nome ?? 'Prática geral';
-
-  lista.innerHTML = '<li>Carregando…</li>';
-  const ranking = await buscarRankingExercicio(exercicioId);
-  if (!ranking.length) {
-    lista.innerHTML = '<li>Ainda sem resultados neste exercício.</li>';
+async function carregar(turmas) {
+  const turma = turmas.find((t) => String(t.id) === select.value) ?? turmas[0];
+  document.querySelector('[data-turma-nome]').textContent = turma.nome;
+  area.innerHTML = '<p class="ranking-vazio">Carregando…</p>';
+  let linhas = [];
+  try {
+    linhas = await rankingDaTurma(turma.id);
+  } catch (erro) {
+    area.innerHTML = `<p class="ranking-vazio">${escapar(erro.message)}</p>`;
     return;
   }
-  const perfil = await obterPerfil();
-  lista.innerHTML = ranking
-    .map((r, i) => {
-      const voceEh = perfil && r.aluno_nome === perfil.nome;
-      return `<li${voceEh ? ' class="is-you"' : ''}><b>${i + 1}</b><span>${escapar(r.aluno_nome)}${voceEh ? ' · você' : ''}</span><small>${formatarNumero(r.ppm)} WPM · ${formatarNumero(r.precisao)}%</small></li>`;
-    })
-    .join('');
-
-  const posicao = ranking.findIndex((r) => perfil && r.aluno_nome === perfil.nome);
-  document.querySelector('[data-minha-posicao]').textContent = posicao >= 0 ? `${posicao + 1}º` : '–';
-  document.querySelector('[data-minha-mensagem]').textContent =
-    posicao >= 0 ? 'Continue praticando para subir no ranking.' : 'Pratique este exercício para aparecer no ranking.';
+  const { top, eu, participantes } = organizarRanking(linhas);
+  document.querySelector('[data-ranking-info]').textContent = participantes
+    ? `${participantes} ${participantes === 1 ? 'aluno pontuou' : 'alunos pontuaram'} nesta turma.`
+    : 'Ninguém pontuou ainda nesta turma.';
+  area.innerHTML = top.length
+    ? htmlDoRanking(linhas)
+    : '<p class="ranking-vazio">Ainda sem treinos concluídos nesta turma. Faça uma atividade ou uma lição da trilha para abrir o ranking!</p>';
+  mostrarMeuMomento(eu, participantes);
 }
 
-function formatarNumero(v) {
-  return Number(v).toLocaleString('pt-BR', { maximumFractionDigits: 1 });
+function mostrarMeuMomento(eu, participantes) {
+  const numeros = document.querySelector('[data-meus-numeros]');
+  const emoji = document.querySelector('[data-meu-emoji]');
+  if (!eu) {
+    document.querySelector('[data-minha-posicao]').textContent = '–';
+    emoji.textContent = '🎯';
+    document.querySelector('[data-minha-mensagem]').textContent = 'Conclua um treino desta turma (atividade ou trilha) para aparecer no ranking.';
+    numeros.hidden = true;
+    return;
+  }
+  const animal = ANIMAIS[eu.posicao - 1];
+  document.querySelector('[data-minha-posicao]').textContent = `${eu.posicao}º`;
+  emoji.textContent = animal?.emoji ?? '🎯';
+  document.querySelector('[data-minha-mensagem]').textContent = animal
+    ? `Você é ${animal.artigo} ${animal.animal} da turma! ${eu.posicao === 1 ? 'Mantenha o ritmo.' : 'Continue treinando para subir.'}`
+    : `De ${participantes} alunos. Faltam ${eu.posicao - 5} ${eu.posicao - 5 === 1 ? 'posição' : 'posições'} para entrar no top 5.`;
+  document.querySelector('[data-meus-pontos]').textContent = formatar(eu.pontuacao);
+  document.querySelector('[data-meu-ppm]').textContent = formatar(eu.ppm);
+  document.querySelector('[data-minha-precisao]').textContent = `${formatar(eu.precisao)}%`;
+  numeros.hidden = false;
+}
+
+function formatar(v) {
+  return Number(v ?? 0).toLocaleString('pt-BR', { maximumFractionDigits: 1 });
 }
 function escapar(t) {
   const d = document.createElement('div');

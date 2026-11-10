@@ -1,0 +1,256 @@
+/* ==========================================================================
+   Cadastro sem rolagem (cadastro.html, classe .auth-page--compacta)
+   Todos os campos continuam na tela; o que muda é o ritmo vertical, que
+   acompanha a ALTURA da janela (unidades vh/dvh com limites), e a ordem dos
+   blocos em telas estreitas. Login e recuperação de senha não mudam.
+   ========================================================================== */
+.auth-page--compacta {
+  --cad-ritmo: clamp(8px, 1.45vh, 14px);
+  --cad-campo: clamp(42px, 5.4vh, 48px);
+}
+.auth-page--compacta .auth-main {
+  padding-block: clamp(18px, 3.4vh, 40px);
+}
+.auth-page--compacta .auth-card {
+  width: min(480px, 100%);
+}
+.auth-page--compacta .auth-card [data-etapa] > .eyebrow {
+  margin: 0 0 clamp(10px, 2.2vh, 22px);
+}
+.auth-page--compacta .auth-card h2 {
+  margin: 0 0 6px;
+  font-size: clamp(1.75rem, 4.2vh, 2.6rem);
+  line-height: 1.05;
+}
+.auth-page--compacta .auth-card h2 + p {
+  margin: 0 0 clamp(12px, 2.4vh, 22px);
+  font-size: 0.95rem;
+  line-height: 1.45;
+}
+.auth-page--compacta .auth-form {
+  gap: var(--cad-ritmo);
+}
+.auth-page--compacta .field {
+  gap: 5px;
+}
+.auth-page--compacta .field input {
+  min-height: var(--cad-campo);
+}
+.auth-page--compacta .role-option > span {
+  min-height: clamp(52px, 7vh, 66px);
+  padding-block: 9px;
+}
+/* Ações: "Criar minha conta" e "Continuar com o Google" lado a lado quando
+   há largura (economiza uma linha inteira); empilham em telas estreitas. */
+.auth-page--compacta .auth-acoes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+.auth-page--compacta .auth-acoes .button {
+  min-height: var(--cad-campo);
+  margin: 0;
+  padding-inline: 12px;
+  white-space: nowrap;
+}
+.auth-page--compacta .auth-form [data-form-feedback] {
+  margin: 0;
+}
+/* Rodapé do cartão: aviso do aluno e "Já tem uma conta?" num bloco só */
+.auth-page--compacta .auth-aviso-aluno {
+  margin-top: clamp(10px, 2vh, 18px);
+  padding: 10px 14px;
+  font-size: 0.85rem;
+}
+.auth-page--compacta .auth-foot {
+  margin-top: clamp(8px, 1.6vh, 16px);
+}
+
+/* Computador com janela baixa (notebook 1366×650, zoom alto): cartão um
+   pouco mais largo (textos em menos linhas) e campos mais baixos. */
+@media (min-width: 821px) and (max-height: 760px) {
+  .auth-page--compacta {
+    --cad-ritmo: 8px;
+    --cad-campo: 42px;
+  }
+  .auth-page--compacta .auth-card {
+    width: min(540px, 100%);
+  }
+  .auth-page--compacta .auth-card [data-etapa] > .eyebrow {
+    margin-bottom: 8px;
+  }
+  .auth-page--compacta .auth-card h2 {
+    font-size: 1.8rem;
+  }
+  .auth-page--compacta .auth-card h2 + p {
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+  }
+  .auth-page--compacta .field {
+    gap: 3px;
+  }
+  .auth-page--compacta .role-option > span {
+    min-height: 48px;
+    padding-block: 6px;
+  }
+  .auth-page--compacta .auth-aviso-aluno {
+    margin-top: 10px;
+    padding-block: 7px;
+    line-height: 1.35;
+  }
+  .auth-page--compacta .auth-foot {
+    margin-top: 6px;
+  }
+}
+
+/* Tablet e celular: o painel azul vira uma faixa de marca curta acima do
+   formulário (antes ocupava meia tela e empurrava o cadastro para baixo). */
+@media (max-width: 820px) {
+  .auth-page--compacta {
+    gap: 8px;
+  }
+  .auth-page--compacta .auth-aside {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    gap: 12px;
+    min-height: 0;
+    padding: 12px 18px 14px;
+  }
+  .auth-page--compacta .auth-aside wave-background {
+    position: absolute;
+    inset: auto 0 0;
+    height: 22px;
+    opacity: 0.7;
+  }
+  .auth-page--compacta .auth-aside > a {
+    display: block;
+    margin: 0;
+    line-height: 0;
+  }
+  .auth-page--compacta .auth-logo {
+    width: 124px;
+    margin: 0;
+  }
+  .auth-page--compacta .auth-copy {
+    margin: 0;
+    padding: 0;
+    text-align: right;
+  }
+  .auth-page--compacta .auth-copy h1 {
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.25;
+    letter-spacing: 0;
+  }
+  .auth-page--compacta .auth-copy h1 br,
+  .auth-page--compacta .auth-copy .eyebrow,
+  .auth-page--compacta .auth-copy > p,
+  .auth-page--compacta .auth-points {
+    display: none;
+  }
+  .auth-page--compacta .auth-main {
+    min-height: 0;
+    padding: 16px 18px 18px;
+    justify-content: flex-start;
+  }
+  /* Botão de tema na mesma linha do "Voltar ao teste" */
+  .auth-page--compacta .auth-main > .wt-tema {
+    top: 10px;
+    right: 12px;
+    width: 38px;
+    height: 38px;
+  }
+  .auth-page--compacta .auth-card [data-etapa] > .eyebrow {
+    min-height: 26px;
+    margin-bottom: 10px;
+  }
+}
+@media (max-width: 520px) {
+  .auth-page--compacta .auth-copy h1 {
+    max-width: 15ch;
+    font-size: 0.82rem;
+  }
+  .auth-page--compacta .auth-card h2 + p {
+    font-size: 0.88rem;
+  }
+  .auth-page--compacta .role-option > span {
+    padding: 8px 8px 8px 38px;
+  }
+  .auth-page--compacta .role-option > span::before {
+    left: 12px;
+  }
+}
+/* Até 400 px: os dois botões empilham (o texto do Google não cabe ao lado) */
+@media (max-width: 400px) {
+  .auth-page--compacta .auth-acoes {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+  }
+  .auth-page--compacta .auth-form .role-picker {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (min-width: 821px) and (max-height: 700px) {
+  .auth-page--compacta .auth-main {
+    padding-block: 12px;
+  }
+}
+/* Celular: ritmo mais curto para caber de uma vez em telas comuns (390×844) */
+@media (max-width: 820px) and (max-height: 920px) {
+  .auth-page--compacta {
+    --cad-ritmo: 8px;
+    --cad-campo: 44px;
+  }
+  .auth-page--compacta .auth-card h2 {
+    font-size: 1.9rem;
+  }
+  .auth-page--compacta .auth-card h2 + p {
+    margin-bottom: 12px;
+  }
+  .auth-page--compacta .field {
+    gap: 3px;
+  }
+  .auth-page--compacta .role-option > span {
+    min-height: 52px;
+  }
+  .auth-page--compacta .auth-aviso-aluno {
+    margin-top: 10px;
+    padding-block: 8px;
+    line-height: 1.35;
+  }
+  .auth-page--compacta .auth-foot {
+    margin-top: 8px;
+  }
+}
+@media (min-width: 821px) and (max-height: 700px) {
+  .auth-page--compacta {
+    --auth-margem: 8px;
+  }
+}
+/* Celulares estreitos (até 400 px): margens e textos um pouco menores */
+@media (max-width: 400px) {
+  .auth-page--compacta {
+    --auth-margem: 6px;
+    --cad-campo: 42px;
+  }
+  .auth-page--compacta .auth-main {
+    padding: 12px 14px 14px;
+  }
+  .auth-page--compacta .auth-card h2 {
+    font-size: 1.7rem;
+  }
+  .auth-page--compacta .auth-card h2 + p {
+    font-size: 0.84rem;
+    margin-bottom: 10px;
+  }
+  .auth-page--compacta .role-option > span {
+    min-height: 48px;
+  }
+  .auth-page--compacta .role-option small {
+    font-size: 0.72rem;
+  }
+  .auth-page--compacta .auth-aviso-aluno {
+    font-size: 0.8rem;
+  }
+}

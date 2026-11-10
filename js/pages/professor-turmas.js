@@ -1,6 +1,6 @@
 // js/pages/professor-turmas.js
 import { exigirPapel } from '../auth.js';
-import { listarMinhasTurmas, criarTurma, atualizarTurma, excluirTurma, regenerarCodigoTurma, modosDeErroDasTurmas } from '../api/turmas.js';
+import { listarMinhasTurmas, criarTurma, atualizarTurma, excluirTurma, modosDeErroDasTurmas } from '../api/turmas.js';
 
 const botaoAbrir = document.querySelector('[data-abrir-form-turma]');
 const form = document.querySelector('[data-form-turma]');
@@ -102,15 +102,10 @@ async function carregarTurmas() {
         <div class="entity-stats">
           <div><span>Alunos</span><strong>${t.alunos ?? 0}</strong></div>
           <div><span>Atividades</span><strong>${t.atividades ?? 0}</strong></div>
-          <div style="grid-column:1/-1"><span>Código de acesso</span>
-            <strong class="codigo-convite">${escapar(t.codigo_convite)}
-              <button type="button" class="copiar" data-acao="copiar">Copiar</button>
-              <button type="button" class="copiar" data-acao="novo-codigo" title="Gera um novo código; o antigo deixa de funcionar">Gerar novo</button>
-            </strong>
-          </div>
+
         </div>
         <div class="row-actions">
-          <a class="button small" href="alunos.html?turma=${t.id}">Alunos</a>
+          <a class="button small" href="alunos.html?turma=${t.id}">Gerenciar alunos</a>
           <button type="button" class="button secondary small" data-acao="editar">Editar</button>
           <button type="button" class="button secondary small" data-acao="status">${t.status === 'ativa' ? 'Encerrar' : 'Reabrir'}</button>
           <button type="button" class="button ghost small" data-acao="excluir">Excluir</button>
@@ -128,23 +123,13 @@ grid.addEventListener('click', async (evento) => {
 
   try {
     switch (botao.dataset.acao) {
-      case 'copiar':
-        await navigator.clipboard.writeText(turma.codigo_convite);
-        botao.textContent = 'Copiado!';
-        setTimeout(() => (botao.textContent = 'Copiar'), 1800);
-        return;
-      case 'novo-codigo':
-        if (!confirm('Gerar um novo código? O código atual deixará de funcionar para novos alunos.')) return;
-        await regenerarCodigoTurma(turma.id);
-        avisar('Novo código gerado.');
-        break;
       case 'editar':
         abrirFormulario(turma);
         form.scrollIntoView({ behavior: 'smooth', block: 'start' });
         return;
       case 'status': {
         const encerrar = turma.status === 'ativa';
-        if (encerrar && !confirm('Encerrar a turma? Novos alunos não poderão entrar pelo código. Os dados são mantidos.')) return;
+        if (encerrar && !confirm('Encerrar a turma? Não será possível adicionar alunos nela. Os dados são mantidos.')) return;
         await atualizarTurma(turma.id, { status: encerrar ? 'encerrada' : 'ativa' });
         avisar(encerrar ? 'Turma encerrada.' : 'Turma reaberta.');
         break;

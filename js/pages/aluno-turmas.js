@@ -1,9 +1,9 @@
 // js/pages/aluno-turmas.js
 import { exigirPapel } from '../auth.js';
-import { entrarNaTurma, listarMinhasMatriculas } from '../api/turmas.js';
+import { listarMinhasMatriculas } from '../api/turmas.js';
 
-const form = document.querySelector('[data-form-entrar-turma]');
-const feedback = document.querySelector('[data-feedback-turma]');
+// Só o professor adiciona alunos às turmas (migração 14): aqui o aluno vê as
+// turmas dele e o código individual que entrega ao professor.
 
 iniciar();
 
@@ -26,25 +26,6 @@ async function iniciar() {
   await carregarTurmas();
 }
 
-form.addEventListener('submit', async (evento) => {
-  evento.preventDefault();
-  const botao = form.querySelector('button[type="submit"]');
-  const codigo = String(new FormData(form).get('codigoConvite') || '').trim();
-  if (!codigo) return mostrarFeedback('Digite o código da turma.', 'erro');
-
-  botao.disabled = true;
-  try {
-    await entrarNaTurma(codigo);
-    mostrarFeedback('Você entrou na turma! As atividades dela já aparecem em Exercícios.', 'sucesso');
-    form.reset();
-    await carregarTurmas();
-  } catch (erro) {
-    mostrarFeedback(erro.message, 'erro');
-  } finally {
-    botao.disabled = false;
-  }
-});
-
 async function carregarTurmas() {
   const grid = document.querySelector('[data-lista-turmas]');
   const resumo = document.querySelector('[data-resumo-turmas]');
@@ -52,7 +33,7 @@ async function carregarTurmas() {
     const matriculas = (await listarMinhasMatriculas()).filter((m) => m.turmas);
     resumo.textContent = matriculas.length
       ? `Você participa de ${matriculas.length} turma${matriculas.length === 1 ? '' : 's'}.`
-      : 'Você ainda não participa de nenhuma turma.';
+      : 'Você ainda não participa de nenhuma turma. Passe o seu código de aluno ao professor.';
     grid.innerHTML = matriculas
       .map(({ turmas: t, entrou_em }) => `
         <article class="entity-card">
@@ -69,11 +50,6 @@ async function carregarTurmas() {
   }
 }
 
-function mostrarFeedback(mensagem, tipo) {
-  feedback.textContent = mensagem;
-  feedback.hidden = false;
-  feedback.classList.toggle('is-erro', tipo === 'erro');
-}
 function escapar(t) {
   const d = document.createElement('div');
   d.textContent = t ?? '';

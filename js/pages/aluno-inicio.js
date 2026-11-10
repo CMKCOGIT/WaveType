@@ -2,8 +2,8 @@
 import { exigirPapel } from '../auth.js';
 import { carregarDashboardAluno } from '../api/dashboard.js';
 import { mostrarPontoDePartida } from '../ui/ponto-de-partida.js';
-import { listarExerciciosDisponiveis } from '../api/exercicios.js';
-import { buscarRankingExercicio } from '../api/ranking.js';
+import { listarMinhasMatriculas, rankingDaTurma } from '../api/turmas.js';
+import { htmlDoRanking } from '../ui/ranking-animais.js';
 
 iniciar();
 
@@ -60,22 +60,17 @@ function preencherTabelaRecentes(sessoes) {
     .join('');
 }
 
+// Ranking anônimo da primeira turma (top 5 em animais, sem nomes).
 async function preencherAmostraRanking() {
-  const lista = document.querySelector('[data-ranking-list]');
-  const exercicios = await listarExerciciosDisponiveis();
-  if (!exercicios.length) {
-    lista.innerHTML = '<li>Nenhuma atividade de turma disponível ainda.</li>';
+  const area = document.querySelector('[data-ranking-list]');
+  const turma = (await listarMinhasMatriculas()).find((m) => m.turmas)?.turmas;
+  if (!turma) {
+    area.innerHTML = '<p class="ranking-vazio">Quando o professor adicionar você a uma turma, o ranking aparece aqui.</p>';
     return;
   }
-  const ranking = await buscarRankingExercicio(exercicios[0].id);
-  if (!ranking.length) {
-    lista.innerHTML = '<li>Ainda sem resultados neste exercício.</li>';
-    return;
-  }
-  lista.innerHTML = ranking
-    .slice(0, 4)
-    .map((r, i) => `<li><b>${i + 1}</b><span>${escapar(r.aluno_nome)}</span><small>${formatarNumero(r.ppm)}</small></li>`)
-    .join('');
+  set('[data-ranking-turma]', `${turma.nome} · top 5 anônimo`);
+  const linhas = await rankingDaTurma(turma.id);
+  area.innerHTML = htmlDoRanking(linhas, { compacto: true }) || '<p class="ranking-vazio">Ainda sem treinos concluídos nesta turma.</p>';
 }
 
 function primeiroNome(nomeCompleto) {

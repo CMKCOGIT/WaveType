@@ -36,10 +36,10 @@
                 </header>
                 <div class="perfil-grid">
                     <section class="panel panel-pad" aria-labelledby="titulo-dados">
-                        <div class="panel-title"><div><h2 id="titulo-dados">Dados da conta</h2><p>O e-mail é o mesmo usado para entrar.</p></div></div>
+                        <div class="panel-title"><div><h2 id="titulo-dados">Dados da conta</h2><p>Seu nome aparece para os professores das suas turmas. Os dados de acesso servem só para entrar na conta.</p></div></div>
                         <form class="perfil-form" data-form-dados novalidate>
                             <label class="field"><span>Nome completo</span><input name="nome" autocomplete="name" minlength="2" maxlength="120" required></label>
-                            <label class="field"><span>E-mail</span><input name="email" type="email" readonly></label>
+                            <label class="field" data-campo-email><span data-rotulo-email>E-mail de acesso</span><input name="email" type="email" readonly aria-describedby="ajuda-email"><small class="field-hint" id="ajuda-email" data-ajuda-email>Você usa este e-mail para entrar e para receber o link de “Esqueci a senha”. Ele não pode ser alterado aqui.</small></label>
                             <label class="field"><span>Tipo de conta</span><input name="tipo" readonly></label>
                             <div class="field" data-campo-id hidden><span>Seu código de aluno</span><div class="id-box"><span class="perfil-codigo" data-meu-id></span><button type="button" class="copiar" data-copiar-id>Copiar</button></div></div>
                             <button class="button" type="submit">Salvar dados</button>
