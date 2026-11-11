@@ -1,14 +1,72 @@
 <!-- Supabase › Authentication › Emails › Confirm signup
-     Assunto sugerido: Confirme seu cadastro no WaveType -->
-<div style="margin:0;padding:24px;background:#f5f8ff;font-family:Arial,Helvetica,sans-serif;color:#17233f">
-  <div style="max-width:520px;margin:0 auto;background:#ffffff;border:1px solid #e3e8f4;border-radius:16px;padding:32px">
-    <p style="margin:0 0 24px;font-size:20px;font-weight:bold;color:#315fd6">WaveType</p>
-    <h1 style="margin:0 0 12px;font-size:22px">Confirme seu cadastro</h1>
-    <p style="margin:0 0 24px;font-size:15px;line-height:1.5">Olá! Falta só confirmar o e-mail <strong>{{ .Email }}</strong> para começar a praticar no WaveType.</p>
-    <p style="margin:0 0 24px">
-      <a href="{{ .ConfirmationURL }}" style="display:inline-block;padding:12px 22px;background:#315fd6;color:#ffffff;text-decoration:none;border-radius:10px;font-weight:bold;font-size:15px">Confirmar e-mail</a>
-    </p>
-    <p style="margin:0;font-size:13px;line-height:1.5;color:#5b6478">Se você não criou uma conta no WaveType, ignore este e-mail.</p>
-  </div>
-  <p style="max-width:520px;margin:16px auto 0;font-size:12px;color:#8a93a6;text-align:center">WaveType · Prática de digitação</p>
-</div>
+     Assunto: Confirme seu e-mail para começar no WaveType
+     Mantenha {{ .ConfirmationURL }} no botão e no link de texto. -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Confirme seu e-mail no WaveType</title>
+</head>
+<body style="margin:0;padding:0;background:#eef3ff;">
+  <div style="display:none;max-height:0;overflow:hidden;opacity:0;color:#eef3ff;font-size:1px;line-height:1px;">Falta só um passo: confirme seu e-mail para começar a praticar.</div>
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#eef3ff;">
+    <tr>
+      <td align="center" style="padding:32px 16px;">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:560px;">
+          <tr>
+            <td style="padding:0 4px 16px;font-family:Manrope,'Segoe UI',Arial,Helvetica,sans-serif;">
+              <a href="https://wavetype.com.br" style="text-decoration:none;"><img src="https://wavetype.com.br/assets/images/brand/wavetype-logo-email.png" width="200" height="37" alt="WaveType" style="display:block;border:0;outline:none;font-family:Manrope,'Segoe UI',Arial,sans-serif;font-size:20px;font-weight:800;color:#17233f;"></a>
+            </td>
+          </tr>
+          <tr>
+            <td style="background:#ffffff;border:1px solid #dbe3f5;border-radius:12px;overflow:hidden;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td height="5" style="height:5px;line-height:5px;font-size:0;background:#315fd6;border-bottom:3px solid #2ecab6;">&nbsp;</td>
+                </tr>
+                <tr>
+                  <td style="padding:36px 36px 8px;font-family:Manrope,'Segoe UI',Arial,Helvetica,sans-serif;color:#17233f;">
+                    <p style="margin:0 0 8px;font-size:12px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:#315fd6;">Bem-vindo(a)</p>
+                    <h1 style="margin:0 0 16px;font-size:26px;line-height:1.25;font-weight:800;color:#17233f;">Confirme seu e-mail para começar</h1>
+                    <p style="margin:0 0 12px;font-size:16px;line-height:1.6;color:#3a4560;">Sua conta no WaveType foi criada com <strong style="color:#17233f;">{{ .Email }}</strong>.</p>
+                    <p style="margin:0 0 28px;font-size:16px;line-height:1.6;color:#3a4560;">Confirme o e-mail para liberar a plataforma, fazer o teste de nivelamento e acompanhar sua evolução.</p>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:0 36px 28px;">
+                    <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                      <tr>
+                        <td align="center" bgcolor="#315fd6" style="border-radius:6px;">
+                          <a href="{{ .ConfirmationURL }}" style="display:inline-block;padding:15px 30px;font-family:Manrope,'Segoe UI',Arial,Helvetica,sans-serif;font-size:16px;font-weight:700;line-height:1;color:#ffffff;text-decoration:none;border-radius:6px;">Confirmar meu e-mail</a>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:0 36px 32px;font-family:Manrope,'Segoe UI',Arial,Helvetica,sans-serif;">
+                    <p style="margin:0;font-size:13px;line-height:1.55;color:#4a5571;">O botão não abre? <a href="{{ .ConfirmationURL }}" style="color:#315fd6;text-decoration:underline;">Clique aqui</a>.</p>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:20px 36px 28px;border-top:1px solid #e6ecf8;font-family:Manrope,'Segoe UI',Arial,Helvetica,sans-serif;">
+                    <p style="margin:0;font-size:13px;line-height:1.55;color:#4a5571;"><strong style="color:#17233f;">Não criou essa conta?</strong> Pode ignorar este e-mail: nada será ativado sem a confirmação.</p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          <tr>
+            <td align="center" style="padding:20px 16px 0;font-family:Manrope,'Segoe UI',Arial,Helvetica,sans-serif;font-size:12px;line-height:1.6;color:#5a6480;">
+              WaveType · Prática de digitação<br>
+              <a href="https://wavetype.com.br" style="color:#5a6480;text-decoration:underline;">wavetype.com.br</a>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
