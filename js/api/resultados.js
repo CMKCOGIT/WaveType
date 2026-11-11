@@ -11,7 +11,7 @@ import { traduzErro } from '../auth.js';
  *
  * Devolve { resultado, novasConquistas }.
  */
-export async function registrarResultado({ exercicio_id, turma_id = null, ppm, precisao, acertos, erros, tempo_seg, concluiu_texto = true }) {
+export async function registrarResultado({ exercicio_id, turma_id = null, ppm, precisao, acertos, erros, tempo_seg, concluiu_texto = true, detalhes = null }) {
   const { data: sessao } = await supabase.auth.getSession();
   const alunoId = sessao.session?.user.id;
   if (!alunoId) throw new Error('Sessão expirada. Entre novamente.');
@@ -30,7 +30,20 @@ export async function registrarResultado({ exercicio_id, turma_id = null, ppm, p
   }
   if (error) throw traduzErro(error);
 
+  // Detalhe palavra por palavra (análise do professor). Não impede o
+  // resultado: se falhar, a tentativa continua salva sem o detalhe.
+  if (detalhes && data?.id) await salvarDetalhes(data.id, detalhes);
+
   return { resultado: data, novasConquistas: await conquistasLiberadasEm(alunoId, data.criado_em) };
+}
+
+async function salvarDetalhes(resultadoId, detalhes) {
+  try {
+    const { error } = await supabase.rpc('registrar_detalhes_resultado', { p_resultado_id: resultadoId, p_detalhes: detalhes });
+    if (error) console.warn('Detalhe da tentativa não foi salvo:', error.message);
+  } catch (erro) {
+    console.warn('Detalhe da tentativa não foi salvo:', erro);
+  }
 }
 
 function inserir(registro) {

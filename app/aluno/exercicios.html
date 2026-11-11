@@ -14,8 +14,8 @@
 
 <body data-root="../../" data-role="aluno" data-page="exercicios">
     <div class="app-layout">
-        <aside id="app-sidebar" class="app-sidebar"><a class="app-brand" href="../../index.html"
-                aria-label="WaveType, página inicial"><img class="logo-light"
+        <aside id="app-sidebar" class="app-sidebar"><a class="app-brand" href="index.html"
+                aria-label="WaveType, ir para o painel"><img class="logo-light"
                     src="../../assets/images/brand/wavetype-logo.svg" alt="WaveType"><img class="logo-dark"
                     src="../../assets/images/brand/wavetype-logo-dark.svg" alt=""></a>
             <p class="app-role">Área do aluno</p>
@@ -30,32 +30,48 @@
                 <header class="page-heading">
                     <div><span class="eyebrow">Treino guiado</span>
                         <h1>Exercícios</h1>
-                        <p>A trilha oficial do WaveType e as atividades que seus professores enviaram, cada uma no seu lugar.</p>
+                        <p>Escolha entre os exercícios que o professor enviou para a sua turma e a trilha padrão do WaveType.</p>
                     </div>
                     <div class="heading-actions"><a class="button secondary" href="treinar.html">Prática livre</a></div>
                 </header>
 
-                <section aria-labelledby="titulo-trilha">
+                <div class="abas-exercicios" role="tablist" aria-label="Tipos de exercício">
+                    <button type="button" role="tab" id="aba-atividades" aria-controls="atividades" aria-selected="false" tabindex="-1" data-aba-exercicios="atividades">
+                        <span class="aba-icone" aria-hidden="true">✎</span>
+                        <span class="aba-texto"><strong>Exercícios do professor</strong><small data-aba-resumo-atividades>Carregando…</small></span>
+                        <span class="aba-contador" data-contador-pendentes hidden></span>
+                    </button>
+                    <button type="button" role="tab" id="aba-trilha" aria-controls="trilha" aria-selected="true" data-aba-exercicios="trilha">
+                        <span class="aba-icone" aria-hidden="true">⌨</span>
+                        <span class="aba-texto"><strong>Trilha WaveType</strong><small data-aba-resumo-trilha>Exercícios padrão, do nível 1 ao 6</small></span>
+                    </button>
+                </div>
+
+                <section id="atividades" role="tabpanel" aria-labelledby="aba-atividades" hidden>
                     <div class="section-head" style="margin-top:0">
                         <div>
-                            <h2 id="titulo-trilha">Exercícios do WaveType</h2>
-                            <p data-resumo>Carregando…</p>
-                        </div>
-                    </div>
-                    <div data-niveis></div>
-                </section>
-
-                <section id="atividades" aria-labelledby="titulo-atividades">
-                    <div class="section-head">
-                        <div>
-                            <h2 id="titulo-atividades">Atividades dos professores</h2>
+                            <h2 id="titulo-atividades">Exercícios do professor</h2>
                             <p data-resumo-atividades>Carregando…</p>
                         </div>
-                        <a class="button secondary small" href="turmas.html">Minhas turmas</a>
+                        <div class="filtro-chips" role="group" aria-label="Filtrar atividades" data-filtro-atividades>
+                            <button type="button" aria-pressed="true" data-filtro="pendentes">Pendentes</button>
+                            <button type="button" aria-pressed="false" data-filtro="concluidas">Concluídas</button>
+                            <button type="button" aria-pressed="false" data-filtro="todas">Todas</button>
+                        </div>
                     </div>
                     <div class="practice-list" data-lista-atividades>
                         <article class="practice-row"><p>Carregando…</p></article>
                     </div>
+                </section>
+
+                <section id="trilha" role="tabpanel" aria-labelledby="aba-trilha">
+                    <div class="section-head" style="margin-top:0">
+                        <div>
+                            <h2 id="titulo-trilha">Trilha WaveType</h2>
+                            <p data-resumo>Carregando…</p>
+                        </div>
+                    </div>
+                    <div data-niveis></div>
                 </section>
             </main>
         </div>

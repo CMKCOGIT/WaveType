@@ -138,9 +138,10 @@ function renderizar() {
           return `
         <article class="practice-row${a.publicado ? '' : ' is-arquivada'}" data-atividade="${a.id}">
           <span class="practice-number">${String(i + 1).padStart(2, '0')}</span>
-          <div class="practice-info"><h3>${escapar(a.titulo)}</h3><p>${escapar(turmasTexto)}</p><small>${escapar(detalhes)}</small></div>
+          <div class="practice-info"><h3><a class="practice-link" href="atividade.html?id=${a.id}">${escapar(a.titulo)}</a></h3><p>${escapar(turmasTexto)}</p><small>${escapar(detalhes)}</small></div>
           <span class="practice-meta">${a.alunos_concluiram} concluíram · ${a.entregas} tentativas${a.publicado ? '' : ' · arquivada'}</span>
           <div class="row-actions">
+            <a class="button small" href="atividade.html?id=${a.id}">Ver resultados</a>
             <button type="button" class="button secondary small" data-acao="editar">Editar</button>
             <button type="button" class="button ghost small" data-acao="excluir">Excluir</button>
           </div>

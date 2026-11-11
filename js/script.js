@@ -502,7 +502,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 erros: stats.erros,
                 tempo_seg: Math.round(elapsedSeconds),
                 concluiu_texto: !tempoEsgotado,
-                desempenho_teclas: stats.desempenhoPorTecla
+                desempenho_teclas: stats.desempenhoPorTecla,
+                // Detalhe para a análise do professor (palavra por palavra)
+                detalhes: {
+                    palavras: motor.transcricao(),
+                    erros_por_tecla: Object.fromEntries(stats.errosPorTecla.slice(0, 30)),
+                    ppm_bruto: rawWpm,
+                    consistencia: consistency,
+                    erros_corrigidos: stats.errosCorrigidos,
+                    omitidas: stats.omitidas,
+                    extras: stats.extras,
+                    modo_erros: state.errorMode
+                }
             }
         }));
 

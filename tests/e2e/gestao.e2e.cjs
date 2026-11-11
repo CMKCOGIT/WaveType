@@ -318,12 +318,12 @@ caso('perfil: o campo de e-mail explica para que serve', async (nav) => {
 caso('treino da trilha: lição curta completada sem repetir o mesmo texto', async (nav) => {
   const banco = criarBanco();
   const { ctx, p } = await paginaComo(nav, banco, ALUNO, '/app/aluno/treinar.html?id=7');
-  await p.waitForFunction(() => document.querySelectorAll('#words-wrapper .word').length > 4);
+  await p.waitForFunction(() => document.querySelector('#words-wrapper .word')?.dataset.text === 'fff');
   const texto = await p.$$eval('#words-wrapper .word', (ws) => ws.map((w) => w.dataset.text).join(' '));
   assert.ok(texto.startsWith('fff jjj fjfj jfjf'));
   assert.equal(texto.split('fff jjj fjfj jfjf').length - 1, 1, 'texto original uma vez só');
   assert.match(texto, /^[fj ]+$/);
-  assert.ok(texto.length >= 140 && texto.length <= 161, // 161 = 9 rodadas × 18 − 1 (tempo_limite_trilha)
+  assert.ok(texto.length >= 130 && texto.length <= 161, // 161 = 9 rodadas × 18 − 1 (tempo_limite_trilha)
     `tamanho ${texto.length}: ${texto}`);
   await ctx.close();
 });

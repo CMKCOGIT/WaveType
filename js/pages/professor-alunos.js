@@ -11,7 +11,8 @@ import {
   MAX_ALUNOS_IMPORTACAO,
 } from '../contas/planilha.js';
 import { nivelamentoDosAlunos } from '../api/nivelamento.js';
-import { htmlDosCartoes, ligarCopiar, imprimirCartoes } from '../ui/cartoes-acesso.js';
+import { htmlDosCartoes, ligarCopiar, imprimirCartoes, exportarPdfDosAlunos } from '../ui/cartoes-acesso.js';
+import { baixarPdfTabela } from '../ui/pdf.js';
 import { NIVEIS_RECOMENDADOS } from '../nivelamento/config.js';
 
 const $ = (seletor) => document.querySelector(seletor);
@@ -242,7 +243,7 @@ corpo.addEventListener('click', async (evento) => {
   const botao = evento.target.closest('[data-remover]');
   if (!botao) return;
   const aluno = alunosCarregados.find((a) => a.aluno_id === botao.dataset.remover);
-  if (!confirm(`Remover ${aluno?.nome ?? 'este aluno'} da turma? Os resultados dele continuam guardados.`)) return;
+  if (!confirm(`Remover ${aluno?.nome ?? 'este aluno'} da turma ${turmaAtual()?.nome ?? ''}?\n\nA conta do aluno NÃO é excluída: ele só sai desta turma. Os resultados anteriores continuam salvos e você pode adicioná-lo de novo pelo código.`)) return;
   botao.disabled = true;
   try {
     await removerAlunoDaTurma(turmaId, botao.dataset.remover);
@@ -591,7 +592,16 @@ opcoesExportar.addEventListener('click', async (evento) => {
   const linhas = linhasDaExportacao(alunosCarregados, { logins: loginsEscola, pontoDePartida: textoPontoDePartida });
   const arquivo = nomeDoArquivo(turma?.nome);
   try {
-    if (opcao.dataset.exportar === 'csv') {
+    if (opcao.dataset.exportar === 'pdf') {
+      await baixarPdfTabela({
+        titulo: `Alunos da turma ${turma?.nome ?? ''}`.trim(),
+        subtitulo: [turma?.ano_letivo, `${alunosCarregados.length} ${alunosCarregados.length === 1 ? 'aluno' : 'alunos'}`].filter(Boolean).join(' · '),
+        colunas: ['Nome', 'Código', 'Usuário da escola', 'Sessões', 'WPM médio', 'Precisão média', 'Atividades', 'Última prática'],
+        linhas: linhas.slice(1).map((l) => [l[0], l[1], l[2], l[5], l[6] === '' ? '—' : String(l[6]).replace('.', ','), l[7] === '' ? '—' : `${String(l[7]).replace('.', ',')}%`, l[8], l[9] || '—']),
+        arquivo,
+        paisagem: true,
+      });
+    } else if (opcao.dataset.exportar === 'csv') {
       baixar(new Blob([gerarCsv(linhas)], { type: 'text/csv;charset=utf-8' }), `${arquivo}.csv`);
     } else {
       const X = await xlsx();
@@ -628,7 +638,7 @@ menuExportar.addEventListener('toggle', () => {
   }
 });
 addEventListener('resize', () => menuExportar.open && posicionarMenuExportar());
-addEventListener('scroll', () => { if (menuExportar.open) menuExportar.open = false; }, { passive: true });
+addEventListener('scroll', () => menuExportar.open && posicionarMenuExportar(), { passive: true });
 document.addEventListener('click', (evento) => {
   if (menuExportar.open && !menuExportar.contains(evento.target) && !opcoesExportar.contains(evento.target)) menuExportar.open = false;
 });
@@ -669,8 +679,11 @@ const areaCartoes = $('[data-cartoes]');
 let contasNaTela = [];
 ligarCopiar(areaCartoes, () => contasNaTela);
 
+let turmaDasContas = { id: null, nome: '' };
+
 function mostrarCredenciais(contas, titulo, turma = turmaAtual()?.nome ?? '') {
   contasNaTela = contas;
+  turmaDasContas = { id: turmasCarregadas.find((t) => t.nome === turma)?.id ?? turmaId, nome: turma };
   areaCartoes.innerHTML = htmlDosCartoes(contas, { turma });
   $('#titulo-credenciais').textContent = titulo;
   painelCredenciais.hidden = false;
@@ -678,6 +691,20 @@ function mostrarCredenciais(contas, titulo, turma = turmaAtual()?.nome ?? '') {
 }
 
 $('[data-imprimir-cartoes]').addEventListener('click', () => imprimirCartoes(areaCartoes));
+$('[data-pdf-criados]').addEventListener('click', async (evento) => {
+  const botao = evento.currentTarget;
+  botao.disabled = true;
+  try {
+    // Códigos individuais vêm do banco (alunos_da_turma, só para o professor da turma).
+    const alunos = turmaDasContas.id ? await listarAlunosDaTurma(turmaDasContas.id) : alunosCarregados;
+    const codigos = new Map(alunos.map((a) => [a.aluno_id, a.codigo_aluno]));
+    await exportarPdfDosAlunos(contasNaTela, { turma: turmaDasContas.nome, codigos });
+  } catch (erro) {
+    alert(`Não foi possível gerar o PDF: ${erro.message}`);
+  } finally {
+    botao.disabled = false;
+  }
+});
 $('[data-fechar-credenciais]').addEventListener('click', () => {
   if (!confirm('Fechar? As senhas não aparecem de novo (dá para gerar novas na lista).')) return;
   areaCartoes.innerHTML = '';

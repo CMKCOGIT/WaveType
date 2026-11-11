@@ -1,0 +1,385 @@
+/* ==========================================================================
+   Acompanhamento do professor: resultados de uma atividade
+   (app/professor/atividade.html) e abas de exercícios do aluno.
+   ========================================================================== */
+.practice-link {
+  color: inherit;
+  text-decoration: none;
+}
+.practice-link:hover {
+  color: var(--p-ink-blue);
+  text-decoration: underline;
+}
+.texto-atividade {
+  margin: 14px 0;
+}
+.texto-atividade summary {
+  font-weight: 750;
+  cursor: pointer;
+}
+.texto-atividade p {
+  margin: 10px 0 0;
+  white-space: pre-wrap;
+  line-height: 1.6;
+}
+.analise-layout {
+  display: grid;
+  grid-template-columns: minmax(260px, 340px) minmax(0, 1fr);
+  gap: 14px;
+  align-items: start;
+}
+.analise-alunos {
+  position: sticky;
+  top: 96px;
+  padding: 16px;
+}
+.analise-alunos-topo h2 {
+  margin: 0 0 10px;
+  font-size: 1.05rem;
+}
+.analise-alunos-topo .field {
+  margin: 10px 0 0;
+}
+.filtro-chips,
+.tentativas-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.filtro-chips button,
+.tentativas-chips button {
+  padding: 6px 10px;
+  color: var(--p-muted);
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 700;
+  background: var(--p-surface-2);
+  border: 1.5px solid transparent;
+  border-radius: 999px;
+  cursor: pointer;
+}
+.filtro-chips button[aria-pressed="true"],
+.tentativas-chips button[aria-pressed="true"] {
+  color: var(--p-ink-blue);
+  background: var(--p-tint-blue);
+  border-color: var(--wt-blue-500);
+}
+.lista-entregas {
+  display: grid;
+  gap: 6px;
+  max-height: min(62vh, 640px);
+  margin: 12px 0 0;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+}
+.entrega {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 12px;
+  color: var(--p-text);
+  text-align: left;
+  font: inherit;
+  background: var(--p-surface-2);
+  border: 1.5px solid transparent;
+  border-radius: var(--radius-sm, 10px);
+  cursor: pointer;
+}
+.entrega:hover {
+  background: var(--p-surface-3);
+}
+.entrega[aria-pressed="true"] {
+  background: var(--p-tint-blue);
+  border-color: var(--wt-blue-500);
+}
+.entrega[data-sem-tentativa] .entrega-nome strong {
+  color: var(--p-muted);
+}
+.entrega-nome {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+.entrega-nome small {
+  color: var(--p-muted);
+  font-size: 0.76rem;
+}
+.entrega .status {
+  flex: 0 0 auto;
+  font-size: 0.62rem;
+}
+.entrega-vazia {
+  padding: 14px;
+  color: var(--p-muted);
+}
+.status.atrasada {
+  color: #b45309;
+  background: rgba(245, 158, 11, 0.14);
+}
+[data-theme="dark"] .status.atrasada {
+  color: #fbbf24;
+}
+.analise-detalhe {
+  padding: clamp(16px, 2.4vw, 26px);
+  min-height: 320px;
+}
+.analise-vazio {
+  display: grid;
+  place-content: center;
+  gap: 4px;
+  min-height: 260px;
+  text-align: center;
+  color: var(--p-muted);
+}
+.analise-vazio strong {
+  color: var(--p-text);
+}
+.analise-cabecalho {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px 16px;
+  margin-bottom: 12px;
+}
+.analise-cabecalho h2 {
+  margin: 2px 0;
+  font-size: 1.35rem;
+}
+.analise-cabecalho p {
+  margin: 0;
+  color: var(--p-muted);
+  font-size: 0.86rem;
+}
+.analise-situacao {
+  display: grid;
+  justify-items: end;
+  gap: 4px;
+  max-width: 260px;
+  text-align: right;
+}
+.analise-situacao small {
+  color: var(--p-muted);
+  font-size: 0.78rem;
+}
+.analise-metricas {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(118px, 1fr));
+  gap: 8px;
+  margin: 14px 0 18px;
+}
+.analise-metricas > div {
+  padding: 10px 12px;
+  background: var(--p-surface-2);
+  border-radius: var(--radius-sm, 10px);
+}
+.analise-metricas dt {
+  color: var(--p-muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+.analise-metricas dd {
+  margin: 2px 0 0;
+  font-family: var(--font-mono, "IBM Plex Mono", monospace);
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+.analise-detalhe h3 {
+  margin: 18px 0 8px;
+  font-size: 1rem;
+}
+.texto-analisado {
+  padding: 14px 16px;
+  line-height: 2.1;
+  font-size: 1rem;
+  background: var(--p-surface-2);
+  border-radius: var(--radius-md, 14px);
+  overflow-wrap: anywhere;
+}
+.pl {
+  padding: 1px 3px;
+  border-radius: 4px;
+}
+.pl.certa {
+  color: var(--p-text);
+}
+.pl.corrigida {
+  background: rgba(245, 158, 11, 0.16);
+  box-shadow: inset 0 -2px 0 rgba(245, 158, 11, 0.7);
+}
+.pl.errada {
+  background: rgba(220, 38, 38, 0.1);
+  box-shadow: inset 0 -2px 0 rgba(220, 38, 38, 0.75);
+}
+.pl.nao_digitada {
+  color: var(--p-soft, var(--p-muted));
+  opacity: 0.6;
+}
+.legenda-analise {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  margin: 0 0 8px;
+  font-size: 0.78rem;
+}
+.lt.trocada {
+  color: #fff;
+  background: #dc2626;
+  border-radius: 3px;
+}
+.lt.faltou {
+  color: #dc2626;
+  text-decoration: underline dotted;
+  opacity: 0.75;
+}
+.lt.sobrou {
+  color: #fff;
+  background: #b45309;
+  border-radius: 3px;
+}
+[data-theme="dark"] .lt.faltou {
+  color: #f87171;
+}
+.analise-resumo,
+.analise-nota {
+  margin: 8px 0 0;
+  color: var(--p-muted);
+  font-size: 0.84rem;
+}
+.analise-aviso {
+  margin: 0;
+  padding: 12px 14px;
+  color: var(--p-text);
+  background: var(--p-surface-2);
+  border-radius: var(--radius-sm, 10px);
+  font-size: 0.9rem;
+}
+.tabela-erros .erro-digitado {
+  color: #dc2626;
+}
+[data-theme="dark"] .tabela-erros .erro-digitado {
+  color: #f87171;
+}
+.teclas-erradas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.teclas-erradas li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  background: var(--p-surface-2);
+  border-radius: 999px;
+  font-size: 0.82rem;
+}
+.teclas-erradas kbd {
+  min-width: 24px;
+  padding: 2px 6px;
+  text-align: center;
+  font-family: var(--font-mono, "IBM Plex Mono", monospace);
+  background: var(--p-surface);
+  border: 1px solid var(--p-line-2);
+  border-radius: 6px;
+}
+@media (max-width: 980px) {
+  .analise-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .analise-alunos {
+    position: static;
+  }
+  .lista-entregas {
+    max-height: 340px;
+  }
+}
+
+/* ---------- Aluno: abas "Exercícios do professor" x "Trilha WaveType" ---------- */
+.abas-exercicios {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0 0 18px;
+}
+.abas-exercicios [role="tab"] {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  color: var(--p-text);
+  text-align: left;
+  font: inherit;
+  background: var(--p-surface);
+  border: 1.5px solid var(--p-line);
+  border-radius: var(--radius-md, 14px);
+  box-shadow: var(--p-shadow);
+  cursor: pointer;
+  transition: border-color 160ms, background-color 160ms;
+}
+.abas-exercicios [role="tab"]:hover {
+  border-color: var(--wt-blue-300);
+}
+.abas-exercicios [role="tab"][aria-selected="true"] {
+  background: var(--p-tint-blue);
+  border-color: var(--wt-blue-500);
+  box-shadow: 0 0 0 3px rgba(79, 124, 255, 0.16), var(--p-shadow);
+}
+.abas-exercicios [role="tab"]:focus-visible {
+  outline: 3px solid rgba(79, 124, 255, 0.45);
+  outline-offset: 2px;
+}
+.aba-icone {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  color: var(--p-ink-blue);
+  background: var(--p-surface-2);
+  border-radius: 12px;
+  font-size: 1.2rem;
+}
+[aria-selected="true"] > .aba-icone {
+  color: #fff;
+  background: linear-gradient(135deg, var(--wt-blue-500), var(--wt-violet-500));
+}
+.aba-texto {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+.aba-texto strong {
+  font-size: 1rem;
+}
+.aba-texto small {
+  color: var(--p-muted);
+  font-size: 0.8rem;
+}
+.aba-contador {
+  min-width: 26px;
+  margin-left: auto;
+  padding: 3px 8px;
+  color: #fff;
+  text-align: center;
+  background: #dc2626;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+@media (max-width: 560px) {
+  .abas-exercicios {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+  }
+  .abas-exercicios [role="tab"] {
+    padding: 10px 12px;
+  }
+}

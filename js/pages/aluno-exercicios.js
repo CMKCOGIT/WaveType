@@ -16,11 +16,48 @@ const DIFICULDADES = { facil: 'Fácil', medio: 'Médio', avancado: 'Avançado' }
 
 iniciar();
 
+let atividadesCarregadas = [];
+let filtroAtividades = 'pendentes';
+
 async function iniciar() {
   const perfil = await exigirPapel('aluno');
   if (!perfil) return;
-  await Promise.all([carregarTrilha(), carregarAtividades()]);
-  if (location.hash === '#atividades') document.getElementById('atividades')?.scrollIntoView();
+  ligarAbas();
+  const [, pendentes] = await Promise.all([carregarTrilha(), carregarAtividades()]);
+  // Abre direto nas atividades quando há algo para fazer (ou pelo link #atividades).
+  const pedida = location.hash.replace('#', '');
+  abrirAba(pedida === 'trilha' || pedida === 'atividades' ? pedida : pendentes > 0 ? 'atividades' : 'trilha');
+}
+
+// ---------- Abas: exercícios do professor x trilha padrão ----------
+
+function abrirAba(nome, { focar = false } = {}) {
+  document.querySelectorAll('[data-aba-exercicios]').forEach((aba) => {
+    const ativa = aba.dataset.abaExercicios === nome;
+    aba.setAttribute('aria-selected', String(ativa));
+    aba.tabIndex = ativa ? 0 : -1;
+    document.getElementById(aba.getAttribute('aria-controls')).hidden = !ativa;
+    if (ativa && focar) aba.focus();
+  });
+  history.replaceState(null, '', `#${nome}`);
+}
+
+function ligarAbas() {
+  const abas = [...document.querySelectorAll('[data-aba-exercicios]')];
+  abas.forEach((aba) => aba.addEventListener('click', () => abrirAba(aba.dataset.abaExercicios)));
+  document.querySelector('.abas-exercicios').addEventListener('keydown', (evento) => {
+    const passo = { ArrowRight: 1, ArrowLeft: -1 }[evento.key];
+    if (!passo) return;
+    const atual = abas.findIndex((a) => a.getAttribute('aria-selected') === 'true');
+    abrirAba(abas[(atual + passo + abas.length) % abas.length].dataset.abaExercicios, { focar: true });
+  });
+  document.querySelector('[data-filtro-atividades]').addEventListener('click', (evento) => {
+    const botao = evento.target.closest('[data-filtro]');
+    if (!botao) return;
+    filtroAtividades = botao.dataset.filtro;
+    document.querySelectorAll('[data-filtro-atividades] [data-filtro]').forEach((b) => b.setAttribute('aria-pressed', String(b === botao)));
+    desenharAtividades();
+  });
 }
 
 async function carregarTrilha() {
@@ -34,6 +71,10 @@ async function carregarTrilha() {
       concluidos: exerciciosConcluidos(resultados),
       tentados: new Set(resultados.map((r) => r.exercicio_id)),
     });
+    const feitos = exerciciosConcluidos(resultados);
+    const total = exercicios.length;
+    const concluidos = exercicios.filter((e) => feitos.has(e.id)).length;
+    document.querySelector('[data-aba-resumo-trilha]').textContent = `Exercícios padrão · ${concluidos} de ${total} concluídos`;
   } catch (erro) {
     console.error('Falha ao carregar a trilha:', erro);
     resumo.textContent = 'Não foi possível carregar os exercícios. Atualize a página.';
@@ -41,28 +82,55 @@ async function carregarTrilha() {
 }
 
 async function carregarAtividades() {
-  const lista = document.querySelector('[data-lista-atividades]');
   const resumo = document.querySelector('[data-resumo-atividades]');
+  const resumoAba = document.querySelector('[data-aba-resumo-atividades]');
+  const contador = document.querySelector('[data-contador-pendentes]');
   try {
-    const atividades = await listarMinhasAtividades();
-    if (!atividades.length) {
-      resumo.textContent = 'Nenhuma atividade por enquanto.';
-      lista.innerHTML =
-        '<article class="practice-row"><p>Quando um professor enviar uma atividade para a sua turma, ela aparece aqui. Ainda não está em uma turma? <a href="turmas.html">Veja como o professor adiciona você</a>.</p></article>';
-      return;
-    }
-
-    const pendentes = atividades.filter((a) => a.situacao !== 'concluida').length;
-    resumo.textContent = pendentes
-      ? `${pendentes} atividade${pendentes === 1 ? '' : 's'} para fazer · ${atividades.length - pendentes} concluída${atividades.length - pendentes === 1 ? '' : 's'}.`
-      : 'Tudo em dia! Todas as atividades foram concluídas.';
-
-    lista.innerHTML = atividades.map(linhaAtividade).join('');
+    atividadesCarregadas = await listarMinhasAtividades();
   } catch (erro) {
     console.error('Falha ao carregar atividades:', erro);
     resumo.textContent = 'Não foi possível carregar as atividades.';
-    lista.innerHTML = '';
+    resumoAba.textContent = 'Indisponível no momento';
+    document.querySelector('[data-lista-atividades]').innerHTML = '';
+    return 0;
   }
+  const pendentes = atividadesCarregadas.filter((a) => a.situacao !== 'concluida').length;
+  const concluidas = atividadesCarregadas.length - pendentes;
+  resumoAba.textContent = atividadesCarregadas.length
+    ? `${atividadesCarregadas.length} no total · ${pendentes} pendente${pendentes === 1 ? '' : 's'}`
+    : 'Nenhuma atividade ainda';
+  contador.hidden = pendentes === 0;
+  contador.textContent = String(pendentes);
+  contador.setAttribute('aria-label', `${pendentes} pendentes`);
+  resumo.textContent = !atividadesCarregadas.length
+    ? 'Nenhuma atividade por enquanto.'
+    : pendentes
+      ? `${pendentes} para fazer · ${concluidas} concluída${concluidas === 1 ? '' : 's'}. Só aparecem as atividades das suas turmas.`
+      : 'Tudo em dia! Todas as atividades foram concluídas.';
+  document.querySelector('[data-filtro="pendentes"]').textContent = `Pendentes (${pendentes})`;
+  document.querySelector('[data-filtro="concluidas"]').textContent = `Concluídas (${concluidas})`;
+  document.querySelector('[data-filtro="todas"]').textContent = `Todas (${atividadesCarregadas.length})`;
+  if (!pendentes && concluidas) {
+    filtroAtividades = 'todas';
+    document.querySelectorAll('[data-filtro-atividades] [data-filtro]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.filtro === 'todas')));
+  }
+  desenharAtividades();
+  return pendentes;
+}
+
+function desenharAtividades() {
+  const lista = document.querySelector('[data-lista-atividades]');
+  if (!atividadesCarregadas.length) {
+    lista.innerHTML =
+      '<article class="practice-row"><p>Quando um professor enviar uma atividade para a sua turma, ela aparece aqui. Ainda não está em uma turma? <a href="turmas.html">Veja como o professor adiciona você</a>.</p></article>';
+    return;
+  }
+  const visiveis = atividadesCarregadas.filter((a) =>
+    filtroAtividades === 'todas' ? true : filtroAtividades === 'concluidas' ? a.situacao === 'concluida' : a.situacao !== 'concluida'
+  );
+  lista.innerHTML = visiveis.length
+    ? visiveis.map(linhaAtividade).join('')
+    : `<article class="practice-row"><p>${filtroAtividades === 'pendentes' ? 'Nenhuma atividade pendente. Muito bem!' : 'Nenhuma atividade concluída ainda.'}</p></article>`;
 }
 
 function linhaAtividade(a, indice) {

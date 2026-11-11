@@ -13,20 +13,28 @@ export function textoDoAcesso(conta) {
   return `WaveType — ${conta.nome}\nUsuário: ${conta.login}\nSenha: ${conta.senha}\nEntre em ${location.host}/login.html?modo=escola e escolha "Sou aluno com usuário da escola".`;
 }
 
-/** HTML dos cartões. `turma` é opcional (nome mostrado no cartão). */
-export function htmlDosCartoes(contas, { turma = '', logo = '../../assets/images/brand/wavetype-logo.svg' } = {}) {
-  const endereco = `${location.host}/login.html?modo=escola`;
+function iniciais(nome) {
+  const partes = String(nome ?? '').trim().split(/\s+/).filter(Boolean);
+  return ((partes[0]?.[0] ?? '') + (partes.length > 1 ? partes[partes.length - 1][0] : '')).toUpperCase() || '?';
+}
+
+/**
+ * HTML dos cartões. `turma` é opcional (nome mostrado no cartão).
+ * O cartão segue o tema da tela (claro/escuro); na impressão sai em branco.
+ * As instruções de como entrar vão no "Copiar tudo" e no PDF, não no cartão.
+ */
+export function htmlDosCartoes(contas, { turma = '' } = {}) {
   return contas
     .map(
       (c, i) => `<article class="cartao-acesso" data-cartao="${i}">
-        <img src="${logo}" alt="WaveType" width="120" height="24">
-        <h3>${escapar(c.nome)}</h3>
-        ${c.turma || turma ? `<p class="cartao-turma">${escapar(c.turma || turma)}</p>` : ''}
+        <header class="cartao-topo">
+          <span class="cartao-avatar" aria-hidden="true">${escapar(iniciais(c.nome))}</span>
+          <div><h3>${escapar(c.nome)}</h3>${c.turma || turma ? `<p class="cartao-turma">${escapar(c.turma || turma)}</p>` : ''}</div>
+        </header>
         <dl>
           <div><dt>Usuário</dt><dd class="mono">${escapar(c.login)}</dd></div>
           <div><dt>Senha</dt><dd class="mono">${escapar(c.senha)}</dd></div>
         </dl>
-        <p class="cartao-como">Entre em <strong>${escapar(endereco)}</strong> e escolha “Sou aluno com usuário da escola”.</p>
         <div class="cartao-copiar" data-nao-imprimir>
           <button type="button" class="copiar" data-copiar="login">Copiar usuário</button>
           <button type="button" class="copiar" data-copiar="senha">Copiar senha</button>
@@ -35,6 +43,30 @@ export function htmlDosCartoes(contas, { turma = '', logo = '../../assets/images
       </article>`
     )
     .join('');
+}
+
+/**
+ * PDF com a lista dos alunos cadastrados (nome, usuário da escola, código
+ * individual e turma). NUNCA inclui a senha: o PDF pode ser guardado e
+ * compartilhado; a senha só aparece nos cartões da tela/impressão.
+ * `codigos` = Map(aluno_id → código do aluno).
+ */
+export async function exportarPdfDosAlunos(contas, { turma = '', codigos = new Map(), titulo = 'Alunos cadastrados' } = {}) {
+  const { baixarPdfTabela } = await import('./pdf.js');
+  const { nomeDoArquivo } = await import('../contas/planilha.js');
+  const linhas = contas.map((c, i) => [i + 1, c.nome, c.login ?? '', codigos.get(c.id) ?? c.codigo_aluno ?? '', c.turma || turma || '']);
+  return baixarPdfTabela({
+    titulo,
+    subtitulo: [turma && `Turma: ${turma}`, `${contas.length} ${contas.length === 1 ? 'aluno' : 'alunos'}`].filter(Boolean).join(' · '),
+    resumo: [
+      `Para entrar: ${location.host}/login.html?modo=escola, opção "Sou aluno com usuário da escola".`,
+      'As senhas não aparecem neste documento. Se um aluno perder a dele, gere uma nova em Alunos.',
+    ],
+    colunas: ['#', 'Nome', 'Usuário da escola', 'Código do aluno', 'Turma'],
+    linhas,
+    arquivo: nomeDoArquivo(turma || 'alunos').replace(/^alunos-/, 'alunos-cadastrados-'),
+    larguras: { 0: { cellWidth: 10 } },
+  });
 }
 
 /** Liga os botões de copiar de uma área de cartões (chame uma vez por área). */

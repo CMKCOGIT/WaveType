@@ -7,7 +7,7 @@
 import { listarMinhasTurmas, listarAlunosDaTurma } from '../api/turmas.js';
 import { criarAlunosNaTurma, loginsDosAlunos } from '../api/contas-escolares.js';
 import { loginBase } from '../contas/credenciais.js';
-import { htmlDosCartoes, ligarCopiar, imprimirCartoes } from '../ui/cartoes-acesso.js';
+import { htmlDosCartoes, ligarCopiar, imprimirCartoes, exportarPdfDosAlunos } from '../ui/cartoes-acesso.js';
 
 function escapar(texto) {
   const d = document.createElement('div');
@@ -37,7 +37,8 @@ export async function montarCadastroDeAlunos() {
       <h3>Acesso criado</h3>
       <p>Copie ou imprima agora: por segurança, a senha não aparece de novo. Se o aluno perder, gere uma nova senha em Alunos.</p>
       <div class="cartoes-grid" data-cartoes-perfil></div>
-      <div class="form-actions"><button class="button secondary" type="button" data-imprimir-perfil>Imprimir cartão</button><button class="button ghost" type="button" data-novo-cadastro>Cadastrar outro aluno</button></div>
+      <div class="form-actions"><button class="button secondary" type="button" data-imprimir-perfil>Imprimir cartão</button><button class="button secondary" type="button" data-pdf-perfil>Exportar PDF</button><button class="button ghost" type="button" data-novo-cadastro>Cadastrar outro aluno</button></div>
+      <p class="perfil-ajuda" style="margin:0">O PDF lista nome, usuário, código e turma, sem a senha.</p>
     </div>
     <p class="perfil-ajuda">Muitos alunos de uma vez? Use <a href="alunos.html">Alunos → Criar alunos sem e-mail</a>.</p>`;
 
@@ -113,6 +114,19 @@ export async function montarCadastroDeAlunos() {
   });
 
   secaoCadastro.querySelector('[data-imprimir-perfil]').addEventListener('click', () => imprimirCartoes(areaCartoes));
+  secaoCadastro.querySelector('[data-pdf-perfil]').addEventListener('click', async (evento) => {
+    const botao = evento.currentTarget;
+    botao.disabled = true;
+    try {
+      const turma = turmas.find((t) => t.nome === contas[0]?.turma) ?? turmas.find((t) => String(t.id) === seletor.value);
+      const alunos = turma ? await listarAlunosDaTurma(turma.id) : [];
+      await exportarPdfDosAlunos(contas, { turma: turma?.nome ?? '', codigos: new Map(alunos.map((a) => [a.aluno_id, a.codigo_aluno])) });
+    } catch (erro) {
+      avisar(`Não foi possível gerar o PDF: ${erro.message}`, true);
+    } finally {
+      botao.disabled = false;
+    }
+  });
   secaoCadastro.querySelector('[data-novo-cadastro]').addEventListener('click', () => {
     contas = [];
     areaCartoes.innerHTML = '';
