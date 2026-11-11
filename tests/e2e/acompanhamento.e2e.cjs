@@ -220,7 +220,7 @@ caso('cartão de acesso no tema, sem logo nem "Entre em", e PDF com a senha', as
   assert.equal(turma.bytes.subarray(0, 5).toString(), '%PDF-');
   assert.match(turma.bytes.toString('latin1'), /K7Q2MX/);
   // Mensagem de remoção clara
-  assert.match(await s.p.textContent('.lista-alunos .auth-demo'), /não exclui a conta do aluno/);
+  assert.equal(await s.p.locator('.lista-alunos .auth-demo').count(), 0, 'aviso de remoção saiu da tela');
   await s.ctx.close();
   fs.rmSync(arquivo, { force: true });
 });

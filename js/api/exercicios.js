@@ -1,12 +1,14 @@
 // js/api/exercicios.js
 import { supabase } from '../supabaseClient.js';
+import { ULTIMO_NIVEL } from '../exercicios-dados.js';
 
-/** Trilha oficial do WaveType (níveis 1 a 6, 20 exercícios cada). */
+/** Trilha oficial do WaveType (níveis 1 a 5, 20 exercícios cada). O antigo Nível 6 fica só no histórico. */
 export async function listarExercicios() {
   const { data, error } = await supabase
     .from('exercicios')
     .select('id, nivel_trilha, ordem, titulo')
     .not('nivel_trilha', 'is', null)
+    .lte('nivel_trilha', ULTIMO_NIVEL)
     .order('nivel_trilha', { ascending: true })
     .order('ordem', { ascending: true });
   if (error) throw error;

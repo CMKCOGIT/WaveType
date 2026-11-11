@@ -383,3 +383,147 @@
     padding: 10px 12px;
   }
 }
+
+/* ---------- Turma: ano letivo + tipo de período + número ---------- */
+.periodo-letivo {
+  min-width: 0;
+}
+.periodo-campos {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr) 88px;
+  gap: 8px;
+}
+.periodo-campos label {
+  display: block;
+  min-width: 0;
+}
+.periodo-campos select,
+.periodo-campos input {
+  width: 100%;
+}
+.periodo-campos input:disabled {
+  opacity: 0.55;
+}
+@media (max-width: 520px) {
+  .periodo-campos {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+  .periodo-campos label:first-child {
+    grid-column: 1 / -1;
+  }
+}
+
+/* ---------- Atividade: situação em três opções com explicação ---------- */
+.situacao-atividade {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.situacao-atividade legend {
+  margin-bottom: 6px;
+  padding: 0;
+  color: var(--p-text);
+  font-size: 0.8rem;
+  font-weight: 750;
+}
+.situacao-opcoes {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+.situacao-opcao {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 56px;
+  padding: 10px 12px;
+  background: var(--p-surface-2);
+  border: 1.5px solid transparent;
+  border-radius: var(--radius-sm, 10px);
+  cursor: pointer;
+}
+.situacao-opcao:hover {
+  background: var(--p-surface-3);
+}
+.situacao-opcao:has(input:checked) {
+  background: var(--p-tint-blue);
+  border-color: var(--wt-blue-500);
+}
+.situacao-opcao input {
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: var(--wt-blue-500);
+}
+.situacao-texto {
+  display: grid;
+  flex: 1 1 auto;
+  gap: 1px;
+  min-width: 0;
+}
+.situacao-texto strong {
+  font-size: 0.92rem;
+}
+.situacao-texto small {
+  color: var(--p-muted);
+  font-size: 0.75rem;
+}
+.info-dica {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  color: var(--p-ink-blue);
+  font: italic 700 0.78rem/1 Georgia, "Times New Roman", serif;
+  background: var(--p-surface);
+  border: 1px solid var(--p-line-2);
+  border-radius: 50%;
+  cursor: help;
+}
+.info-dica:focus-visible {
+  outline: 3px solid rgba(79, 124, 255, 0.45);
+  outline-offset: 2px;
+}
+.dica-balao {
+  position: absolute;
+  z-index: 30;
+  right: 0;
+  bottom: calc(100% + 8px);
+  width: min(260px, 80vw);
+  padding: 10px 12px;
+  color: var(--p-text);
+  font-size: 0.8rem;
+  line-height: 1.45;
+  background: var(--p-surface);
+  border: 1px solid var(--p-line);
+  border-radius: var(--radius-sm, 10px);
+  box-shadow: var(--p-shadow-hover, var(--p-shadow));
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(4px);
+  transition: opacity 140ms, transform 140ms, visibility 140ms;
+  pointer-events: none;
+}
+.info-dica:hover + .dica-balao,
+.info-dica:focus-visible + .dica-balao,
+.info-dica[aria-expanded="true"] + .dica-balao {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+}
+@media (max-width: 720px) {
+  .situacao-opcoes {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* Formulários em grade (turma, atividade): rótulo e campo sempre no topo
+   da célula. Antes o grid esticava o campo quando o vizinho tinha uma dica
+   embaixo, e "Nome da turma" ficava mais alto e desalinhado. */
+.form-grid > .field {
+  align-content: start;
+}

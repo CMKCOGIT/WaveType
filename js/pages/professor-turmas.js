@@ -1,6 +1,7 @@
 // js/pages/professor-turmas.js
 import { exigirPapel } from '../auth.js';
 import { listarMinhasTurmas, criarTurma, atualizarTurma, excluirTurma, modosDeErroDasTurmas } from '../api/turmas.js';
+import { TIPOS_DE_PERIODO, ANOS_A_FRENTE, anoAtual, montarAnoLetivo, lerAnoLetivo, validarAnoLetivo } from '../turmas/periodo.js';
 
 const botaoAbrir = document.querySelector('[data-abrir-form-turma]');
 const form = document.querySelector('[data-form-turma]');
@@ -21,12 +22,61 @@ async function iniciar() {
 botaoAbrir.addEventListener('click', () => abrirFormulario());
 document.querySelector('[data-cancelar-turma]').addEventListener('click', fecharFormulario);
 
+// ---------- Ano letivo e período ----------
+const campoAno = form.elements.ano;
+const campoTipo = form.elements.tipo_periodo;
+const campoNumero = form.elements.numero_periodo;
+const ajudaPeriodo = document.querySelector('[data-ajuda-periodo]');
+let anoLetivoOriginal = '';
+let periodoAlterado = false;
+[campoAno, campoTipo, campoNumero].forEach((campo) => campo.addEventListener('input', () => (periodoAlterado = true)));
+
+function preencherAnos(anoGravado = null) {
+  const atual = anoAtual();
+  const anos = Array.from({ length: ANOS_A_FRENTE + 1 }, (_, i) => atual + i);
+  // Turma antiga de um ano que já passou: o ano dela aparece (para editar
+  // outros campos), mas não pode ser escolhido para uma turma nova.
+  const antigo = anoGravado && anoGravado < atual ? `<option value="${anoGravado}">${anoGravado} (ano encerrado)</option>` : '';
+  campoAno.innerHTML = antigo + anos.map((a) => `<option value="${a}">${a}</option>`).join('');
+  campoAno.value = String(anoGravado ?? atual);
+}
+
+function atualizarCampoNumero() {
+  const info = TIPOS_DE_PERIODO[campoTipo.value];
+  campoNumero.disabled = !info;
+  if (!info) {
+    campoNumero.value = '';
+    ajudaPeriodo.textContent = 'Escolha o ano (o atual ou um dos próximos). Se a turma for de um período, escolha o tipo e digite o número.';
+    return;
+  }
+  campoNumero.max = String(info.quantidade);
+  campoNumero.required = true;
+  ajudaPeriodo.textContent = `${info.rotulo}: digite um número de 1 a ${info.quantidade}.`;
+}
+campoTipo.addEventListener('change', () => {
+  atualizarCampoNumero();
+  if (!campoNumero.disabled) campoNumero.focus();
+});
+
+function anoLetivoDoFormulario() {
+  return { ano: Number(campoAno.value), tipo: campoTipo.value, numero: campoNumero.value === '' ? null : Number(campoNumero.value) };
+}
+
 function abrirFormulario(turma = null) {
   form.reset();
   feedbackForm.hidden = true;
   form.elements.id.value = turma?.id ?? '';
   form.elements.nome.value = turma?.nome ?? '';
-  form.elements.ano_letivo.value = turma?.ano_letivo ?? '';
+  anoLetivoOriginal = turma?.ano_letivo ?? '';
+  periodoAlterado = false;
+  const lido = lerAnoLetivo(anoLetivoOriginal);
+  preencherAnos(lido?.ano ?? null);
+  campoTipo.value = lido?.tipo ?? '';
+  atualizarCampoNumero();
+  campoNumero.value = lido?.numero ?? '';
+  if (turma?.ano_letivo && !lido) {
+    ajudaPeriodo.textContent = `Gravado antes como “${turma.ano_letivo}”. Escolha o ano e o período para atualizar.`;
+  }
   form.elements.descricao.value = turma?.descricao ?? '';
   form.elements.modo_erros.value = modosDeErro.get(turma?.id) ?? '';
   document.querySelector('[data-form-titulo]').textContent = turma ? 'Editar turma' : 'Nova turma';
@@ -43,9 +93,22 @@ function fecharFormulario() {
 form.addEventListener('submit', async (evento) => {
   evento.preventDefault();
   const dados = new FormData(form);
+  const periodo = anoLetivoDoFormulario();
+  // Editando sem mexer no ano/período: fica o que já estava gravado
+  // (inclusive turmas de anos anteriores ou com o texto antigo).
+  const editando = Boolean(dados.get('id'));
+  const anoLetivo = editando && !periodoAlterado ? anoLetivoOriginal : montarAnoLetivo(periodo);
+  const mudouAno = !editando || anoLetivo !== anoLetivoOriginal;
+  const erroAno = mudouAno ? validarAnoLetivo(periodo) : null;
+  if (erroAno) {
+    feedbackForm.textContent = erroAno;
+    feedbackForm.hidden = false;
+    (periodo.tipo && erroAno.includes('número') ? campoNumero : campoAno).focus();
+    return;
+  }
   const campos = {
     nome: String(dados.get('nome') || '').trim(),
-    ano_letivo: String(dados.get('ano_letivo') || '').trim(),
+    ano_letivo: anoLetivo,
     descricao: String(dados.get('descricao') || '').trim(),
     modo_erros: String(dados.get('modo_erros') || '') || null,
   };
@@ -62,7 +125,7 @@ form.addEventListener('submit', async (evento) => {
     if (id) await atualizarTurma(Number(id), campos);
     else await criarTurma(campos);
     fecharFormulario();
-    avisar(id ? 'Turma atualizada.' : 'Turma criada! Compartilhe o código com seus alunos.');
+    avisar(id ? 'Turma atualizada.' : 'Turma criada! Agora adicione os alunos em Alunos.');
     await carregarTurmas();
   } catch (erro) {
     feedbackForm.textContent = erro.message;

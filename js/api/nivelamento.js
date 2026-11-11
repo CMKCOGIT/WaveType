@@ -1,6 +1,7 @@
 // js/api/nivelamento.js
 // Teste de nivelamento e sugestões do treino (migração 20261105000010).
 import { supabase } from '../supabaseClient.js';
+import { ULTIMO_NIVEL } from '../exercicios-dados.js';
 import { traduzErro } from '../auth.js';
 import { licaoRecomendadaAtual } from '../nivelamento/avaliacao.js';
 
@@ -85,7 +86,9 @@ export async function licaoRecomendada() {
   const ultimo = await ultimoNivelamento();
   if (!ultimo) return null;
   const decisoes = await minhasDecisoes(ultimo.criado_em);
-  return licaoRecomendadaAtual({ nivel: ultimo.licao_nivel, ordem: ultimo.licao_ordem }, decisoes);
+  const atual = licaoRecomendadaAtual({ nivel: ultimo.licao_nivel, ordem: ultimo.licao_ordem }, decisoes);
+  // Testes antigos podiam recomendar o Nível 6 (aposentado): vai para os textos completos do Nível 5.
+  return atual && atual.nivel > ULTIMO_NIVEL ? { ...atual, nivel: ULTIMO_NIVEL, ordem: 16 } : atual;
 }
 
 export async function registrarDecisaoDeSugestao({ exercicioId, recomendado, decisao }) {

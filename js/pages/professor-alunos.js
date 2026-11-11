@@ -213,7 +213,7 @@ function renderizarTabela() {
     ? filtrados
         .map(
           (a) => `<tr>
-            <td class="table-name"><strong>${escapar(a.nome)}</strong><small>${identificacao(a)}</small></td>
+            <td class="table-name aluno-identidade"><strong>${escapar(a.nome)}</strong><small>${identificacao(a)}</small></td>
             <td class="mono">${a.sessoes}</td>
             <td class="mono">${a.ppm_medio ?? '—'}</td>
             <td class="mono">${a.precisao_media != null ? `${a.precisao_media}%` : '—'}</td>
@@ -228,11 +228,11 @@ function renderizarTabela() {
 }
 
 function identificacao(aluno) {
-  const partes = [];
-  if (loginsEscola.has(aluno.aluno_id)) partes.push(`Usuário: <span class="mono">${escapar(loginsEscola.get(aluno.aluno_id))}</span>`);
-  else if (aluno.email && !/@aluno\.wavetype\.com\.br$/i.test(aluno.email)) partes.push(escapar(aluno.email));
-  if (aluno.codigo_aluno) partes.push(`Código: <span class="mono">${escapar(aluno.codigo_aluno)}</span>`);
-  return partes.join(' · ');
+  const linhas = [];
+  if (loginsEscola.has(aluno.aluno_id)) linhas.push(`<span class="id-linha">Usuário <b class="mono">${escapar(loginsEscola.get(aluno.aluno_id))}</b></span>`);
+  else if (aluno.email && !/@aluno\.wavetype\.com\.br$/i.test(aluno.email)) linhas.push(`<span class="id-linha">${escapar(aluno.email)}</span>`);
+  if (aluno.codigo_aluno) linhas.push(`<span class="id-linha">Código <b class="mono">${escapar(aluno.codigo_aluno)}</b></span>`);
+  return linhas.join('');
 }
 
 corpo.addEventListener('click', async (evento) => {

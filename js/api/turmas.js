@@ -31,7 +31,7 @@ export async function criarTurma({ nome, descricao, ano_letivo, modo_erros = nul
   const registro = { nome, descricao: descricao || null, ano_letivo: ano_letivo || null, professor_id: professorId };
   if (modo_erros) registro.modo_erros = modo_erros;
   const { data, error } = await semColunaModoErros(registro, (r) => supabase.from('turmas').insert(r).select().single());
-  if (error) throw new Error('Não foi possível criar a turma.');
+  if (error) throw new Error(error.code === '22023' ? error.message : 'Não foi possível criar a turma.');
   return data;
 }
 
@@ -40,7 +40,7 @@ export async function atualizarTurma(id, campos) {
   const permitidos = ['nome', 'descricao', 'ano_letivo', 'status', 'modo_erros'];
   const dados = Object.fromEntries(Object.entries(campos).filter(([chave]) => permitidos.includes(chave)));
   const { data, error } = await semColunaModoErros(dados, (r) => supabase.from('turmas').update(r).eq('id', id).select().single());
-  if (error) throw new Error('Não foi possível salvar a turma.');
+  if (error) throw new Error(error.code === '22023' ? error.message : 'Não foi possível salvar a turma.');
   return data;
 }
 
