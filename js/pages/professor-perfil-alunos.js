@@ -38,7 +38,7 @@ export async function montarCadastroDeAlunos() {
       <p>Copie ou imprima agora: por segurança, a senha não aparece de novo. Se o aluno perder, gere uma nova senha em Alunos.</p>
       <div class="cartoes-grid" data-cartoes-perfil></div>
       <div class="form-actions"><button class="button secondary" type="button" data-imprimir-perfil>Imprimir cartão</button><button class="button secondary" type="button" data-pdf-perfil>Exportar PDF</button><button class="button ghost" type="button" data-novo-cadastro>Cadastrar outro aluno</button></div>
-      <p class="perfil-ajuda" style="margin:0">O PDF lista nome, usuário, código e turma, sem a senha.</p>
+      <p class="perfil-ajuda" style="margin:0">O PDF traz nome, usuário, senha, código e turma. Guarde-o com cuidado.</p>
     </div>
     <p class="perfil-ajuda">Muitos alunos de uma vez? Use <a href="alunos.html">Alunos → Criar alunos sem e-mail</a>.</p>`;
 

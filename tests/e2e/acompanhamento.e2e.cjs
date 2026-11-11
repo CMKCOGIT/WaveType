@@ -184,7 +184,7 @@ caso('professor: lista de atividades leva à visão da turma e à análise indiv
   await ctx.close();
 });
 
-caso('cartão de acesso no tema, sem logo nem "Entre em", e PDF sem senha', async (nav) => {
+caso('cartão de acesso no tema, sem logo nem "Entre em", e PDF com a senha', async (nav) => {
   // Fluxo real: importar 2 alunos → cartões → Exportar PDF
   const banco2 = criarBanco();
   const arquivo = `${require('node:os').tmpdir()}/wt-pdf-${Date.now()}.csv`;
@@ -212,7 +212,8 @@ caso('cartão de acesso no tema, sem logo nem "Entre em", e PDF sem senha', asyn
   assert.match(conteudo, /Kaike Elias Oliveira/);
   assert.match(conteudo, /Lara Nunes Prado/);
   assert.match(conteudo, /kaike\.elias\.oliveira/);
-  for (const senha of senhas) assert.ok(!conteudo.includes(senha), 'senha não aparece no PDF');
+  for (const senha of senhas) assert.ok(conteudo.includes(senha), 'senha aparece no PDF dos acessos criados');
+  assert.match(conteudo, /Senha/);
   // PDF da turma inteira pelo menu Exportar
   await s.p.click('[data-botao-exportar]');
   const turma = await baixar(s.p, () => s.p.click('[data-exportar="pdf"]'));

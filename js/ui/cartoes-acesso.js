@@ -46,26 +46,26 @@ export function htmlDosCartoes(contas, { turma = '' } = {}) {
 }
 
 /**
- * PDF com a lista dos alunos cadastrados (nome, usuário da escola, código
- * individual e turma). NUNCA inclui a senha: o PDF pode ser guardado e
- * compartilhado; a senha só aparece nos cartões da tela/impressão.
+ * PDF com os acessos recém-criados: nome, usuário da escola, senha, código
+ * individual e turma. A senha só existe nesta tela (o banco guarda hash),
+ * então este PDF é a forma de entregá-la; a lista da turma não tem senhas.
  * `codigos` = Map(aluno_id → código do aluno).
  */
 export async function exportarPdfDosAlunos(contas, { turma = '', codigos = new Map(), titulo = 'Alunos cadastrados' } = {}) {
   const { baixarPdfTabela } = await import('./pdf.js');
   const { nomeDoArquivo } = await import('../contas/planilha.js');
-  const linhas = contas.map((c, i) => [i + 1, c.nome, c.login ?? '', codigos.get(c.id) ?? c.codigo_aluno ?? '', c.turma || turma || '']);
+  const linhas = contas.map((c, i) => [i + 1, c.nome, c.login ?? '', c.senha ?? '', codigos.get(c.id) ?? c.codigo_aluno ?? '', c.turma || turma || '']);
   return baixarPdfTabela({
     titulo,
     subtitulo: [turma && `Turma: ${turma}`, `${contas.length} ${contas.length === 1 ? 'aluno' : 'alunos'}`].filter(Boolean).join(' · '),
     resumo: [
       `Para entrar: ${location.host}/login.html?modo=escola, opção "Sou aluno com usuário da escola".`,
-      'As senhas não aparecem neste documento. Se um aluno perder a dele, gere uma nova em Alunos.',
+      'Guarde este documento com cuidado: ele tem as senhas. Se um aluno perder a dele, gere uma nova em Alunos.',
     ],
-    colunas: ['#', 'Nome', 'Usuário da escola', 'Código do aluno', 'Turma'],
+    colunas: ['#', 'Nome', 'Usuário da escola', 'Senha', 'Código do aluno', 'Turma'],
     linhas,
     arquivo: nomeDoArquivo(turma || 'alunos').replace(/^alunos-/, 'alunos-cadastrados-'),
-    larguras: { 0: { cellWidth: 10 } },
+    larguras: { 0: { cellWidth: 10 }, 3: { fontStyle: 'bold' } },
   });
 }
 
