@@ -14,6 +14,25 @@ const lista = document.querySelector('[data-lista-exercicios]');
 const DIFICULDADES = { facil: 'Fácil', medio: 'Médio', avancado: 'Avançado' };
 let turmas = [];
 let atividades = [];
+let prazoOriginal = '';
+
+// ---------- Dicas da situação (passar o mouse, focar ou clicar no "i") ----------
+function fecharDicas(excecao = null) {
+  form.querySelectorAll('.info-dica[aria-expanded="true"]').forEach((b) => b !== excecao && b.setAttribute('aria-expanded', 'false'));
+}
+form.addEventListener('click', (evento) => {
+  const dica = evento.target.closest('.info-dica');
+  if (!dica) return;
+  evento.preventDefault(); // não marca a opção ao abrir a explicação
+  fecharDicas(dica);
+  dica.setAttribute('aria-expanded', String(dica.getAttribute('aria-expanded') !== 'true'));
+});
+document.addEventListener('click', (evento) => {
+  if (!evento.target.closest('.info-dica')) fecharDicas();
+});
+document.addEventListener('keydown', (evento) => {
+  if (evento.key === 'Escape') fecharDicas();
+});
 
 iniciar();
 
@@ -51,8 +70,16 @@ function abrirFormulario(atividade = null) {
   campos.nivel.value = atividade?.nivel ?? 'medio';
   campos.tempo_limite_seg.value = atividade?.tempo_limite_seg ?? 120;
   campos.prazo.value = atividade?.prazo ? paraDatetimeLocal(atividade.prazo) : '';
+  prazoOriginal = campos.prazo.value;
+  // O calendário não deixa escolher antes de agora (prazo antigo, sem mudar, continua aceito).
+  campos.prazo.min = paraDatetimeLocal(new Date().toISOString());
+  if (prazoOriginal && prazoOriginal < campos.prazo.min) campos.prazo.removeAttribute('min');
   campos.meta_precisao.value = atividade?.meta_precisao ?? 85;
-  campos.publicado.value = String(atividade?.publicado ?? true);
+  // Publicada = visível; rascunho e arquivada = ocultas (publicado = false).
+  // Arquivada é a oculta que já tem resultados.
+  const situacao = !atividade || atividade.publicado ? 'publicada' : Number(atividade.entregas) > 0 ? 'arquivada' : 'rascunho';
+  form.querySelector(`input[name="situacao"][value="${situacao}"]`).checked = true;
+  fecharDicas();
   const selecionadas = new Set((atividade?.turmas ?? []).map((t) => String(t.id)));
   form.querySelectorAll('input[name="turmas"]').forEach((c) => (c.checked = selecionadas.has(c.value)));
   document.querySelector('[data-form-titulo]').textContent = atividade ? 'Editar atividade' : 'Nova atividade';
@@ -77,7 +104,7 @@ form.addEventListener('submit', async (evento) => {
     prazo: prazo ? new Date(prazo).toISOString() : null,
     meta_precisao: meta === '' ? null : Number(meta),
     turmas: dados.getAll('turmas').map(Number),
-    publicado: dados.get('publicado') === 'true',
+    publicado: dados.get('situacao') === 'publicada',
   };
 
   if (atividade.titulo.length < 3) return erroFormulario('Informe um título com pelo menos 3 caracteres.');
@@ -87,6 +114,10 @@ form.addEventListener('submit', async (evento) => {
   }
   if (atividade.meta_precisao == null || atividade.meta_precisao < 0 || atividade.meta_precisao > 100) {
     return erroFormulario('Defina a precisão mínima entre 0 e 100%.');
+  }
+  if (prazo && prazo !== prazoOriginal && new Date(prazo).getTime() <= Date.now()) {
+    form.elements.prazo.focus();
+    return erroFormulario(`O prazo de entrega precisa ser uma data e um horário no futuro. Agora são ${new Date().toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' })}.`);
   }
   if (atividade.publicado && !atividade.turmas.length) {
     return erroFormulario('Marque pelo menos uma turma ou salve como rascunho.');
@@ -139,7 +170,7 @@ function renderizar() {
         <article class="practice-row${a.publicado ? '' : ' is-arquivada'}" data-atividade="${a.id}">
           <span class="practice-number">${String(i + 1).padStart(2, '0')}</span>
           <div class="practice-info"><h3><a class="practice-link" href="atividade.html?id=${a.id}">${escapar(a.titulo)}</a></h3><p>${escapar(turmasTexto)}</p><small>${escapar(detalhes)}</small></div>
-          <span class="practice-meta">${a.alunos_concluiram} concluíram · ${a.entregas} tentativas${a.publicado ? '' : ' · arquivada'}</span>
+          <span class="practice-meta">${a.alunos_concluiram} concluíram · ${a.entregas} tentativas${a.publicado ? '' : Number(a.entregas) > 0 ? ' · arquivada' : ' · rascunho'}</span>
           <div class="row-actions">
             <a class="button small" href="atividade.html?id=${a.id}">Ver resultados</a>
             <button type="button" class="button secondary small" data-acao="editar">Editar</button>

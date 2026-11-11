@@ -58,7 +58,8 @@ test('passou em tudo: avançado se rápido e preciso, senão intermediário', ()
   const tudo = (ppm, precisao) => ETAPAS.map((e) => etapa(e.id, 95)).map((r, i, l) => (i === l.length - 1 ? { ...r, ppm, precisao } : r));
   const avancado = recomendar(tudo(45, 96));
   assert.equal(avancado.nivel, 'avancado');
-  assert.deepEqual(avancado.licao, { nivel: 6, ordem: 1 });
+  assert.deepEqual(avancado.licao, { nivel: 5, ordem: 16 });
+  assert.deepEqual(recomendar(tudo(25, 90)).licao, { nivel: 5, ordem: 11 });
   assert.equal(avancado.parouEm, null);
   assert.equal(recomendar(tudo(25, 90)).nivel, 'intermediario');
 });

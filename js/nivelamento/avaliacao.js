@@ -130,7 +130,7 @@ function explicar(r, ultima) {
     partes.push(`Por isso, o melhor ponto de partida é o nível ${r.licao.nivel} da trilha, lição ${r.licao.ordem}: ali você firma essa parte do teclado antes de acelerar.`);
   } else if (r.nivel === 'avancado') {
     partes.push(`Você passou por todas as etapas com ${ultima.precisao}% de precisão e ${ultima.ppm} palavras por minuto na frase final.`);
-    partes.push('Pode começar pelos desafios do nível Extremo.');
+    partes.push('Pode começar pelos textos completos do Nível 5.');
   } else {
     partes.push(`Você passou por todas as etapas. Na frase final fez ${ultima.ppm} palavras por minuto com ${ultima.precisao}% de precisão.`);
     partes.push(`Os textos completos do nível ${r.licao.nivel} vão ajudar a ganhar velocidade sem perder a precisão.`);

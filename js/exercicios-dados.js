@@ -1,72 +1,65 @@
-// Os 6 níveis da trilha oficial ficam aqui no código. Cada exercício do banco tem a coluna "nivel_trilha" (1 a 6) e "ordem" (1 a 20).
+// Os 5 níveis da trilha oficial (4 etapas de 5 exercícios cada).
+// Cada exercício do banco tem "nivel_trilha" (1 a 5) e "ordem" (1 a 20); os textos
+// estão na migração 20261111000017_nova_trilha_progressiva.sql.
+// `teclas`: letras que a etapa pode usar; `maiusculas`/`extras`: o que mais
+// ela libera (pontuação e acentos só no Nível 5). Conferido em tests/trilha.test.js.
 export const NIVEIS = [
   {
     nivel: 1,
-    titulo: 'Posição base',
-    descricao: 'Aprenda a posição correta dos dedos no teclado.',
+    titulo: "Posição base",
+    descricao: "Dedos na fileira do meio: F e J guiam as mãos.",
     etapas: [
-      { inicio: 1, fim: 5, titulo: 'Teclas F e J', descricao: 'Treine as teclas F e J usando os dedos indicadores.' },
-      { inicio: 6, fim: 10, titulo: 'Fileira esquerda', descricao: 'Pratique as teclas A, S, D, F e G.' },
-      { inicio: 11, fim: 15, titulo: 'Fileira direita', descricao: 'Pratique as teclas H, J, K, L e Ç.' },
-      { inicio: 16, fim: 20, titulo: 'Combinação das fileiras', descricao: 'Misture as teclas A, S, D, F, G, H, J, K, L e Ç.' },
+      { inicio: 1, fim: 5, titulo: "Teclas F e J", descricao: "Indicadores nas teclas com relevo: F (mão esquerda) e J (mão direita).", teclas: "fj", maiusculas: false, extras: "" },
+      { inicio: 6, fim: 10, titulo: "Mão esquerda: A S D F G", descricao: "Mínimo no A, anelar no S, médio no D, indicador no F; o indicador também alcança o G.", teclas: "adfgs", maiusculas: false, extras: "" },
+      { inicio: 11, fim: 15, titulo: "Mão direita: H J K L Ç", descricao: "Indicador no J (alcança o H), médio no K, anelar no L e mínimo no Ç.", teclas: "hjklç", maiusculas: false, extras: "" },
+      { inicio: 16, fim: 20, titulo: "Fileira do meio completa", descricao: "As duas mãos juntas em A S D F G H J K L Ç, já formando palavras.", teclas: "adfghjklsç", maiusculas: false, extras: "" },
     ],
   },
   {
     nivel: 2,
-    titulo: 'Fileira superior',
-    descricao: 'Aprenda a digitar usando as teclas da fileira de cima.',
+    titulo: "Fileira superior",
+    descricao: "Os dedos sobem para a fileira de cima e voltam sempre para a base.",
     etapas: [
-      { inicio: 1, fim: 5, titulo: 'Teclas F e J', descricao: 'Reforce a posição inicial dos dedos indicadores.' },
-      { inicio: 6, fim: 10, titulo: 'Lado esquerdo superior', descricao: 'Pratique as teclas Q, W, E, R e T.' },
-      { inicio: 11, fim: 15, titulo: 'Lado direito superior', descricao: 'Pratique as teclas Y, U, I, O e P.' },
-      { inicio: 16, fim: 20, titulo: 'Fileira superior completa', descricao: 'Combine as teclas Q, W, E, R, T, Y, U, I, O e P.' },
+      { inicio: 1, fim: 5, titulo: "Lado esquerdo: Q W E R T", descricao: "Da base, cada dedo da mão esquerda sobe uma tecla: Q W E R T.", teclas: "adefghjklqrstwç", maiusculas: false, extras: "" },
+      { inicio: 6, fim: 10, titulo: "Lado direito: Y U I O P", descricao: "A mão direita sobe da base para Y U I O P.", teclas: "adfghijklopsuyç", maiusculas: false, extras: "" },
+      { inicio: 11, fim: 15, titulo: "Fileira superior completa", descricao: "As dez teclas de cima com as duas mãos, voltando sempre para a base.", teclas: "adefghijklopqrstuwyç", maiusculas: false, extras: "" },
+      { inicio: 16, fim: 20, titulo: "Frases com as duas fileiras", descricao: "Frases curtas usando só a fileira do meio e a de cima.", teclas: "adefghijklopqrstuwyç", maiusculas: false, extras: "" },
     ],
   },
   {
     nivel: 3,
-    titulo: 'Fileira inferior',
-    descricao: 'Aprenda a digitar usando as teclas da fileira de baixo.',
+    titulo: "Fileira inferior",
+    descricao: "Os dedos descem para a fileira de baixo: o teclado de letras fica completo.",
     etapas: [
-      { inicio: 1, fim: 5, titulo: 'Teclas F e J', descricao: 'Reforce a posição inicial dos dedos indicadores.' },
-      { inicio: 6, fim: 10, titulo: 'Lado esquerdo inferior', descricao: 'Pratique as teclas Z, X, C e V.' },
-      { inicio: 11, fim: 15, titulo: 'Lado direito inferior', descricao: 'Pratique as teclas B, N e M.' },
-      { inicio: 16, fim: 20, titulo: 'Fileira inferior completa', descricao: 'Combine as teclas Z, X, C, V, B, N e M.' }
-    ]
+      { inicio: 1, fim: 5, titulo: "Lado esquerdo: Z X C V", descricao: "A mão esquerda desce da base para Z X C V.", teclas: "acdefghijklopqrstuvwxyzç", maiusculas: false, extras: "" },
+      { inicio: 6, fim: 10, titulo: "Lado direito: B N M", descricao: "A mão direita desce para N e M; o indicador esquerdo alcança o B.", teclas: "abcdefghijklmnopqrstuvwxyzç", maiusculas: false, extras: "" },
+      { inicio: 11, fim: 15, titulo: "Fileira inferior completa", descricao: "Z X C V B N M juntas, em palavras que pedem a fileira de baixo.", teclas: "abcdefghijklmnopqrstuvwxyzç", maiusculas: false, extras: "" },
+      { inicio: 16, fim: 20, titulo: "Frases com o teclado inteiro", descricao: "Frases que usam as três fileiras, sem pressa e sem olhar para as mãos.", teclas: "abcdefghijklmnopqrstuvwxyzç", maiusculas: false, extras: "" },
+    ],
   },
-
   {
     nivel: 4,
-    titulo: 'Palavras e frases',
-    descricao: 'Pratique palavras comuns e frases curtas.',
+    titulo: "Combinação de teclas",
+    descricao: "As três fileiras juntas: palavras cada vez maiores e frases inteiras.",
     etapas: [
-      { inicio: 1, fim: 5, titulo: 'Revisão da posição base', descricao: 'Reforce a precisão com F e J.' },
-      { inicio: 6, fim: 10, titulo: 'Palavras curtas', descricao: 'Digite palavras simples com atenção.' },
-      { inicio: 11, fim: 15, titulo: 'Palavras variadas', descricao: 'Pratique combinações de letras.' },
-      { inicio: 16, fim: 20, titulo: 'Frases completas', descricao: 'Combine palavras em frases.' },
+      { inicio: 1, fim: 5, titulo: "Palavras curtas", descricao: "Palavras de duas a quatro letras para ganhar ritmo.", teclas: "abcdefghijklmnopqrstuvwxyzç", maiusculas: false, extras: "" },
+      { inicio: 6, fim: 10, titulo: "Palavras médias", descricao: "Palavras de cinco a sete letras com letras das três fileiras.", teclas: "abcdefghijklmnopqrstuvwxyzç", maiusculas: false, extras: "" },
+      { inicio: 11, fim: 15, titulo: "Palavras longas", descricao: "Palavras grandes que pedem atenção do começo ao fim.", teclas: "abcdefghijklmnopqrstuvwxyzç", maiusculas: false, extras: "" },
+      { inicio: 16, fim: 20, titulo: "Frases completas", descricao: "Frases inteiras, ainda sem acentos e sem pontuação, para treinar a fluidez.", teclas: "abcdefghijklmnopqrstuvwxyzç", maiusculas: false, extras: "" },
     ],
   },
   {
     nivel: 5,
-    titulo: 'Palavras complexas',
-    descricao: 'Desenvolva velocidade e precisão em textos maiores.',
+    titulo: "Digitação avançada",
+    descricao: "Maiúsculas, pontuação, acentos e textos completos, com fluidez.",
     etapas: [
-      { inicio: 1, fim: 5, titulo: 'Aquecimento', descricao: 'Revise as teclas e mantenha o ritmo.' },
-      { inicio: 6, fim: 10, titulo: 'Palavras complexas', descricao: 'Treine palavras mais longas.' },
-      { inicio: 11, fim: 15, titulo: 'Frases avançadas', descricao: 'Pratique frases com diferentes combinações.' },
-      { inicio: 16, fim: 20, titulo: 'Textos completos', descricao: 'Treine textos corridos com precisão.' },
+      { inicio: 1, fim: 5, titulo: "Maiúsculas, ponto e vírgula", descricao: "Shift (com a outra mão) para as maiúsculas, ponto final e vírgula.", teclas: "abcdefghijklmnopqrstuvwxyzç", maiusculas: true, extras: ",." },
+      { inicio: 6, fim: 10, titulo: "Acentuação", descricao: "Acento agudo, circunflexo, crase e til em palavras do dia a dia.", teclas: "abcdefghijklmnopqrstuvwxyzç", maiusculas: true, extras: ",.àáâãéêíóôõú" },
+      { inicio: 11, fim: 15, titulo: "Pontuação completa", descricao: "Interrogação, exclamação, dois-pontos, ponto e vírgula, aspas, parênteses e hífen.", teclas: "abcdefghijklmnopqrstuvwxyzç", maiusculas: true, extras: "!\"(),-.:;?àáâãéêíóôõú" },
+      { inicio: 16, fim: 20, titulo: "Textos completos", descricao: "Parágrafos inteiros com tudo o que você aprendeu: ritmo, precisão e fluidez.", teclas: "abcdefghijklmnopqrstuvwxyzç", maiusculas: true, extras: "!\"(),-.:;?àáâãéêíóôõú" },
     ],
   },
-  {
-    nivel: 6,
-    titulo: 'Extremo',
-    descricao: 'Para quem já domina tudo: palavras gigantes, acentos em sequência, maiúsculas, números e símbolos.',
-    etapas: [
-      { inicio: 1, fim: 5, titulo: 'Palavras monstruosas', descricao: 'Palavras longuíssimas e raras, sem margem para erro.' },
-      { inicio: 6, fim: 10, titulo: 'Chuva de acentos', descricao: 'Acentos, cedilhas e til em sequência.' },
-      { inicio: 11, fim: 15, titulo: 'Maiúsculas e pontuação', descricao: 'Maiúsculas, hifens, parênteses, aspas e dois-pontos.' },
-      { inicio: 16, fim: 20, titulo: 'Números e símbolos', descricao: 'Números, @, #, $, %, & e fórmulas. Sem piedade.' },
-    ],
-  },
-
-
 ];
+
+/** Último nível da trilha (o Nível 6, Extremo, foi aposentado na migração 17). */
+export const ULTIMO_NIVEL = NIVEIS.length;

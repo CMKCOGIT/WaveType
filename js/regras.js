@@ -3,7 +3,7 @@
 // resultados_validar / função precisao_minima_trilha); este arquivo só
 // repete as mesmas regras para a interface explicar o resultado.
 //
-// Trilha oficial (níveis 1 a 6): precisão ACIMA de 85% e texto terminado
+// Trilha oficial (níveis 1 a 5): precisão ACIMA de 85% e texto terminado
 // dentro do tempo máximo do exercício.
 // Atividade de professor: precisão mínima e tempo máximo definidos por ele.
 

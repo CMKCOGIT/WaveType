@@ -42,7 +42,7 @@ export const ETAPAS = [
 ];
 
 // Nível recomendado conforme a etapa em que o teste parou.
-// licao: exercício exato da trilha (nivel_trilha 1–6, ordem 1–20).
+// licao: exercício exato da trilha (nivel_trilha 1–5, ordem 1–20).
 export const NIVEIS_RECOMENDADOS = {
   iniciante: { rotulo: 'Iniciante', ordem: 1 },
   basico: { rotulo: 'Básico', ordem: 2 },
@@ -55,16 +55,16 @@ export const RECOMENDACAO_POR_PARADA = {
   base: { nivel: 'iniciante', licao: { nivel: 1, ordem: 1 }, licaoSeQuaseLa: { nivel: 1, ordem: 6 } },
   // Fileira superior ou inferior: começa pela que errou mais (ver avaliacao.js).
   'superior-inferior': { nivel: 'basico', licao: { nivel: 2, ordem: 1 }, licaoInferior: { nivel: 3, ordem: 1 } },
-  palavras: { nivel: 'basico', licao: { nivel: 4, ordem: 6 } },
-  acentos: { nivel: 'intermediario', licao: { nivel: 5, ordem: 1 } },
+  palavras: { nivel: 'basico', licao: { nivel: 4, ordem: 1 } },
+  acentos: { nivel: 'intermediario', licao: { nivel: 5, ordem: 6 } },
   frases: { nivel: 'intermediario', licao: { nivel: 5, ordem: 11 } },
 };
 // Passou em tudo: avançado se for rápido e preciso; senão, textos completos.
 export const CONCLUIU_TUDO = {
   ppmMinimoAvancado: 35,
   precisaoMinimaAvancado: 92,
-  avancado: { nivel: 'avancado', licao: { nivel: 6, ordem: 1 } },
-  intermediario: { nivel: 'intermediario', licao: { nivel: 5, ordem: 16 } },
+  avancado: { nivel: 'avancado', licao: { nivel: 5, ordem: 16 } },
+  intermediario: { nivel: 'intermediario', licao: { nivel: 5, ordem: 11 } },
 };
 // Na primeira etapa, "quase lá" (entre este valor e PRECISAO_PARA_AVANCAR)
 // pula as lições de F e J e começa pela fileira esquerda.

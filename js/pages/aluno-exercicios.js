@@ -1,5 +1,5 @@
 // js/pages/aluno-exercicios.js
-// Duas seções separadas: a trilha oficial (níveis 1 a 6) e as atividades
+// Duas seções separadas: a trilha oficial (níveis 1 a 5) e as atividades
 // dos professores. As atividades não entram na trilha nem no progresso dela.
 import { exigirPapel } from '../auth.js';
 import { listarMeusResultados } from '../api/resultados.js';
