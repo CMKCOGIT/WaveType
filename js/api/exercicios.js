@@ -109,3 +109,19 @@ export async function excluirAtividade(id) {
   if (error) throw new Error(error.message);
   return data;
 }
+
+// --- Análise individual (migração 15) ---
+
+/** Professor: uma linha por aluno da atividade (com ou sem tentativa). */
+export async function entregasDaAtividade(exercicioId) {
+  const { data, error } = await supabase.rpc('entregas_da_atividade', { p_exercicio_id: exercicioId });
+  if (error) throw new Error(error.message);
+  return data ?? [];
+}
+
+/** Professor: tentativas de um aluno na atividade, com o que foi digitado (detalhes). */
+export async function tentativasDoAluno(exercicioId, alunoId) {
+  const { data, error } = await supabase.rpc('tentativas_do_aluno', { p_exercicio_id: exercicioId, p_aluno_id: alunoId });
+  if (error) throw new Error(error.message);
+  return data ?? [];
+}

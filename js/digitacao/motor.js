@@ -43,7 +43,7 @@ export function criarMotor({ palavras = [], modo = MODOS_ERRO.fluxo, errosParaSu
   const tempos = [];
 
   function adicionarPalavras(novas) {
-    novas.forEach((texto) => lista.push({ texto, digitado: [], enviada: false, espacoAntecipado: false }));
+    novas.forEach((texto) => lista.push({ texto, digitado: [], enviada: false, espacoAntecipado: false, errosCometidos: 0 }));
   }
   adicionarPalavras(palavras);
 
@@ -62,7 +62,10 @@ export function criarMotor({ palavras = [], modo = MODOS_ERRO.fluxo, errosParaSu
     erros += 1;
     const chave = chaveDaTecla(teclaEsperada);
     errosPorTecla.set(chave, (errosPorTecla.get(chave) || 0) + 1);
-    if (p) palavrasProblema.add(p.texto);
+    if (p) {
+      palavrasProblema.add(p.texto);
+      p.errosCometidos += 1; // conta também os erros apagados depois (corrigidos)
+    }
   }
 
   function temErro(p) {
@@ -265,9 +268,27 @@ export function criarMotor({ palavras = [], modo = MODOS_ERRO.fluxo, errosParaSu
     };
   }
 
+  /**
+   * O que a pessoa digitou, palavra por palavra, até onde chegou:
+   * [[esperado, digitado, errosCometidos], ...]. "digitado" é o estado final
+   * (depois das correções); errosCometidos inclui os erros já apagados.
+   * É o que o professor vê na análise individual da atividade.
+   */
+  function transcricao(limite = 3000) {
+    const ultima = Math.min(lista.length - 1, Math.max(fronteira, atual));
+    const saida = [];
+    for (let i = 0; i <= ultima && saida.length < limite; i += 1) {
+      const p = lista[i];
+      if (i === ultima && !p.digitado.length && !p.enviada) break; // palavra ainda não começada
+      saida.push([p.texto, p.digitado.join(''), p.errosCometidos]);
+    }
+    return saida;
+  }
+
   return {
     modo,
     adicionarPalavras,
+    transcricao,
     digitar,
     espaco,
     apagar,

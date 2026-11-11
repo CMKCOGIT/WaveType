@@ -54,6 +54,13 @@ function montarMenuDaConta(perfil, sair) {
     aviso.hidden = false;
   }
 
+  // Logado: o logo leva ao painel da pessoa (aluno, professor ou usuário),
+  // não à página pública.
+  document.querySelectorAll('a.brand').forEach((logo) => {
+    logo.href = painel;
+    logo.setAttribute('aria-label', 'WaveType, ir para o meu painel');
+  });
+
   document.querySelectorAll('[data-sair]').forEach((botao) => botao.addEventListener('click', () => sair()));
 }
 

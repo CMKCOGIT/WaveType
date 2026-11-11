@@ -1395,58 +1395,82 @@ body[data-page="treinar"] .typing-shell {
   display: none;
 }
 
-/* Cartões de acesso dos alunos (tela e impressão) */
+/* Cartões de acesso dos alunos: seguem o tema na tela; branco na impressão */
 .cartoes-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 12px;
 }
 .cartao-acesso {
+  display: grid;
+  gap: 12px;
   padding: 16px;
-  color: #17233f;
-  background: #ffffff;
-  border: 1.5px dashed #9fb3e8;
+  color: var(--p-text);
+  background: var(--p-surface);
+  border: 1px solid var(--p-line);
+  border-top: 3px solid var(--wt-blue-500);
   border-radius: var(--radius-md);
+  box-shadow: var(--p-shadow);
   break-inside: avoid;
 }
+.cartao-topo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+.cartao-avatar {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  color: #fff;
+  background: linear-gradient(135deg, var(--wt-blue-500), var(--wt-violet-500));
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 800;
+}
 .cartao-acesso h3 {
-  margin: 10px 0 2px;
-  font-size: 1.05rem;
+  margin: 0;
+  color: var(--p-text);
+  font-size: 1.02rem;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
 }
 .cartao-turma {
-  margin: 0 0 8px;
-  color: #4a5675;
-  font-size: 0.85rem;
+  margin: 2px 0 0;
+  color: var(--p-muted);
+  font-size: 0.82rem;
 }
 .cartao-acesso dl {
   display: grid;
   gap: 6px;
-  margin: 8px 0;
+  margin: 0;
 }
 .cartao-acesso dl div {
   display: flex;
+  align-items: baseline;
   justify-content: space-between;
-  gap: 8px;
-  padding: 6px 8px;
-  background: #f1f4fc;
+  gap: 10px;
+  padding: 9px 12px;
+  background: var(--p-surface-2);
   border-radius: var(--radius-sm);
 }
 .cartao-acesso dt {
-  color: #4a5675;
-  font-size: 0.8rem;
-  font-weight: 700;
+  color: var(--p-muted);
+  font-size: 0.76rem;
+  font-weight: 750;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 .cartao-acesso dd {
   margin: 0;
-  font-size: 1rem;
+  color: var(--p-text);
+  font-size: 1.02rem;
   font-weight: 700;
+  text-align: right;
   word-break: break-all;
-}
-.cartao-como {
-  margin: 6px 0 0;
-  color: #4a5675;
-  font-size: 0.78rem;
-  line-height: 1.4;
 }
 @media print {
   html.imprimindo-cartoes body * {
@@ -1467,8 +1491,18 @@ body[data-page="treinar"] .typing-shell {
     gap: 8mm;
     padding: 8mm;
   }
+  html.imprimindo-cartoes .cartao-acesso,
+  html.imprimindo-cartoes .cartao-acesso h3,
+  html.imprimindo-cartoes .cartao-acesso dd {
+    color: #17233f;
+    background: #fff;
+    box-shadow: none;
+  }
   html.imprimindo-cartoes .cartao-acesso {
-    border-color: #555;
+    border: 1.5px dashed #555;
+  }
+  html.imprimindo-cartoes .cartao-acesso dl div {
+    background: #f1f4fc;
   }
 }
 
@@ -1566,7 +1600,15 @@ body[data-page="treinar"] .typing-shell {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
-  margin-top: 10px;
+}
+.cartao-copiar .copiar {
+  flex: 1 1 auto;
+  color: var(--p-ink-blue);
+  background: var(--p-surface-2);
+  border-color: var(--p-line);
+}
+.cartao-copiar .copiar:hover {
+  background: var(--p-tint-blue);
 }
 
 /* Perfil do professor: cadastrar aluno */

@@ -1,6 +1,7 @@
 // js/pages/professor-relatorios.js
 import { exigirPapel } from '../auth.js';
 import { carregarDashboardProfessor } from '../api/dashboard.js';
+import { baixarPdfTabela } from '../ui/pdf.js';
 
 iniciar();
 
@@ -19,6 +20,11 @@ async function iniciar() {
   set('[data-metric="wpm-geral"]', wpms.length ? media(wpms) : '—');
   set('[data-metric="precisao-geral"]', precisoes.length ? `${media(precisoes)}%` : '—');
 
+  ligarExportacao(turmas, [
+    `Turmas: ${turmas.length} (${turmas.filter((t) => t.status === 'ativa').length} ativas) · Alunos: ${totalAlunos}`,
+    `WPM médio geral: ${wpms.length ? String(media(wpms)).replace('.', ',') : '—'} · Precisão média geral: ${precisoes.length ? `${String(media(precisoes)).replace('.', ',')}%` : '—'}`,
+  ]);
+
   document.querySelector('[data-tabela-turmas]').innerHTML = turmas.length
     ? turmas
         .map(
@@ -26,6 +32,41 @@ async function iniciar() {
         )
         .join('')
     : '<tr><td colspan="5">Nenhuma turma cadastrada ainda.</td></tr>';
+}
+
+// Exportação do consolidado (PDF ou planilha), gerada no navegador com os
+// mesmos números da tela.
+function ligarExportacao(turmas, resumo) {
+  const colunas = ['Turma', 'Status', 'Alunos', 'WPM médio', 'Precisão média (%)'];
+  const linhas = turmas.map((t) => [t.nome, t.status === 'ativa' ? 'Ativa' : 'Encerrada', t.alunos, t.ppmMedio || '', t.precisaoMedia || '']);
+  const dia = new Date().toISOString().slice(0, 10);
+  document.querySelectorAll('[data-exportar-relatorio]').forEach((botao) => {
+    botao.disabled = !turmas.length;
+    botao.addEventListener('click', async () => {
+      botao.disabled = true;
+      try {
+        if (botao.dataset.exportarRelatorio === 'pdf') {
+          await baixarPdfTabela({
+            titulo: 'Relatório das turmas',
+            subtitulo: 'Progresso consolidado',
+            resumo,
+            colunas,
+            linhas: linhas.map((l) => l.map((v, i) => (v === '' ? '—' : i >= 3 ? String(v).replace('.', ',') : v))),
+            arquivo: `relatorio-turmas-${dia}`,
+          });
+        } else {
+          const X = await import('xlsx');
+          const planilha = X.utils.book_new();
+          X.utils.book_append_sheet(planilha, X.utils.aoa_to_sheet([colunas, ...linhas]), 'Turmas');
+          X.writeFile(planilha, `relatorio-turmas-${dia}.xlsx`);
+        }
+      } catch (erro) {
+        alert(`Não foi possível exportar: ${erro.message}`);
+      } finally {
+        botao.disabled = false;
+      }
+    });
+  });
 }
 
 function media(numeros) {
