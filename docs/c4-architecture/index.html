@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Arquitetura C4 · WaveType</title>
+  <meta name="description" content="Diagramas C4 (contexto, containers, componentes e código) da plataforma WaveType, renderizados a partir dos arquivos .puml.">
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --surface: #ffffff;
+      --surface-2: #eef2f9;
+      --text: #141b2d;
+      --muted: #5a6478;
+      --border: #d8deea;
+      --accent: #1e4fd8;
+      --accent-text: #ffffff;
+      --danger: #b42318;
+      --code-bg: #0f1525;
+      --code-text: #dbe4ff;
+      --diagram-bg: #ffffff;
+      --radius: 12px;
+      color-scheme: light;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --bg: #0b1020; --surface: #131a2e; --surface-2: #1b2440; --text: #e7ecf7; --muted: #9aa5bf;
+        --border: #2a3556; --accent: #6f95ff; --accent-text: #0b1020; --danger: #ff8a80;
+        --code-bg: #070b16; --code-text: #dbe4ff; --diagram-bg: #f7f9fd; color-scheme: dark;
+      }
+    }
+    :root[data-theme="dark"] {
+      --bg: #0b1020; --surface: #131a2e; --surface-2: #1b2440; --text: #e7ecf7; --muted: #9aa5bf;
+      --border: #2a3556; --accent: #6f95ff; --accent-text: #0b1020; --danger: #ff8a80;
+      --code-bg: #070b16; --code-text: #dbe4ff; --diagram-bg: #f7f9fd; color-scheme: dark;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; background: var(--bg); color: var(--text);
+      font: 15px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    }
+    header {
+      padding: 28px 16px 8px; max-width: 1280px; margin: 0 auto;
+      display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: end; justify-content: space-between;
+    }
+    h1 { margin: 0; font-size: 1.6rem; letter-spacing: -0.01em; }
+    header p { margin: 4px 0 0; color: var(--muted); max-width: 60ch; }
+    .controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    label.small { font-size: .85rem; color: var(--muted); display: flex; gap: 6px; align-items: center; }
+    select, button {
+      font: inherit; color: var(--text); background: var(--surface); border: 1px solid var(--border);
+      border-radius: 8px; padding: 6px 10px; cursor: pointer;
+    }
+    button:hover, select:hover { border-color: var(--accent); }
+    button:focus-visible, select:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+    nav.tabs {
+      max-width: 1280px; margin: 16px auto 0; padding: 0 16px;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 8px;
+    }
+    nav.tabs button {
+      text-align: left; padding: 12px 14px; border-radius: var(--radius); background: var(--surface);
+    }
+    nav.tabs button[aria-selected="true"] { background: var(--accent); color: var(--accent-text); border-color: var(--accent); }
+    nav.tabs .lvl { display: block; font-size: .75rem; text-transform: uppercase; letter-spacing: .08em; opacity: .8; }
+    nav.tabs .name { font-weight: 600; }
+
+    main { max-width: 1280px; margin: 16px auto 40px; padding: 0 16px; }
+    .panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+    .panel-head {
+      display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; justify-content: space-between;
+      padding: 12px 16px; border-bottom: 1px solid var(--border); background: var(--surface-2);
+    }
+    .panel-head h2 { margin: 0; font-size: 1.05rem; }
+    .panel-head p { margin: 2px 0 0; color: var(--muted); font-size: .9rem; }
+    .actions { display: flex; flex-wrap: wrap; gap: 6px; }
+    .actions a, .actions button {
+      font-size: .85rem; text-decoration: none; color: var(--text); background: var(--surface);
+      border: 1px solid var(--border); border-radius: 8px; padding: 5px 10px;
+    }
+    .stage { background: var(--diagram-bg); overflow: auto; max-height: 78vh; min-height: 320px; position: relative; }
+    .stage .canvas { padding: 16px; transform-origin: 0 0; }
+    .stage svg { display: block; max-width: none; height: auto; }
+    .stage.fit svg { max-width: 100%; }
+    .status { padding: 48px 16px; text-align: center; color: #5a6478; }
+    .status.error { color: var(--danger); text-align: left; max-width: 70ch; margin: 0 auto; }
+    .status.error code { background: #f1f3f8; color: #141b2d; padding: 1px 5px; border-radius: 4px; }
+    details.source { border-top: 1px solid var(--border); }
+    details.source summary { padding: 10px 16px; cursor: pointer; color: var(--muted); }
+    details.source pre {
+      margin: 0; padding: 16px; background: var(--code-bg); color: var(--code-text); overflow: auto; max-height: 50vh;
+      font: 12.5px/1.5 ui-monospace, "IBM Plex Mono", Menlo, Consolas, monospace;
+    }
+    footer { max-width: 1280px; margin: 0 auto 32px; padding: 0 16px; color: var(--muted); font-size: .85rem; }
+    footer code { font-size: .8rem; }
+    .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>WaveType · Arquitetura C4</h1>
+      <p>Os diagramas são lidos dos arquivos <code>.puml</code> desta pasta e renderizados na hora. Edite um <code>.puml</code> e recarregue a página para ver a mudança.</p>
+    </div>
+    <div class="controls">
+      <label class="small">Renderizador
+        <select id="servidor">
+          <option value="plantuml">plantuml.com</option>
+          <option value="kroki">kroki.io</option>
+        </select>
+      </label>
+      <button id="tema" type="button" aria-label="Alternar tema">Tema</button>
+    </div>
+  </header>
+
+  <nav class="tabs" role="tablist" aria-label="Níveis do modelo C4" id="abas"></nav>
+
+  <main>
+    <section class="panel" role="tabpanel" id="painel" aria-live="polite">
+      <div class="panel-head">
+        <div>
+          <h2 id="titulo"></h2>
+          <p id="resumo"></p>
+        </div>
+        <div class="actions">
+          <button type="button" id="ajustar">Ajustar à largura</button>
+          <button type="button" data-zoom="-0.2" aria-label="Diminuir zoom">−</button>
+          <button type="button" data-zoom="0.2" aria-label="Aumentar zoom">+</button>
+          <a id="link-svg" target="_blank" rel="noopener">Abrir SVG</a>
+          <a id="link-png" target="_blank" rel="noopener">Abrir PNG</a>
+          <a id="link-fonte" download>Baixar .puml</a>
+        </div>
+      </div>
+      <div class="stage fit" id="palco"><div class="canvas" id="canvas"><div class="status">Carregando…</div></div></div>
+      <details class="source">
+        <summary>Código-fonte PlantUML</summary>
+        <pre id="fonte"></pre>
+      </details>
+    </section>
+  </main>
+
+  <footer>
+    <p>Modelo C4 (Simon Brown) com a biblioteca <a href="https://github.com/plantuml-stdlib/C4-PlantUML">C4-PlantUML</a>. Para abrir localmente, sirva a pasta por HTTP (por exemplo <code>npm run dev</code> e acesse <code>/docs/c4-architecture/</code>, ou <code>npx serve docs/c4-architecture</code>): abrindo como <code>file://</code>, o navegador bloqueia a leitura dos <code>.puml</code>.</p>
+    <p>Atenção: o texto dos diagramas é enviado ao renderizador escolhido (plantuml.com ou kroki.io) para gerar o SVG.</p>
+  </footer>
+
+  <script>
+    const DIAGRAMAS = [
+      { arquivo: 'level-1-context.puml',   nivel: 'Nível 1', nome: 'Contexto',    resumo: 'O WaveType, as pessoas que o usam e os sistemas externos (Supabase, Google, SMTP, Vercel).' },
+      { arquivo: 'level-2-container.puml', nivel: 'Nível 2', nome: 'Containers',  resumo: 'Site estático, aplicação no navegador, armazenamento local e os serviços do Supabase (Auth, PostgREST, PostgreSQL).' },
+      { arquivo: 'level-3-component.puml', nivel: 'Nível 3', nome: 'Componentes', resumo: 'Módulos da aplicação web: páginas, sessão, autenticação, camada de dados, motor de digitação e UI.' },
+      { arquivo: 'level-4-code.puml',      nivel: 'Nível 4', nome: 'Código',      resumo: 'Fluxo de treino: do motor de digitação ao insert em public.resultados e aos triggers do banco.' },
+    ];
+
+    const SERVIDORES = {
+      plantuml: { svg: (c) => `https://www.plantuml.com/plantuml/svg/${c}`, png: (c) => `https://www.plantuml.com/plantuml/png/${c}`, codificar: codificarPlantUml },
+      kroki:    { svg: (c) => `https://kroki.io/plantuml/svg/${c}`,         png: (c) => `https://kroki.io/plantuml/png/${c}`,         codificar: codificarKroki },
+    };
+
+    const $ = (id) => document.getElementById(id);
+    const cacheFonte = new Map();
+    let atual = 0;
+    let zoom = 1;
+    let pedido = 0;
+
+    // ---------- codificação (deflate nativo do navegador) ----------
+    async function comprimir(texto, formato) {
+      const fluxo = new Blob([new TextEncoder().encode(texto)]).stream().pipeThrough(new CompressionStream(formato));
+      return new Uint8Array(await new Response(fluxo).arrayBuffer());
+    }
+    // Alfabeto base64 próprio do PlantUML.
+    const ALFABETO = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_';
+    async function codificarPlantUml(texto) {
+      const b = await comprimir(texto, 'deflate-raw');
+      let saida = '';
+      for (let i = 0; i < b.length; i += 3) {
+        const n = (b[i] << 16) | ((b[i + 1] ?? 0) << 8) | (b[i + 2] ?? 0);
+        saida += ALFABETO[(n >> 18) & 63] + ALFABETO[(n >> 12) & 63] + ALFABETO[(n >> 6) & 63] + ALFABETO[n & 63];
+      }
+      return saida;
+    }
+    // Kroki: zlib + base64 url-safe.
+    async function codificarKroki(texto) {
+      const b = await comprimir(texto, 'deflate');
+      let bin = '';
+      b.forEach((x) => { bin += String.fromCharCode(x); });
+      return btoa(bin).replace(/\+/g, '-').replace(/\//g, '_');
+    }
+
+    // ---------- carregamento ----------
+    async function lerFonte(arquivo) {
+      if (cacheFonte.has(arquivo)) return cacheFonte.get(arquivo);
+      const resposta = await fetch(arquivo, { cache: 'no-cache' });
+      if (!resposta.ok) throw new Error(`HTTP ${resposta.status} ao ler ${arquivo}`);
+      const texto = await resposta.text();
+      cacheFonte.set(arquivo, texto);
+      return texto;
+    }
+
+    function mostrarStatus(html, erro = false) {
+      $('canvas').innerHTML = `<div class="status${erro ? ' error' : ''}">${html}</div>`;
+    }
+
+    async function renderizar(indice) {
+      const meu = ++pedido;
+      const d = DIAGRAMAS[indice];
+      $('titulo').textContent = `${d.nivel} — ${d.nome}`;
+      $('resumo').textContent = d.resumo;
+      $('link-fonte').href = d.arquivo;
+      $('link-fonte').setAttribute('download', d.arquivo);
+      mostrarStatus('Carregando…');
+
+      let fonte;
+      try {
+        fonte = await lerFonte(d.arquivo);
+      } catch (erro) {
+        if (meu !== pedido) return;
+        $('fonte').textContent = '';
+        mostrarStatus(
+          `<strong>Não foi possível ler <code>${d.arquivo}</code>.</strong><br>` +
+          (location.protocol === 'file:'
+            ? 'A página foi aberta como <code>file://</code> e o navegador bloqueia a leitura de arquivos locais. Sirva a pasta por HTTP: <code>npx serve docs/c4-architecture</code> ou <code>npm run dev</code> e acesse <code>/docs/c4-architecture/</code>.'
+            : `Detalhe: ${erro.message}`),
+          true
+        );
+        return;
+      }
+      if (meu !== pedido) return;
+      $('fonte').textContent = fonte;
+
+      const servidor = SERVIDORES[$('servidor').value];
+      try {
+        const codigo = await servidor.codificar(fonte);
+        const urlSvg = servidor.svg(codigo);
+        $('link-svg').href = urlSvg;
+        $('link-png').href = servidor.png(codigo);
+        const resposta = await fetch(urlSvg);
+        const svg = await resposta.text();
+        if (meu !== pedido) return;
+        if (!svg.includes('<svg')) throw new Error(`O renderizador respondeu HTTP ${resposta.status}: ${svg.slice(0, 300)}`);
+        $('canvas').innerHTML = svg;
+        const el = $('canvas').querySelector('svg');
+        el.removeAttribute('style');
+        el.setAttribute('role', 'img');
+        el.setAttribute('aria-label', `${d.nivel}: diagrama de ${d.nome}`);
+        aplicarZoom();
+      } catch (erro) {
+        if (meu !== pedido) return;
+        mostrarStatus(`<strong>Falha ao renderizar.</strong><br>${String(erro.message).replace(/</g, '&lt;')}<br><br>Tente o outro renderizador no seletor acima ou abra o código-fonte abaixo em um editor PlantUML.`, true);
+      }
+    }
+
+    // ---------- abas, zoom e tema ----------
+    function montarAbas() {
+      const nav = $('abas');
+      DIAGRAMAS.forEach((d, i) => {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.role = 'tab';
+        b.id = `aba-${i}`;
+        b.setAttribute('aria-controls', 'painel');
+        b.innerHTML = `<span class="lvl">${d.nivel}</span><span class="name">${d.nome}</span>`;
+        b.addEventListener('click', () => selecionar(i));
+        b.addEventListener('keydown', (e) => {
+          if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+            const prox = (i + (e.key === 'ArrowRight' ? 1 : DIAGRAMAS.length - 1)) % DIAGRAMAS.length;
+            selecionar(prox);
+            $(`aba-${prox}`).focus();
+          }
+        });
+        nav.appendChild(b);
+      });
+    }
+
+    function selecionar(i) {
+      atual = i;
+      zoom = 1;
+      $('palco').classList.add('fit');
+      DIAGRAMAS.forEach((_, j) => {
+        const b = $(`aba-${j}`);
+        b.setAttribute('aria-selected', String(j === i));
+        b.tabIndex = j === i ? 0 : -1;
+      });
+      $('painel').setAttribute('aria-labelledby', `aba-${i}`);
+      try { history.replaceState(null, '', `#${DIAGRAMAS[i].arquivo.replace('.puml', '')}`); } catch {}
+      renderizar(i);
+    }
+
+    function aplicarZoom() {
+      const el = $('canvas').querySelector('svg');
+      if (!el) return;
+      if ($('palco').classList.contains('fit')) { el.style.width = ''; return; }
+      const largura = el.viewBox?.baseVal?.width || el.getBBox().width;
+      el.style.width = `${Math.round(largura * zoom)}px`;
+    }
+
+    document.querySelectorAll('[data-zoom]').forEach((b) =>
+      b.addEventListener('click', () => {
+        $('palco').classList.remove('fit');
+        zoom = Math.min(4, Math.max(0.2, zoom + Number(b.dataset.zoom)));
+        aplicarZoom();
+      })
+    );
+    $('ajustar').addEventListener('click', () => { zoom = 1; $('palco').classList.add('fit'); aplicarZoom(); });
+
+    $('servidor').addEventListener('change', () => {
+      try { localStorage.setItem('c4_servidor', $('servidor').value); } catch {}
+      renderizar(atual);
+    });
+
+    $('tema').addEventListener('click', () => {
+      const raiz = document.documentElement;
+      const escuroAgora = raiz.dataset.theme ? raiz.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+      raiz.dataset.theme = escuroAgora ? 'light' : 'dark';
+      try { localStorage.setItem('c4_tema', raiz.dataset.theme); } catch {}
+    });
+
+    // ---------- início ----------
+    try {
+      const tema = localStorage.getItem('c4_tema');
+      if (tema) document.documentElement.dataset.theme = tema;
+      const servidor = localStorage.getItem('c4_servidor');
+      if (servidor && SERVIDORES[servidor]) $('servidor').value = servidor;
+    } catch {}
+
+    montarAbas();
+    if (!('CompressionStream' in window)) {
+      mostrarStatus('Este navegador não tem <code>CompressionStream</code>. Use uma versão recente do Chrome, Edge, Firefox ou Safari.', true);
+    } else {
+      const inicial = DIAGRAMAS.findIndex((d) => `#${d.arquivo.replace('.puml', '')}` === location.hash);
+      selecionar(inicial >= 0 ? inicial : 0);
+    }
+  </script>
+</body>
+</html>

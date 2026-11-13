@@ -1,0 +1,173 @@
+@startuml level-4-code
+title WaveType — Nível 4: Código do fluxo de treino (do teclado ao banco)
+
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam packageStyle rectangle
+skinparam class {
+  BackgroundColor #FFFFFF
+  BorderColor #1E4FD8
+  ArrowColor #3B4252
+}
+skinparam package {
+  BorderColor #8A93A6
+}
+
+package "js/digitacao" {
+  class "config.js" as Config <<module>> {
+    + METRICAS : amostraMinimaIntervalos, pausaMaximaMs, amostraMinimaPrecisao, consistenciaRitmoIrregular
+    + MODOS_ERRO : fluxo | correcao
+    + DIGITACAO : errosSeguidosParaSugerir
+    + MODO_ERROS_POR_NIVEL
+    + NIVEL_TRILHA_MAXIMO_CORRECAO = 2
+    + modoErrosDoExercicio(exercicio)
+  }
+
+  class "metricas.js" as Metricas <<module>> {
+    + intervalosEntreTeclas(tempos) : number[]
+    + consistencia(intervalos) : [valor, pausas]
+    + precisao(corretas, teclas) : number
+    + ppm(caracteres, segundos) : number
+  }
+
+  class Motor <<factory criarMotor()>> {
+    + modo : "fluxo" | "correcao"
+    - palavras : string[]
+    - errosPorTecla : Map<string, number>
+    - tentativasPorTecla : Map<string, number>
+    - palavrasProblema : Set<string>
+    --
+    + adicionarPalavras(novas)
+    + digitar(caractere, t) : Evento
+    + espaco(t) : Evento
+    + apagar(t) : Evento
+    + seguirMesmoAssim() : Evento
+    + tentarDeNovo()
+    + estadoLetra(iPalavra, iLetra)
+    + terminou() : boolean
+    + estatisticas(segundos) : Estatisticas
+    + transcricao(limite) : string
+  }
+
+  class "textos.js" as Textos <<module>> {
+    + MIN_CARACTERES = 150
+    + PALAVRAS, FRASES
+    + completarTexto(texto, ...)
+    + criarPraticaLivre(nivel)
+    + alvoDeCaracteres(...)
+  }
+}
+
+class Estatisticas <<value object>> {
+  teclas, teclasCorretas, erros
+  errosCorrigidos, errosNaoCorrigidos
+  precisao, precisaoBruta
+  ppmLiquido, ppmBruto
+  consistencia, pausas
+  errosPorTecla, desempenhoPorTecla
+  palavrasProblema
+}
+
+class "Evento do motor" as Evento <<value object>> {
+  tipo : correta | errada | extra | bloqueada |
+  avancou | avancou-com-erro | apagou | voltou-palavra
+  sugerirSeguir? : boolean
+  errosSeguidos? : number
+}
+
+class "script.js (TelaDeDigitacao)" as Tela <<module / DOM>> {
+  - elements : input, wrapper, liveWpm, liveAccuracy...
+  - motor : Motor
+  --
+  - aplicarExercicio(exercicio)
+  - finalizar()
+  .. eventos ..
+  escuta: wavetype:exercicio
+  emite: wavetype:resultado
+}
+
+package "js/pages" {
+  class "treino.js" as Treino <<module>> {
+    + iniciarTreino(papel)
+    - carregarExercicio(id, turma)
+  }
+}
+
+package "js/api" {
+  class "resultados.js" as Resultados <<module>> {
+    + registrarResultado(registro) : [resultado, novasConquistas]
+  .. registro ..
+  exercicio_id, turma_id, ppm, precisao, acertos,
+  erros, tempo_seg, concluiu_texto, detalhes
+    + listarMeusResultados()
+    - salvarDetalhes(resultadoId, detalhes)
+    - conquistasLiberadasEm(usuarioId, momento)
+  }
+  class "exercicios.js" as Exercicios <<module>> {
+    + buscarExercicio(id)
+    + listarExercicios()
+  }
+}
+
+class "regras.js" as Regras <<module>> {
+  + PRECISAO_MINIMA_TRILHA = 85
+  + resultadoConcluiu(resultado, exercicio)
+  + motivoNaoConcluiu(resultado, exercicio)
+  + formatarTempo(seg)
+}
+
+class "sessao/sessao.js" as Sessao <<module>> {
+  + exigirPapel(papel) : Perfil | null
+  + validarSessao()
+  + encerrarSessao()
+}
+
+class "supabaseClient.js" as Client <<singleton>> {
+  + supabase : SupabaseClient
+}
+
+package "PostgreSQL (Supabase)" <<Database>> {
+  class "public.resultados" as TResultados <<table>> {
+    id, aluno_id, exercicio_id, turma_id
+    ppm, precisao, acertos, erros
+    tempo_seg, concluiu_texto, concluiu, criado_em
+  }
+  class "resultados_validar" as TrgValidar <<trigger BEFORE INSERT>> {
+    precisão mínima + tempo máximo
+    decide turma da atividade
+  }
+  class "resultados_z_conquistas" as TrgConq <<trigger AFTER INSERT>> {
+    XP, sequência de dias
+    insere usuario_conquistas
+  }
+  class "registrar_detalhes_resultado()" as RpcDet <<rpc>>
+}
+
+Motor ..> Config : usa
+Motor ..> Metricas : calcula
+Motor ..> Evento : retorna
+Motor ..> Estatisticas : produz
+Tela *-- Motor : cria via criarMotor()
+Tela ..> Textos : monta texto
+Tela ..> Config
+Treino ..> Sessao : exigirPapel()
+Treino ..> Exercicios : carrega exercício
+Treino ..> Tela : wavetype:exercicio
+Tela ..> Treino : wavetype:resultado\n(Estatisticas + transcrição)
+Treino ..> Resultados : registrarResultado()
+Treino ..> Regras : feedback de conclusão
+Resultados ..> Client
+Exercicios ..> Client
+Sessao ..> Client
+Client ..> TResultados : insert().select()
+Client ..> RpcDet : rpc()
+TResultados ..> TrgValidar
+TResultados ..> TrgConq
+
+note bottom of TrgValidar
+  O banco é a fonte da verdade:
+  regras.js apenas espelha a regra
+  para dar feedback imediato na tela.
+end note
+
+@enduml
