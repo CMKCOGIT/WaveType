@@ -402,43 +402,55 @@ input[aria-invalid="true"] {
 /* ==========================================================================
    Alto contraste
    ========================================================================== */
+/* Paleta da marca WaveType em versão de alto contraste (todos os pares
+   texto/fundo com 7:1 ou mais, nível AAA):
+   claro  — tinta Deep Ink (#17233f) sobre branco, azul de ação escurecido
+            (#1f46b0) e destaque Evolution Aqua (#56ddca);
+   escuro — fundo noturno da marca (#0a1022), texto Soft Mist, azul
+            Wave clareado (#a8bcff) e o mesmo aqua de destaque. */
 html.high-contrast,
 html.high-contrast body {
   --hc-bg: #ffffff;
   --hc-surface: #ffffff;
-  --hc-sunken: #f2f2f2;
-  --hc-text: #000000;
-  --hc-muted: #1a1a1a;
-  --hc-pendente: #555555;
-  --hc-line: #000000;
-  --hc-accent: #0033b3;
-  --hc-accent-hover: #001a66;
+  --hc-sunken: #f5f8ff;
+  --hc-text: #17233f;
+  --hc-muted: #17233f;
+  --hc-pendente: #4a5571;
+  --hc-line: #17233f;
+  --hc-accent: #1f46b0;
+  --hc-accent-hover: #17233f;
   --hc-on-accent: #ffffff;
-  --hc-danger: #b00020;
-  --hc-success: #00573f;
-  --hc-focus: #000000;
-  --hc-halo: #ffd60a;
-  --hc-marca: #ffd60a;
-  --hc-on-marca: #000000;
+  --hc-danger: #a3202a;
+  --hc-on-danger: #ffffff;
+  --hc-success: #075e54;
+  --hc-focus: #17233f;
+  --hc-halo: #56ddca;
+  --hc-marca: #56ddca;
+  --hc-on-marca: #17233f;
+  --hc-painel: #17233f;
+  --hc-on-painel: #ffffff;
 }
 html.high-contrast[data-theme="dark"],
 html.high-contrast[data-theme="dark"] body {
-  --hc-bg: #000000;
-  --hc-surface: #000000;
-  --hc-sunken: #121212;
-  --hc-text: #ffffff;
-  --hc-muted: #f2f2f2;
-  --hc-pendente: #b3b3b3;
-  --hc-line: #ffffff;
-  --hc-accent: #ffd60a;
-  --hc-accent-hover: #ffe766;
-  --hc-on-accent: #000000;
-  --hc-danger: #ff8080;
-  --hc-success: #6dffb3;
-  --hc-focus: #ffd60a;
-  --hc-halo: #000000;
-  --hc-marca: #ffd60a;
-  --hc-on-marca: #000000;
+  --hc-bg: #0a1022;
+  --hc-surface: #0a1022;
+  --hc-sunken: #16213a;
+  --hc-text: #f1f5ff;
+  --hc-muted: #f1f5ff;
+  --hc-pendente: #aab6d8;
+  --hc-line: #f1f5ff;
+  --hc-accent: #a8bcff;
+  --hc-accent-hover: #f1f5ff;
+  --hc-on-accent: #0e1730;
+  --hc-danger: #ff9aa2;
+  --hc-on-danger: #0e1730;
+  --hc-success: #56ddca;
+  --hc-focus: #56ddca;
+  --hc-halo: #0a1022;
+  --hc-marca: #56ddca;
+  --hc-on-marca: #0e1730;
+  --hc-painel: #17233f;
+  --hc-on-painel: #f1f5ff;
 }
 
 /* Tokens (novos e antigos) passam a apontar para a paleta de contraste */
@@ -643,8 +655,14 @@ html.high-contrast :is(.app-nav a[aria-current="page"], .desktop-nav a[aria-curr
 html.high-contrast :is(.app-nav a, .desktop-nav a, .mobile-nav a):not([aria-current="page"]) {
   color: var(--hc-text) !important;
 }
-html.high-contrast :is(.app-nav a, .desktop-nav a, .mobile-nav a)::after,
-html.high-contrast :is(.app-nav a, .desktop-nav a, .mobile-nav a)::before {
+/* Ícones do menu (máscara SVG) seguem a cor do texto do item */
+html.high-contrast .app-nav a::before {
+  background: currentColor !important;
+  opacity: 1;
+}
+/* Item atual: ícone e indicador na cor do texto invertido */
+html.high-contrast .app-nav a[aria-current="page"]::before,
+html.high-contrast :is(.app-nav a, .desktop-nav a, .mobile-nav a)[aria-current="page"]::after {
   background: var(--hc-on-accent) !important;
 }
 html.high-contrast .preference-toggle i {
@@ -712,13 +730,9 @@ html.high-contrast .letter.correct {
 }
 html.high-contrast .letter.incorrect,
 html.high-contrast .letter.bloqueada {
-  color: #ffffff !important;
+  color: var(--hc-on-danger) !important;
   background: var(--hc-danger) !important;
   text-decoration: underline 2px;
-}
-html.high-contrast[data-theme="dark"] .letter.incorrect,
-html.high-contrast[data-theme="dark"] .letter.bloqueada {
-  color: #000000 !important;
 }
 html.high-contrast .letter.missed {
   color: var(--hc-danger) !important;
@@ -734,7 +748,7 @@ html.high-contrast .word.caret-at-end::after {
   background: var(--hc-text) !important;
 }
 html.high-contrast .typing-shell::before {
-  background: var(--hc-line) !important;
+  background: var(--hc-accent) !important;
 }
 html.high-contrast .focus-prompt {
   background: color-mix(in srgb, var(--hc-surface) 82%, transparent) !important;
@@ -774,7 +788,7 @@ html.high-contrast :is(.feedback, .auth-demo) {
 html.high-contrast .wt-aviso-caps {
   color: var(--hc-on-marca);
   background: var(--hc-marca);
-  border: 2px solid #000;
+  border: 2px solid var(--hc-on-marca);
 }
 
 /* Decoração some: só o conteúdo fica */
@@ -795,26 +809,26 @@ html.high-contrast :is(.progress-fill, .preview-xp-fill, .preview-level-fill, .p
 
 /* Painéis de cor (lado de marca do login, faixas de destaque) */
 html.high-contrast .auth-aside {
-  color: #ffffff !important;
-  background: #000000 !important;
+  color: var(--hc-on-painel) !important;
+  background: var(--hc-painel) !important;
   background-image: none !important;
   border-right: 2px solid var(--hc-line);
 }
 html.high-contrast .auth-aside :is(h1, p, span, li, strong) {
-  color: #ffffff !important;
+  color: var(--hc-on-painel) !important;
 }
 html.high-contrast .auth-aside .auth-points li,
 html.high-contrast .app-sidebar-foot {
-  color: #ffffff !important;
-  background: #000000 !important;
+  color: var(--hc-on-painel) !important;
+  background: var(--hc-painel) !important;
   background-image: none !important;
-  border: 2px solid #ffffff !important;
+  border: 2px solid var(--hc-marca) !important;
 }
 html.high-contrast .app-sidebar-foot :is(strong, small, a) {
-  color: #ffffff !important;
+  color: var(--hc-on-painel) !important;
 }
 html.high-contrast .auth-aside .auth-points i {
-  background: #ffd60a !important;
+  background: var(--hc-marca) !important;
 }
 html.high-contrast :is(.final-cta, .plain-cta, .hero-panel, .p-hero, [class*="hero"]) {
   background-image: none !important;
