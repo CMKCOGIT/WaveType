@@ -4,6 +4,7 @@
 // tabela de acompanhamento.
 import { exigirPapel } from '../auth.js';
 import { listarMinhasTurmas, listarAlunosDaTurma, removerAlunoDaTurma, buscarAlunoPorCodigo, adicionarAlunoExistente } from '../api/turmas.js';
+import { esperaParaEnviar, registrarEnvio, mensagemDeEspera, travarComContagem } from '../contas/limite-cadastro.js';
 import { criarAlunosNaTurma, importarAlunosNaTurma, redefinirSenhaDoAluno, loginsDosAlunos, alterarLoginDoAluno } from '../api/contas-escolares.js';
 import { nomesDaLista, sugerirLogins, normalizarLoginEscolhido } from '../contas/credenciais.js';
 import {
@@ -371,6 +372,14 @@ formCriar.addEventListener('submit', async (evento) => {
     if (!confirm('Alguns nomes têm uma palavra só. O usuário fica mais fácil de identificar com nome e sobrenome. Criar assim mesmo?')) return;
   }
   const botao = formCriar.querySelector('[data-botao-criar]');
+  // Limite de frequência (o banco também confere)
+  const espera = esperaParaEnviar();
+  if (espera) {
+    avisar(feedbackCriar, mensagemDeEspera(espera), true);
+    return travarComContagem(botao, espera);
+  }
+  registrarEnvio();
+  let contando = false;
   botao.disabled = true;
   botao.textContent = 'Criando…';
   try {
@@ -381,9 +390,16 @@ formCriar.addEventListener('submit', async (evento) => {
     await carregarAlunos();
   } catch (erro) {
     avisar(feedbackCriar, erro.message, true);
+    if (erro.limite && erro.esperaSeg && erro.esperaSeg <= 60) {
+      contando = true;
+      botao.textContent = 'Criar contas';
+      travarComContagem(botao, erro.esperaSeg);
+    }
   } finally {
-    botao.disabled = false;
-    botao.textContent = 'Criar contas';
+    if (!contando) {
+      botao.disabled = false;
+      botao.textContent = 'Criar contas';
+    }
   }
 });
 
@@ -547,6 +563,13 @@ $('[data-confirmar-importacao]').addEventListener('click', async (evento) => {
   const turmaNome = turmasCarregadas.find((t) => t.id === destino)?.nome ?? '';
   if (!confirm(`Criar ${nomes.length} ${nomes.length === 1 ? 'conta de aluno' : 'contas de aluno'} na turma “${turmaNome}”?`)) return;
   const botao = evento.currentTarget;
+  // Limite de frequência (o banco também confere, lote a lote)
+  const espera = esperaParaEnviar();
+  if (espera) {
+    avisar(feedbackImportar, mensagemDeEspera(espera), true);
+    return travarComContagem(botao, espera, { aoTerminar: () => importacao && montarPrevia() });
+  }
+  registrarEnvio();
   botao.disabled = true;
   const resumoAntes = importacao.resumo;
   try {

@@ -6,6 +6,7 @@
 // "Sou aluno com usuário da escola" da tela de login.
 import { listarMinhasTurmas, listarAlunosDaTurma } from '../api/turmas.js';
 import { criarAlunosNaTurma, loginsDosAlunos } from '../api/contas-escolares.js';
+import { esperaParaEnviar, registrarEnvio, mensagemDeEspera, travarComContagem } from '../contas/limite-cadastro.js';
 import { loginBase } from '../contas/credenciais.js';
 import { htmlDosCartoes, ligarCopiar, imprimirCartoes, exportarPdfDosAlunos } from '../ui/cartoes-acesso.js';
 
@@ -94,6 +95,14 @@ export async function montarCadastroDeAlunos() {
     if (nome.length < 2) return avisar('Digite o nome completo do aluno.', true);
     if (!seletor.value) return avisar('Escolha a turma do aluno.', true);
     const botao = form.querySelector('[data-botao-cadastrar]');
+    // Limite de frequência (o banco também confere)
+    const espera = esperaParaEnviar();
+    if (espera) {
+      avisar(mensagemDeEspera(espera), true);
+      return travarComContagem(botao, espera);
+    }
+    registrarEnvio();
+    let contando = false;
     botao.disabled = true;
     botao.textContent = 'Cadastrando…';
     try {
@@ -107,9 +116,16 @@ export async function montarCadastroDeAlunos() {
       carregarLista(turmas, secaoLista);
     } catch (erro) {
       avisar(erro.message, true);
+      if (erro.limite && erro.esperaSeg && erro.esperaSeg <= 60) {
+        contando = true;
+        botao.textContent = 'Cadastrar aluno';
+        travarComContagem(botao, erro.esperaSeg);
+      }
     } finally {
-      botao.disabled = false;
-      botao.textContent = 'Cadastrar aluno';
+      if (!contando) {
+        botao.disabled = false;
+        botao.textContent = 'Cadastrar aluno';
+      }
     }
   });
 
