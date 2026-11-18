@@ -12,6 +12,7 @@ import {
   sair,
   TIPO_PENDENTE,
   validarSenha,
+  definirSenhaDaConta,
 } from '../auth.js';
 import { protegerPaginaDeAcesso, guardarRedirect } from '../sessao/sessao.js';
 
@@ -74,13 +75,19 @@ formCompletar.addEventListener('submit', async (evento) => {
   const dados = new FormData(formCompletar);
   const tipo = dados.get('tipo');
   const nome = String(dados.get('nome') || '').trim();
+  const senha = String(dados.get('senha') || '');
+  const confirmacao = String(dados.get('confirmacao') || '');
   if (!tipo) return mostrarFeedback(feedbackCompletar, MSG_TIPO, 'erro');
   if (nome.length < 2) return mostrarFeedback(feedbackCompletar, 'Digite seu nome completo.', 'erro');
+  const erroSenha = validarSenha(senha) || validarConfirmacao(senha, confirmacao);
+  if (erroSenha) return mostrarFeedback(feedbackCompletar, erroSenha, 'erro');
 
   botaoCompletar.disabled = true;
   botaoCompletar.textContent = 'Salvando...';
   try {
-    // Entrou com o Google: nunca pedimos senha. Criar uma é opcional, em Perfil.
+    // Entrou com o Google: a pessoa cria aqui a própria senha, para poder
+    // entrar também com e-mail e senha e trocá-la depois sabendo a atual.
+    await definirSenhaDaConta(senha);
     const perfil = await concluirCadastro({ tipo, nome });
     localStorage.removeItem(TIPO_PENDENTE);
     irParaArea(perfil);
@@ -104,11 +111,12 @@ form.addEventListener('submit', async (evento) => {
   const nome = dados.get('nome').trim();
   const email = dados.get('email').trim();
   const senha = dados.get('senha');
+  const confirmacao = dados.get('confirmacao');
   const tipo = dados.get('tipo');
 
   if (!tipo) return mostrarFeedback(feedback, MSG_TIPO, 'erro');
 
-  const erroValidacao = validar({ nome, email, senha });
+  const erroValidacao = validar({ nome, email, senha, confirmacao });
   if (erroValidacao) return mostrarFeedback(feedback, erroValidacao, 'erro');
 
   travarBotao(true);
@@ -150,10 +158,16 @@ form.querySelectorAll('input[name="tipo"]').forEach((radio) => {
   radio.addEventListener('change', () => esconderFeedback(feedback));
 });
 
-function validar({ nome, email, senha }) {
+function validar({ nome, email, senha, confirmacao }) {
   if (nome.length < 2) return 'Digite seu nome completo.';
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return 'Digite um e-mail válido.';
-  return validarSenha(senha);
+  return validarSenha(senha) || validarConfirmacao(senha, confirmacao);
+}
+
+function validarConfirmacao(senha, confirmacao) {
+  if (!confirmacao) return 'Confirme a senha digitando-a de novo.';
+  if (senha !== confirmacao) return 'As senhas são diferentes. Digite a mesma senha nos dois campos.';
+  return null;
 }
 
 function pararCarregamento() {

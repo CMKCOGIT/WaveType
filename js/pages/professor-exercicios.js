@@ -2,7 +2,8 @@
 import { exigirPapel } from '../auth.js';
 import { listarMinhasTurmas } from '../api/turmas.js';
 import { listarAtividadesDoProfessor, salvarAtividade, excluirAtividade } from '../api/exercicios.js';
-import { formatarTempo } from '../regras.js';
+import { formatarTempo, LIMITES, erroDeLimite } from '../regras.js';
+import { ligarModeracaoAoVivo, conteudoRevisado, limparRevisao, atualizarAvisos } from '../ui/moderacao.js';
 
 const botaoAbrir = document.querySelector('[data-abrir-form]');
 const form = document.querySelector('[data-form-exercicio]');
@@ -34,6 +35,7 @@ document.addEventListener('keydown', (evento) => {
   if (evento.key === 'Escape') fecharDicas();
 });
 
+ligarModeracaoAoVivo(form);
 iniciar();
 
 async function iniciar() {
@@ -49,13 +51,16 @@ async function iniciar() {
             `<label><input type="checkbox" name="turmas" value="${t.id}"><span>${escapar(t.nome)}${t.status === 'encerrada' ? ' (encerrada)' : ''}</span></label>`
         )
         .join('')
-    : '<span class="vazio">Você ainda não tem turmas. A atividade fica como rascunho até ser atribuída. <a href="turmas.html">Criar turma</a></span>';
+    : '<span class="vazio">Você ainda não tem turmas. A atividade fica como rascunho até ser atribuída. <a class="button small" href="turmas.html?nova=1">Criar turma</a></span>';
 
   await carregarAtividades();
 }
 
 botaoAbrir.addEventListener('click', () => abrirFormulario());
-document.querySelector('[data-cancelar]').addEventListener('click', () => (form.hidden = true));
+document.querySelector('[data-cancelar]').addEventListener('click', () => {
+  limparRevisao(form);
+  form.hidden = true;
+});
 filtroTurma.addEventListener('change', renderizar);
 filtroBusca.addEventListener('input', renderizar);
 
@@ -83,7 +88,9 @@ function abrirFormulario(atividade = null) {
   const selecionadas = new Set((atividade?.turmas ?? []).map((t) => String(t.id)));
   form.querySelectorAll('input[name="turmas"]').forEach((c) => (c.checked = selecionadas.has(c.value)));
   document.querySelector('[data-form-titulo]').textContent = atividade ? 'Editar atividade' : 'Nova atividade';
+  limparRevisao(form);
   form.hidden = false;
+  atualizarAvisos(form);
   form.scrollIntoView({ behavior: 'smooth', block: 'start' });
   campos.titulo.focus();
 }
@@ -109,6 +116,11 @@ form.addEventListener('submit', async (evento) => {
 
   if (atividade.titulo.length < 3) return erroFormulario('Informe um título com pelo menos 3 caracteres.');
   if (atividade.texto_referencia.length < 5) return erroFormulario('Informe o texto que o aluno deverá digitar.');
+  const erroLimite =
+    erroDeLimite(atividade.titulo, LIMITES.tituloExercicio, 'O título') ||
+    erroDeLimite(atividade.instrucoes, LIMITES.instrucoesExercicio, 'As instruções') ||
+    erroDeLimite(atividade.texto_referencia, LIMITES.textoExercicio, 'O texto do exercício');
+  if (erroLimite) return erroFormulario(erroLimite);
   if (!Number.isFinite(atividade.tempo_limite_seg) || atividade.tempo_limite_seg < 10 || atividade.tempo_limite_seg > 3600) {
     return erroFormulario('Defina o tempo máximo entre 10 e 3600 segundos.');
   }
@@ -122,11 +134,15 @@ form.addEventListener('submit', async (evento) => {
   if (atividade.publicado && !atividade.turmas.length) {
     return erroFormulario('Marque pelo menos uma turma ou salve como rascunho.');
   }
+  // Moderação: termos ofensivos ou inadequados pedem revisão do professor antes de salvar.
+  const campos = { titulo: atividade.titulo, instrucoes: atividade.instrucoes, texto_referencia: atividade.texto_referencia };
+  if (!conteudoRevisado(form, campos, { antesDe: form.querySelector('.form-actions') })) return;
 
   const botao = form.querySelector('[data-salvar]');
   botao.disabled = true;
   try {
     await salvarAtividade(atividade);
+    limparRevisao(form);
     form.hidden = true;
     avisar(atividade.id ? 'Atividade atualizada.' : 'Atividade criada e enviada às turmas.');
     await carregarAtividades();

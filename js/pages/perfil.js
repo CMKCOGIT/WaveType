@@ -2,7 +2,7 @@
 // Página Perfil das três áreas (usuário, aluno, professor). A área vem do
 // data-role do <body>.
 import { montarVinculos } from './perfil-vinculos.js';
-import { exigirPapel, metodosDeLogin, atualizarNome, alterarSenha, validarSenha, alterarTipoConta, DESTINOS } from '../auth.js';
+import { exigirPapel, metodosDeLogin, contaTemSenha, atualizarNome, alterarSenha, validarSenha, alterarTipoConta, DESTINOS } from '../auth.js';
 
 const TIPOS = { usuario: 'Usuário', aluno: 'Aluno', professor: 'Professor' };
 
@@ -52,7 +52,7 @@ async function iniciar() {
 
   // Conta só com Google: não há senha atual para conferir.
   const metodos = await metodosDeLogin();
-  temSenha = metodos.includes('email');
+  temSenha = await contaTemSenha().catch(() => metodos.includes('email'));
   if (!temSenha && metodos.includes('google')) {
     const ajuda = document.querySelector('[data-ajuda-email]');
     if (ajuda) ajuda.textContent = 'É o e-mail da sua conta Google, usado para entrar. Para trocá-lo, entre com outra conta Google.';

@@ -53,3 +53,19 @@ export function formatarTempo(segundos) {
 function formatar(valor) {
   return Number(valor).toLocaleString('pt-BR', { maximumFractionDigits: 2 });
 }
+
+// Limites de texto (os mesmos do banco: migração 20261117000018_limites_de_texto).
+// Nomes longos desconfiguravam os cartões e os PDFs exportados.
+export const LIMITES = {
+  nomeTurma: 60,
+  tituloExercicio: 80,
+  descricaoTurma: 500,
+  instrucoesExercicio: 1000,
+  textoExercicio: 5000,
+};
+
+/** Mensagem de erro se o texto passar do limite (ou null). */
+export function erroDeLimite(texto, limite, rotulo) {
+  const tamanho = Array.from(String(texto ?? '')).length;
+  return tamanho > limite ? `${rotulo} pode ter no máximo ${limite} caracteres (agora tem ${tamanho}).` : null;
+}

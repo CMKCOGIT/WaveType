@@ -8,12 +8,30 @@ import { ETAPAS, TEMPO_MAXIMO_ETAPA_SEG, PRECISAO_PARA_AVANCAR } from '../nivela
 import { resumirEtapa, deveAvancar, recomendar, NOME_DA_REGIAO } from '../nivelamento/avaliacao.js';
 import { temSessaoSalva } from '../sessao/local.js';
 import { NIVEIS } from '../exercicios-dados.js';
+import { montarFerramentasEscrita } from '../ui/preferencias.js';
 
 const $ = (seletor) => document.querySelector(seletor);
 const telas = [...document.querySelectorAll('[data-tela]')];
 const entrada = $('[data-entrada]');
 const areaPalavras = $('[data-palavras]');
 const statusLeitor = $('[data-status]');
+const janelaPalavras = areaPalavras.closest('.words-viewport');
+
+// Mesmas ferramentas de acessibilidade dos outros blocos de escrita
+montarFerramentasEscrita($('[data-tela="etapa"]'), { menuEm: $('[data-ferramentas]'), ajusteEm: $('[data-ancora-ajuste]') });
+document.addEventListener('wavetype:preferencias', () => requestAnimationFrame(posicionar));
+window.addEventListener('resize', () => requestAnimationFrame(posicionar));
+
+// "Texto em uma linha": a palavra atual fica a 25% da esquerda e o texto corre para o lado.
+function posicionar() {
+  const atual = palavrasEl[motor?.palavraAtual ?? 0];
+  if (!document.documentElement.classList.contains('single-line') || !atual || !janelaPalavras) {
+    areaPalavras.style.transform = '';
+    return;
+  }
+  const deslocamento = Math.max(0, atual.offsetLeft - janelaPalavras.clientWidth * 0.25);
+  areaPalavras.style.transform = `translateX(-${deslocamento}px)`;
+}
 
 let indiceEtapa = 0;
 let resumos = [];
@@ -91,6 +109,7 @@ function desenhar() {
   const letra = atual.children[motor.letraAtual];
   if (letra) letra.classList.add('current');
   else atual.classList.add('caret-at-end');
+  requestAnimationFrame(posicionar);
 }
 
 function comecarRelogio() {

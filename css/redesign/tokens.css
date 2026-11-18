@@ -146,30 +146,7 @@ html[data-theme="dark"] {
   --wt-ring: 0 0 0 3px rgba(120, 152, 255, 0.4);
 }
 
-/* Modo alto contraste: tinta sobre branco, sem gradientes nem transparências */
-body.high-contrast {
-  --wt-bg: #ffffff;
-  --wt-surface: #ffffff;
-  --wt-surface-sunken: #ffffff;
-  --wt-surface-tint: #ffffff;
-  --wt-text: #000814;
-  --wt-text-muted: #17233f;
-  --wt-text-subtle: #17233f;
-  --wt-line: #17233f;
-  --wt-line-strong: #17233f;
-  --wt-accent: #1f46b0;
-  --wt-accent-hover: #17233f;
-  --wt-on-accent: #ffffff;
-  --wt-success-text: #075e54;
-  --wt-focus: #000814;
-  --wt-gradient-wave: linear-gradient(#1f46b0, #1f46b0);
-  --wt-gradient-tide: linear-gradient(#17233f, #17233f);
-  --wt-glow: none;
-  --wt-shadow-1: none;
-  --wt-shadow-2: none;
-  --wt-shadow-3: none;
-  --wt-ring: 0 0 0 3px #000814;
-}
+/* Alto contraste: ver css/redesign/acessibilidade.css (claro e escuro) */
 
 /* Movimento reduzido: pelo sistema ou pelo modo do WaveType */
 @media (prefers-reduced-motion: reduce) {
@@ -180,6 +157,7 @@ body.high-contrast {
     --wt-dur-slow: 0ms;
   }
 }
+html.reduce-motion,
 body.reduce-motion {
   --wt-dur-instant: 0ms;
   --wt-dur-fast: 0ms;

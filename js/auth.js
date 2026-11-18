@@ -197,7 +197,7 @@ export async function alterarSenha({ senhaAtual, novaSenha }) {
     }
   }
 
-  const { error } = await supabase.auth.updateUser({ password: novaSenha });
+  const { error } = await supabase.auth.updateUser({ password: novaSenha, data: { senha_definida: true } });
   if (!error) return;
   if (/different from the old password/i.test(error.message)) {
     throw new Error('A nova senha precisa ser diferente da atual.');
@@ -206,6 +206,34 @@ export async function alterarSenha({ senhaAtual, novaSenha }) {
     throw new Error('Por segurança, saia e entre de novo na sua conta antes de trocar a senha.');
   }
   throw traduzErro(error);
+}
+
+/**
+ * Cria a senha de quem entrou com o Google (etapa "Concluir cadastro").
+ * Marca senha_definida nos metadados: uma conta Google com senha continua
+ * listando só "google" nos provedores, e o Perfil precisa saber que ela
+ * já tem uma senha própria (para pedir a atual na troca).
+ */
+export async function definirSenhaDaConta(senha) {
+  const { error } = await supabase.auth.updateUser({ password: senha, data: { senha_definida: true } });
+  if (!error) return;
+  // Nova tentativa depois de uma falha no passo seguinte: a senha já é esta.
+  if (/different from the old password/i.test(error.message)) return;
+  if (error.code === 'weak_password' || /weak|at least/i.test(error.message)) {
+    throw new Error('Escolha uma senha mais forte: 8+ caracteres, com letra e número.');
+  }
+  if (error.code === 'reauthentication_needed' || /reauthenticat/i.test(error.message)) {
+    throw new Error('Por segurança, entre de novo com o Google e conclua o cadastro.');
+  }
+  throw traduzErro(error);
+}
+
+/** A conta já tem senha própria? (cadastro por e-mail ou senha criada depois) */
+export async function contaTemSenha() {
+  const { data } = await supabase.auth.getUser();
+  const usuario = data?.user;
+  const providers = usuario?.app_metadata?.providers ?? usuario?.identities?.map((i) => i.provider) ?? [];
+  return providers.includes('email') || usuario?.user_metadata?.senha_definida === true;
 }
 
 /** Regras de senha do cadastro (8+ caracteres, com letra e número). */
