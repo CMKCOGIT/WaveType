@@ -1,4 +1,4 @@
--- Testes da migração 19: limite de frequência no cadastro de alunos pelo professor.
+-- Testes das migrações 19 e 20: limite de frequência no cadastro de alunos pelo professor.
 \set QUIET on
 begin;
 insert into auth.users (id, email, raw_user_meta_data, raw_app_meta_data) values
@@ -28,13 +28,13 @@ declare
   v_turma bigint := (select id from public.turmas where nome = 'Limite F');
   v_msg text;
 begin
-  -- 10 envios no mesmo minuto: aceitos; o 11º é recusado com o tempo de espera
-  for i in 1 .. 10 loop
+  -- 30 envios no mesmo minuto: aceitos; o 31º é recusado com o tempo de espera
+  for i in 1 .. 30 loop
     perform public.professor_criar_alunos(v_turma, pg_temp.lote(1, 'm' || i));
   end loop;
-  v_msg := pg_temp.mensagem_de(v_turma, pg_temp.lote(1, 'm11'));
+  v_msg := pg_temp.mensagem_de(v_turma, pg_temp.lote(1, 'm31'));
   assert v_msg like 'P0429 Muitos cadastros seguidos. Aguarde % segundos%', 'limite por minuto: ' || coalesce(v_msg, 'aceito');
-  assert (select count(*) from public.contas_escolares where criada_por = auth.uid()) = 10, 'o recusado não criou conta';
+  assert (select count(*) from public.contas_escolares where criada_por = auth.uid()) = 30, 'o recusado não criou conta';
 
   -- Outro professor não é afetado
   perform set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-0000000000f2', true);
@@ -42,7 +42,7 @@ begin
   perform set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-0000000000f1', true);
 end $$;
 
--- Passa o minuto: os envios saem da janela de 1 minuto, mas contam na hora (10 contas)
+-- Passa o minuto: os envios saem da janela de 1 minuto, mas contam na hora (30 contas)
 reset role;
 update public.cadastros_alunos_registro set criado_em = criado_em - interval '2 minutes';
 set local role authenticated;
@@ -52,11 +52,11 @@ declare
   v_turma bigint := (select id from public.turmas where nome = 'Limite F');
   v_msg text;
 begin
-  -- 10 + 4 x 60 + 50 = 300 na hora: aceitos
+  -- 30 + 4 x 60 + 30 = 300 na hora: aceitos
   for i in 1 .. 4 loop
     perform public.professor_criar_alunos(v_turma, pg_temp.lote(60, 'h' || i));
   end loop;
-  perform public.professor_criar_alunos(v_turma, pg_temp.lote(50, 'h5'));
+  perform public.professor_criar_alunos(v_turma, pg_temp.lote(30, 'h5'));
   v_msg := pg_temp.mensagem_de(v_turma, pg_temp.lote(1, 'h6'));
   assert v_msg like 'P0429 Limite de 300 contas de aluno por hora atingido (300 criadas%', 'limite por hora: ' || coalesce(v_msg, 'aceito');
 end $$;
@@ -84,5 +84,5 @@ begin
   exception when insufficient_privilege then null;
   end;
 end $$;
-\echo 'ok - limite de cadastro de alunos: 10 envios/minuto, 300 contas/hora, 1000/dia, por professor'
+\echo 'ok - limite de cadastro de alunos: 30 envios/minuto, 300 contas/hora, 1000/dia, por professor'
 rollback;
