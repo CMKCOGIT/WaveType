@@ -1472,36 +1472,67 @@ body[data-page="treinar"] .typing-shell {
   text-align: right;
   word-break: break-all;
 }
+/* Impressão dos cartões de acesso: só a área .impressao-cartoes (filha do
+   <body>) é impressa; o resto sai do fluxo, então tudo começa na 1ª página. */
+.impressao-cartoes {
+  display: none;
+}
 @media print {
-  html.imprimindo-cartoes body * {
-    visibility: hidden;
+  html.imprimindo-cartoes,
+  html.imprimindo-cartoes body {
+    height: auto !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    background: #fff !important;
   }
-  html.imprimindo-cartoes .cartoes-grid.imprimir,
-  html.imprimindo-cartoes .cartoes-grid.imprimir * {
-    visibility: visible;
+  html.imprimindo-cartoes body > *:not(.impressao-cartoes) {
+    display: none !important;
   }
-  html.imprimindo-cartoes .cartoes-grid.imprimir [data-nao-imprimir] {
-    display: none;
+  html.imprimindo-cartoes .impressao-cartoes {
+    display: block;
+    margin: 0;
+    padding: 0;
+    color: #17233f;
+    font-family: "Manrope", sans-serif;
   }
-  html.imprimindo-cartoes .cartoes-grid.imprimir {
-    position: absolute;
-    inset: 0 auto auto 0;
-    width: 100%;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 8mm;
-    padding: 8mm;
+  .impressao-topo {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    margin: 0 0 5mm;
+    padding: 0 0 3mm;
+    border-bottom: 1.5px solid #315fd6;
+    font-size: 10pt;
   }
-  html.imprimindo-cartoes .cartao-acesso,
-  html.imprimindo-cartoes .cartao-acesso h3,
-  html.imprimindo-cartoes .cartao-acesso dd {
+  .impressao-topo strong {
+    color: #315fd6;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .impressao-grade {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6mm;
+  }
+  .impressao-cartoes .cartao-acesso {
+    break-inside: avoid;
+    page-break-inside: avoid;
+    margin: 0;
+    padding: 5mm;
     color: #17233f;
     background: #fff;
+    border: 1.5px dashed #555;
     box-shadow: none;
   }
-  html.imprimindo-cartoes .cartao-acesso {
-    border: 1.5px dashed #555;
+  .impressao-cartoes .cartao-acesso h3,
+  .impressao-cartoes .cartao-acesso dd {
+    color: #17233f;
+    overflow-wrap: anywhere;
   }
-  html.imprimindo-cartoes .cartao-acesso dl div {
+  .impressao-cartoes .cartao-acesso dl div {
     background: #f1f4fc;
   }
 }
@@ -1647,5 +1678,237 @@ body[data-page="treinar"] .typing-shell {
   }
   .cadastrar-aluno-form > .button {
     justify-self: stretch;
+  }
+}
+
+/* ==========================================================================
+   Turmas destinatárias: botão "Criar nova turma" visível e bem posicionado
+   ========================================================================== */
+.turmas-destino {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 14px 16px 16px;
+  background: var(--p-surface-2);
+  border: 1px solid var(--p-line-2);
+  border-radius: var(--radius-md);
+}
+.turmas-destino-topo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.turmas-destino legend {
+  float: left; /* deixa a legenda dentro do fluxo do cabeçalho */
+  padding: 0;
+  color: var(--p-text);
+  font-weight: 800;
+}
+.turmas-destino-ajuda {
+  margin: 0;
+  color: var(--p-muted);
+  font-size: 0.8rem;
+}
+.botao-criar-turma {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 40px;
+  color: var(--p-ink-blue) !important;
+  background: var(--p-surface) !important;
+  border: 1.5px dashed var(--wt-blue-500) !important;
+  font-weight: 800;
+}
+.botao-criar-turma svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+}
+.botao-criar-turma:hover {
+  background: var(--p-tint-blue) !important;
+  border-style: solid !important;
+}
+.turmas-destino .check-list .vazio {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.check-list label span {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 640px) {
+  .turmas-destino-topo {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .botao-criar-turma {
+    justify-content: center;
+    width: 100%;
+  }
+}
+
+/* ==========================================================================
+   Contador de caracteres
+   ========================================================================== */
+.wt-contador {
+  justify-self: end;
+  margin-top: 2px;
+  color: var(--p-soft, var(--wt-text-subtle));
+  font-family: var(--wt-font-mono);
+  font-size: 0.72rem;
+}
+.wt-contador.perto {
+  color: var(--p-ink-violet);
+}
+.wt-contador.no-limite {
+  color: var(--wt-danger);
+  font-family: var(--wt-font-sans);
+  font-weight: 750;
+}
+.field:has(.wt-contador) {
+  display: grid;
+}
+
+/* Nomes longos (inclusive os gravados antes dos limites) não quebram o layout */
+.entity-card h2,
+.entity-head p,
+.practice-info h3,
+.practice-info p,
+.page-heading h1,
+.data-table td,
+.cartao-acesso h3 {
+  overflow-wrap: anywhere;
+}
+.entity-card h2,
+.practice-info h3 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+.entity-head > div {
+  min-width: 0;
+}
+
+/* ==========================================================================
+   Moderação de conteúdo: aviso ao vivo e painel de revisão
+   ========================================================================== */
+.moderacao-aviso {
+  margin: 4px 0 0;
+  padding: 6px 10px;
+  color: var(--p-ink-violet);
+  background: var(--p-tint-violet);
+  border-left: 3px solid var(--wt-violet-500);
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+  font-weight: 650;
+}
+.moderacao-aviso.grave {
+  color: var(--wt-danger);
+  background: color-mix(in srgb, var(--wt-danger) 9%, var(--p-surface));
+  border-left-color: var(--wt-danger);
+}
+.moderacao-revisao {
+  display: grid;
+  gap: 12px;
+  margin: 16px 0 4px;
+  padding: 16px 18px;
+  background: var(--p-tint-violet);
+  border: 1px solid var(--wt-violet-500);
+  border-radius: var(--radius-md);
+}
+.moderacao-revisao.grave {
+  background: color-mix(in srgb, var(--wt-danger) 7%, var(--p-surface));
+  border-color: var(--wt-danger);
+}
+.moderacao-cabeca {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+.moderacao-cabeca h3 {
+  margin: 0 0 4px;
+  font-size: 1rem;
+}
+.moderacao-cabeca h3:focus {
+  outline: none;
+}
+.moderacao-cabeca p {
+  margin: 0;
+  color: var(--p-muted);
+  font-size: 0.86rem;
+}
+.moderacao-icone {
+  width: 28px;
+  height: 28px;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  background: var(--wt-violet-500);
+  border-radius: 50%;
+  font-weight: 900;
+}
+.moderacao-revisao.grave .moderacao-icone {
+  background: var(--wt-danger);
+}
+.moderacao-lista {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.moderacao-lista li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 12px;
+  background: var(--p-surface);
+  border: 1px solid var(--p-line-2);
+  border-left: 3px solid var(--wt-violet-500);
+  border-radius: var(--radius-sm);
+}
+.moderacao-lista li.ofensivo {
+  border-left-color: var(--wt-danger);
+}
+.moderacao-lista li > div {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+.moderacao-lista strong {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.moderacao-lista q {
+  overflow-wrap: anywhere;
+  font-size: 0.9rem;
+}
+.moderacao-lista mark {
+  padding: 0 2px;
+  color: inherit;
+  background: color-mix(in srgb, var(--wt-danger) 22%, transparent);
+  border-radius: 2px;
+}
+.moderacao-lista small {
+  color: var(--p-muted);
+}
+.moderacao-confirmar {
+  font-size: 0.88rem;
+}
+@media (max-width: 640px) {
+  .moderacao-lista li {
+    flex-direction: column;
+    align-items: stretch;
   }
 }

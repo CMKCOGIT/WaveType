@@ -1,7 +1,11 @@
 import './ui/onda.js';
+import './ui/preferencias.js';
+import './ui/caps-lock.js';
+import { montarRodape } from './ui/rodape.js';
 import { ligarBotaoTema } from './ui/tema-onda.js';
 
 document.addEventListener('DOMContentLoaded', () => {
+    montarRodape();
     // Botão de tema em onda (mesmo componente da plataforma: js/ui/tema-onda.js)
     const themeToggle = document.getElementById('theme-toggle');
     if (themeToggle) ligarBotaoTema(themeToggle);

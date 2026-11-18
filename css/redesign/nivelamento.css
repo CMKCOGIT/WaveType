@@ -5,6 +5,7 @@
 @import "./site.css";
 @import "./onda.css";
 @import "./motion.css";
+@import "./acessibilidade.css";
 
 .nivel-cartao {
   position: relative;
@@ -90,7 +91,7 @@
   height: auto;
   max-height: none;
 }
-.nivel-palco .words-wrapper {
+:root:not(.single-line) .nivel-palco .words-wrapper {
   transform: none !important;
 }
 .nivel-licao {

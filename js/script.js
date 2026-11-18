@@ -1,6 +1,7 @@
 import { criarMotor } from './digitacao/motor.js';
-import { caminhoSuave } from './ui/onda-caminho.js';
+import { desenharOndaVelocidade, criarOndaAoVivo, atualizarOndaAoVivo } from './ui/onda-velocidade.js';
 import './ui/onda.js';
+import { montarFerramentasEscrita } from './ui/preferencias.js';
 import { METRICAS, MODOS_ERRO, MODO_ERROS_POR_NIVEL, modoErrosDoExercicio } from './digitacao/config.js';
 import { completarTexto, alvoDeCaracteres, criarPraticaLivre, MIN_CARACTERES } from './digitacao/textos.js';
 
@@ -186,9 +187,14 @@ document.addEventListener('DOMContentLoaded', () => {
         return state.started ? (performance.now() - state.startTime) / 1000 : 0;
     }
 
+    // Onda ao vivo ao lado do WPM: mais alta e mais rápida conforme a velocidade.
+    const ondaViva = criarOndaAoVivo();
+    elements.liveWpm.closest('.live-primary')?.after(ondaViva);
+
     function setLiveMetrics(elapsedSeconds) {
         const stats = motor.estatisticas(elapsedSeconds);
         elements.liveWpm.textContent = String(stats.ppmBruto);
+        atualizarOndaAoVivo(ondaViva, state.finished ? 0 : stats.ppmBruto);
         // Com poucas teclas a precisão ainda não diz nada: mostra "—".
         elements.liveAccuracy.textContent = stats.precisao == null ? '—' : `${stats.precisao}%`;
     }
@@ -348,22 +354,9 @@ document.addEventListener('DOMContentLoaded', () => {
         return valor == null ? '—' : `${valor}%`;
     }
 
+    // Onda da velocidade no resultado (js/ui/onda-velocidade.js)
     function buildChart(samples) {
-        const values = samples.length ? samples : [0, 0];
-        const maxValue = Math.max(40, ...values);
-        const left = 20;
-        const right = 620;
-        const top = 20;
-        const bottom = 180;
-        const points = values.map((value, index) => {
-            const x = values.length === 1 ? left : left + ((right - left) * index / (values.length - 1));
-            const y = bottom - ((Math.min(value, maxValue) / maxValue) * (bottom - top));
-            return [x, y];
-        });
-        // Traço em onda (curva suave entre as amostras), parte da identidade.
-        const line = caminhoSuave(points);
-        elements.chartLine.setAttribute('d', line);
-        elements.chartArea.setAttribute('d', `${line} L ${right} ${bottom} L ${left} ${bottom} Z`);
+        desenharOndaVelocidade(document.getElementById('result-chart'), samples);
     }
 
     function readHistory() {
@@ -517,6 +510,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }));
 
+        atualizarOndaAoVivo(ondaViva, 0);
         elements.shell.classList.add('finished');
         elements.shell.classList.remove('focused');
         elements.resultPanel.hidden = false;
@@ -537,6 +531,7 @@ document.addEventListener('DOMContentLoaded', () => {
         renderAround(0);
         elements.wrapper.style.transform = 'translateY(0)';
         elements.liveWpm.textContent = '0';
+        atualizarOndaAoVivo(ondaViva, 0);
         elements.liveAccuracy.textContent = '—';
         elements.liveTime.textContent = exercicioTexto ? String(exercicioLimite || 0) : String(state.duration);
         elements.input.value = '';
@@ -635,19 +630,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    document.querySelectorAll('.preference-toggle').forEach((toggle) => {
-        const preference = toggle.dataset.preference;
-        const saved = localStorage.getItem(`wavetype_${preference}`) === 'true';
-        toggle.setAttribute('aria-pressed', String(saved));
-        document.body.classList.toggle(preference, saved);
-        toggle.addEventListener('click', () => {
-            const active = toggle.getAttribute('aria-pressed') !== 'true';
-            toggle.setAttribute('aria-pressed', String(active));
-            document.body.classList.toggle(preference, active);
-            localStorage.setItem(`wavetype_${preference}`, String(active));
-            requestAnimationFrame(updateTypingPosition);
-        });
-    });
+    // Ferramentas de acessibilidade padronizadas (js/ui/preferencias.js):
+    // tamanho do texto, alto contraste, reduzir movimentos e uma linha.
+    montarFerramentasEscrita(elements.shell, { ajusteEm: elements.restart });
+    document.addEventListener('wavetype:preferencias', () => requestAnimationFrame(updateTypingPosition));
 
     window.addEventListener('resize', () => requestAnimationFrame(updateTypingPosition));
 

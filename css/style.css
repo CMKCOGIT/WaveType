@@ -102,22 +102,6 @@ body.large-text {
   font-size: 1.125rem;
   --typing-size: clamp(1.55rem, 3vw, 2.25rem);
 }
-body.high-contrast {
-  --bg: var(--white);
-  --surface: var(--white);
-  --surface-soft: var(--soft-mist);
-  --surface-mint: var(--soft-mist);
-  --ink: var(--deep-ink);
-  --muted: var(--deep-ink);
-  --subtle: var(--deep-ink);
-  --line: var(--deep-ink);
-  --brand: var(--action-blue);
-  --brand-dark: var(--deep-ink);
-  --brand-soft: var(--soft-mist);
-  --mint: var(--evolution-aqua);
-  --mint-dark: var(--deep-ink);
-}
-
 body.reduce-motion *,
 body.reduce-motion *::before,
 body.reduce-motion *::after {

@@ -1,0 +1,950 @@
+/* ==========================================================================
+   WaveType — acessibilidade (última camada; vale no site e na plataforma)
+   Classes no <html> (aplicadas no <head>, sem piscar) e no <body>:
+     .high-contrast   alto contraste (claro: preto sobre branco; escuro:
+                      branco sobre preto com destaque amarelo)
+     .reduce-motion   sem animações nem transições (o sistema também vale:
+                      prefers-reduced-motion: reduce)
+     .single-line     texto dos blocos de escrita em uma linha
+   --wt-escala-texto: tamanho do texto dos blocos de escrita (0,8 a 1,8)
+   ========================================================================== */
+
+/* ---------- Tamanho do texto nos blocos de escrita ---------- */
+.typing-shell,
+.wt-bloco-escrita,
+.nivel-palco {
+  --typing-size: calc(clamp(1.35rem, 2.7vw, 2rem) * var(--wt-escala-texto, 1));
+}
+@media (max-width: 640px) {
+  .typing-shell,
+  .wt-bloco-escrita,
+  .nivel-palco {
+    /* no celular o aumento não passa da largura útil do bloco */
+    --typing-size: min(calc(1.35rem * var(--wt-escala-texto, 1)), 9vw);
+  }
+}
+/* O texto nunca sai do bloco: palavras longas quebram dentro da largura */
+.wt-bloco-escrita .words-viewport,
+.typing-shell .words-viewport {
+  max-width: 100%;
+  min-width: 0;
+}
+.wt-bloco-escrita .word,
+.typing-shell .word {
+  max-width: 100%;
+}
+
+/* ---------- Ferramentas do bloco: ajuste de tamanho ---------- */
+.wt-tamanho-texto {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.wt-tamanho-texto:not(.compacto) {
+  width: 100%;
+  justify-content: space-between;
+  padding: 6px 6px 10px 10px;
+  margin-bottom: 4px;
+  border-bottom: 1px solid var(--wt-line, var(--line));
+}
+.wt-tamanho-rotulo {
+  margin-right: auto;
+  font-size: 0.86rem;
+  font-weight: 650;
+}
+.wt-tamanho-botao {
+  min-width: 40px;
+  min-height: 36px;
+  display: inline-flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 1px;
+  padding: 4px 8px;
+  color: var(--wt-text, var(--ink));
+  background: transparent;
+  border: 1px solid var(--wt-line, var(--line));
+  border-radius: var(--radius-sm, 4px);
+  font: inherit;
+  font-weight: 800;
+  line-height: 1;
+  cursor: pointer;
+}
+.wt-tamanho-botao span {
+  font-size: 0.82rem;
+}
+.wt-tamanho-botao.maior span {
+  font-size: 1.08rem;
+}
+.wt-tamanho-botao b {
+  font-size: 0.78rem;
+  color: var(--wt-accent, var(--brand));
+}
+.wt-tamanho-botao:hover:not(:disabled) {
+  background: var(--wt-surface-tint, var(--surface-soft));
+  border-color: var(--wt-line-strong, var(--line));
+}
+.wt-tamanho-botao:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.wt-tamanho-valor {
+  min-width: 44px;
+  padding: 2px 4px;
+  color: var(--wt-text-muted, var(--muted));
+  font-family: var(--wt-font-mono, monospace);
+  font-size: 0.78rem;
+  text-align: center;
+  cursor: pointer;
+  border-radius: var(--radius-sm, 4px);
+}
+.wt-tamanho-valor:hover {
+  color: var(--wt-text, var(--ink));
+  text-decoration: underline;
+}
+.wt-ajuste-rapido {
+  margin-left: auto;
+}
+.wt-ajuste-rapido + .restart-button {
+  margin-left: 4px;
+}
+.accessibility-panel {
+  width: min(300px, calc(100vw - 32px));
+}
+.preference-toggle > span:first-child {
+  display: grid;
+  gap: 1px;
+}
+.preference-toggle small {
+  color: var(--wt-text-subtle, var(--subtle));
+  font-size: 0.72rem;
+  font-weight: 500;
+  line-height: 1.3;
+}
+.wt-pref-nota {
+  margin: 6px 10px 4px;
+  color: var(--wt-text-subtle, var(--subtle));
+  font-size: 0.72rem;
+  line-height: 1.4;
+}
+
+/* Nivelamento: barra de ferramentas acima do texto */
+.nivel-ferramentas {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  margin: 0 0 10px;
+}
+.nivel-ferramentas .wt-ajuste-rapido {
+  margin-left: 0;
+}
+.nivel-ferramentas .accessibility-menu {
+  position: relative;
+  margin-left: 0;
+}
+.nivel-ferramentas .accessibility-menu summary {
+  min-height: 40px;
+}
+@media (max-width: 640px) {
+  .wt-ajuste-rapido .wt-tamanho-valor {
+    min-width: 38px;
+  }
+  .nivel-ferramentas .accessibility-panel {
+    right: 0;
+  }
+}
+
+/* ---------- Texto em uma linha (todos os blocos de escrita) ---------- */
+html.single-line .wt-bloco-escrita .words-viewport,
+html.single-line .typing-shell .words-viewport {
+  width: 100%;
+  overflow: hidden;
+  contain: inline-size;
+  display: flex;
+  align-items: center;
+}
+html.single-line .wt-bloco-escrita .words-wrapper,
+html.single-line .typing-shell .words-wrapper {
+  position: relative;
+  flex: 0 0 auto;
+  flex-wrap: nowrap;
+  width: max-content;
+  white-space: nowrap;
+  transition: transform 0.15s ease;
+}
+html.single-line .wt-bloco-escrita .word,
+html.single-line .typing-shell .word {
+  flex-wrap: nowrap;
+  max-width: none;
+}
+html.single-line .nivel-palco .words-viewport {
+  min-height: calc(var(--typing-size) * 1.9);
+}
+
+/* ---------- Aviso de Caps Lock ---------- */
+.wt-aviso-caps {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px 5px 8px;
+  color: #3b2a00;
+  background: #ffe9a8;
+  border: 1px solid #c79a00;
+  border-radius: var(--radius-sm, 4px);
+  box-shadow: 0 4px 14px rgba(23, 35, 63, 0.16);
+  font-family: var(--wt-font-sans, sans-serif);
+  font-size: 0.78rem;
+  font-weight: 750;
+  line-height: 1.2;
+  pointer-events: none;
+}
+.wt-aviso-caps[hidden] {
+  display: none;
+}
+.wt-aviso-caps svg {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 auto;
+}
+html[data-theme="dark"] .wt-aviso-caps {
+  color: #1d1600;
+  background: #ffd866;
+  border-color: #ffe9a8;
+}
+
+/* ---------- Campos de senha: olho-onda, regras e confirmação ---------- */
+.wt-campo-senha {
+  position: relative;
+  display: block;
+  width: 100%;
+}
+/* O invólucro fica dentro do <label class="field">: não herda o estilo do rótulo (.field > span) */
+.field > span.wt-campo-senha,
+span.wt-campo-senha {
+  margin: 0;
+  padding: 0;
+  color: inherit;
+  font-size: 1rem;
+  font-weight: 400;
+  letter-spacing: normal;
+  text-transform: none;
+}
+.wt-campo-senha > input {
+  width: 100%;
+  padding-right: 52px !important;
+}
+.wt-botao-olho {
+  position: absolute;
+  top: 50%;
+  right: 4px;
+  width: 44px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  color: var(--wt-text-muted, var(--muted));
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-sm, 4px);
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+.wt-botao-olho:hover {
+  color: var(--wt-accent, var(--action));
+  background: var(--wt-surface-tint, var(--surface-soft));
+}
+.wt-olho-onda {
+  width: 24px;
+  height: 24px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  overflow: visible;
+}
+.wt-olho-onda .pupila {
+  fill: currentColor;
+  stroke: none;
+  transform-origin: 12px 10.6px;
+  transition: transform var(--wt-dur-base, 240ms) var(--wt-ease-out, ease);
+}
+.wt-olho-onda .onda {
+  stroke: var(--wt-blue-500, #4f7cff);
+  stroke-width: 2;
+}
+.wt-olho-onda .risco {
+  stroke: var(--wt-violet-500, #6b5ce7);
+  stroke-width: 2;
+  stroke-dasharray: 34;
+  stroke-dashoffset: 34;
+  transition: stroke-dashoffset var(--wt-dur-base, 240ms) var(--wt-ease-wave, ease);
+}
+/* Senha visível: o botão passa a ocultar — uma onda risca o olho */
+.wt-campo-senha.visivel .wt-olho-onda .risco {
+  stroke-dashoffset: 0;
+}
+.wt-campo-senha.visivel .wt-olho-onda .pupila {
+  transform: scale(0.75);
+}
+html[data-theme="dark"] .wt-olho-onda .onda {
+  stroke: var(--wt-blue-300, #7898ff);
+}
+html[data-theme="dark"] .wt-olho-onda .risco {
+  stroke: var(--wt-violet-300, #9488ff);
+}
+
+.wt-requisitos-senha {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  margin: -4px 0 2px;
+  padding: 0;
+  list-style: none;
+  color: var(--wt-text-subtle, var(--muted));
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+.wt-requisitos-senha li {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.wt-requisitos-senha li > span[aria-hidden] {
+  width: 14px;
+  height: 14px;
+  flex: 0 0 auto;
+  border: 1.5px solid currentColor;
+  border-radius: 50%;
+}
+.wt-requisitos-senha li.ok {
+  color: var(--wt-success-text, #0e7f71);
+}
+.wt-requisitos-senha li.ok > span[aria-hidden] {
+  background: currentColor
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Cpath d='M3.5 7.2 6 9.5l4.5-5' fill='none' stroke='%23fff' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
+    center / 12px no-repeat;
+}
+.wt-senhas-iguais,
+.wt-dica-colar {
+  min-height: 1.2em;
+  margin: -4px 0 2px;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+.wt-dica-colar {
+  color: var(--wt-text-muted, var(--muted));
+}
+.wt-dica-colar:empty,
+.wt-senhas-iguais:empty {
+  display: none;
+}
+.wt-senhas-iguais.iguais {
+  color: var(--wt-success-text, #0e7f71);
+}
+.wt-senhas-iguais.iguais::before {
+  content: "✓ ";
+}
+.wt-senhas-iguais.diferentes {
+  color: var(--wt-danger, #c0353f);
+}
+.wt-senhas-iguais.diferentes::before {
+  content: "✕ ";
+}
+input[aria-invalid="true"] {
+  border-color: var(--wt-danger, #c0353f) !important;
+}
+
+/* ---------- Rodapé (direitos autorais) ---------- */
+.wt-link-cmkcogit {
+  color: inherit;
+  font-weight: 800;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+.wt-link-cmkcogit:hover {
+  color: var(--wt-accent, var(--brand));
+}
+.wt-rodape {
+  margin-top: auto;
+  padding: 18px 24px 22px;
+  color: var(--wt-text-subtle, var(--muted));
+  text-align: center;
+  font-size: 0.8rem;
+}
+.wt-rodape small {
+  font-size: inherit;
+}
+.auth-main .wt-rodape {
+  width: 100%;
+  padding: 18px 0 0;
+}
+.app-workspace {
+  display: flex;
+  flex-direction: column;
+}
+.app-workspace > .app-main {
+  flex: 1 0 auto;
+}
+@media (max-width: 640px) {
+  .site-footer .footer-copy {
+    display: block;
+    line-height: 1.5;
+  }
+}
+
+/* ==========================================================================
+   Alto contraste
+   ========================================================================== */
+html.high-contrast,
+html.high-contrast body {
+  --hc-bg: #ffffff;
+  --hc-surface: #ffffff;
+  --hc-sunken: #f2f2f2;
+  --hc-text: #000000;
+  --hc-muted: #1a1a1a;
+  --hc-pendente: #555555;
+  --hc-line: #000000;
+  --hc-accent: #0033b3;
+  --hc-accent-hover: #001a66;
+  --hc-on-accent: #ffffff;
+  --hc-danger: #b00020;
+  --hc-success: #00573f;
+  --hc-focus: #000000;
+  --hc-halo: #ffd60a;
+  --hc-marca: #ffd60a;
+  --hc-on-marca: #000000;
+}
+html.high-contrast[data-theme="dark"],
+html.high-contrast[data-theme="dark"] body {
+  --hc-bg: #000000;
+  --hc-surface: #000000;
+  --hc-sunken: #121212;
+  --hc-text: #ffffff;
+  --hc-muted: #f2f2f2;
+  --hc-pendente: #b3b3b3;
+  --hc-line: #ffffff;
+  --hc-accent: #ffd60a;
+  --hc-accent-hover: #ffe766;
+  --hc-on-accent: #000000;
+  --hc-danger: #ff8080;
+  --hc-success: #6dffb3;
+  --hc-focus: #ffd60a;
+  --hc-halo: #000000;
+  --hc-marca: #ffd60a;
+  --hc-on-marca: #000000;
+}
+
+/* Tokens (novos e antigos) passam a apontar para a paleta de contraste */
+html.high-contrast,
+html.high-contrast body {
+  --wt-bg: var(--hc-bg);
+  --wt-surface: var(--hc-surface);
+  --wt-surface-sunken: var(--hc-sunken);
+  --wt-surface-tint: var(--hc-sunken);
+  --wt-text: var(--hc-text);
+  --wt-text-muted: var(--hc-muted);
+  --wt-text-subtle: var(--hc-muted);
+  --wt-line: var(--hc-line);
+  --wt-line-strong: var(--hc-line);
+  --wt-accent: var(--hc-accent);
+  --wt-accent-hover: var(--hc-accent-hover);
+  --wt-on-accent: var(--hc-on-accent);
+  --wt-success-text: var(--hc-success);
+  --wt-danger: var(--hc-danger);
+  --wt-focus: var(--hc-focus);
+  --wt-blue-500: var(--hc-accent);
+  --wt-blue-300: var(--hc-accent);
+  --wt-gradient-wave: linear-gradient(var(--hc-accent), var(--hc-accent));
+  --wt-gradient-tide: linear-gradient(var(--hc-accent), var(--hc-accent));
+  --wt-nav-indicador-cor: var(--hc-accent);
+  --wt-glow: none;
+  --wt-shadow-1: none;
+  --wt-shadow-2: none;
+  --wt-shadow-3: none;
+  --wt-ring: 0 0 0 3px var(--hc-focus);
+  /* style.css (site) */
+  --bg: var(--hc-bg);
+  --surface: var(--hc-surface);
+  --surface-soft: var(--hc-sunken);
+  --surface-mint: var(--hc-sunken);
+  --surface-accent: var(--hc-sunken);
+  --ink: var(--hc-text);
+  --text: var(--hc-text);
+  --muted: var(--hc-muted);
+  --subtle: var(--hc-muted);
+  --line: var(--hc-line);
+  --line-strong: var(--hc-line);
+  --brand: var(--hc-accent);
+  --brand-dark: var(--hc-text);
+  --brand-soft: var(--hc-sunken);
+  --mint: var(--hc-accent);
+  --mint-dark: var(--hc-text);
+  --button-text: var(--hc-on-accent);
+  --error: var(--hc-danger);
+  --error-soft: transparent;
+  --action: var(--hc-accent);
+  --action-blue: var(--hc-accent);
+  --wave-blue: var(--hc-accent);
+  --shadow: none;
+  --shadow-soft: none;
+  --shadow-sm: none;
+  --shadow-lg: none;
+  /* plataforma */
+  --p-bg: var(--hc-bg);
+  --p-surface: var(--hc-surface);
+  --p-surface-2: var(--hc-sunken);
+  --p-surface-3: var(--hc-sunken);
+  --p-line: var(--hc-line);
+  --p-line-2: var(--hc-line);
+  --p-text: var(--hc-text);
+  --p-muted: var(--hc-muted);
+  --p-soft: var(--hc-muted);
+  --p-tint-blue: var(--hc-sunken);
+  --p-tint-aqua: var(--hc-sunken);
+  --p-tint-violet: var(--hc-sunken);
+  --p-ink-blue: var(--hc-text);
+  --p-ink-aqua: var(--hc-text);
+  --p-ink-violet: var(--hc-text);
+  --p-dot-blue: var(--hc-text);
+  --p-dot-aqua: var(--hc-text);
+  --p-dot-violet: var(--hc-text);
+  --p-shadow: none;
+  --p-shadow-hover: none;
+  --p-hero: var(--hc-text);
+  color: var(--hc-text);
+  background: var(--hc-bg);
+}
+
+html.high-contrast body,
+html.high-contrast .app-layout,
+html.high-contrast .app-workspace,
+html.high-contrast .site-header,
+html.high-contrast .site-footer,
+html.high-contrast .app-sidebar,
+html.high-contrast .app-topbar {
+  color: var(--hc-text);
+  background: var(--hc-bg) !important;
+  background-image: none !important;
+}
+html.high-contrast *,
+html.high-contrast *::before,
+html.high-contrast *::after {
+  text-shadow: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+}
+html.high-contrast :is(p, small, span, li, dd, dt, td, th, label, legend, figcaption) {
+  opacity: 1;
+}
+
+/* Bordas bem marcadas em cartões, painéis e áreas */
+html.high-contrast :is(.panel, .metric-card, .entity-card, .typing-shell, .result-metric, .analysis-card, .detail-card,
+    .practice-row, .preview-card, .experience-card, .step-item, .nivel-cartao, .accessibility-panel,
+    .table-wrap, .dialogo, .cartao-acesso, .purpose-card, .value-card, .mode-card, .audience-card, .benefit-card,
+    .metric-explain-card, .flow-step, .achievement, .resultado-convite, .aviso-travou, .product-browser, .preview-kpi,
+    .priority-card, .rank-row, .segmented-control) {
+  color: var(--hc-text);
+  background-color: var(--hc-surface) !important;
+  background-image: none !important;
+  border: 2px solid var(--hc-line) !important;
+}
+html.high-contrast :is(.site-header, .app-topbar) {
+  border-bottom: 2px solid var(--hc-line) !important;
+}
+html.high-contrast .app-sidebar {
+  border-right: 2px solid var(--hc-line) !important;
+}
+html.high-contrast .site-footer {
+  border-top: 2px solid var(--hc-line) !important;
+}
+html.high-contrast :is(h1, h2, h3, h4, h5, strong, b) {
+  color: var(--hc-text) !important;
+  background: none;
+  -webkit-text-fill-color: currentColor;
+}
+html.high-contrast :is(.button, .segment.active, [aria-current="page"], [role="tab"][aria-selected="true"], .auth-aside) :is(strong, b, span, h3, h4, small) {
+  color: inherit !important;
+}
+html.high-contrast :is(h1, h2, h3) span {
+  color: var(--hc-accent) !important;
+  -webkit-text-fill-color: currentColor !important;
+  background: none !important;
+}
+html.high-contrast :is(.eyebrow, .section-kicker, .experience-index, .card-label) {
+  color: var(--hc-text) !important;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* Links dentro do texto: sempre sublinhados */
+html.high-contrast :is(p, li, small, td, dd, .auth-foot, .footer-copy, .test-footnote) a:not(.button),
+html.high-contrast .practice-link,
+html.high-contrast .auth-esqueci {
+  color: var(--hc-accent) !important;
+  text-decoration: underline !important;
+  text-decoration-thickness: 2px !important;
+  text-underline-offset: 3px;
+}
+
+/* Botões */
+html.high-contrast :is(.button, .button-small, .restart-button, .accessibility-menu summary, .segment, .wt-tamanho-botao,
+    .preference-toggle, .copiar, .auth-google, .header-auth-link, .preview-tab-btn, .theme-toggle, .wt-tema,
+    .wt-icone-botao, .menu-button, .auth-modos [role="tab"], .info-dica, .auth-link, .wt-botao-olho) {
+  color: var(--hc-text) !important;
+  background: var(--hc-surface) !important;
+  border: 2px solid var(--hc-line) !important;
+  text-decoration: none;
+}
+html.high-contrast .button:not(.secondary):not(.ghost):not(.button-secondary):not(.auth-google) {
+  color: var(--hc-on-accent) !important;
+  background: var(--hc-accent) !important;
+  border-color: var(--hc-accent) !important;
+}
+html.high-contrast .button:not(.secondary):not(.ghost):not(.button-secondary):not(.auth-google):hover {
+  background: var(--hc-accent-hover) !important;
+}
+html.high-contrast :is(.button, .segment, .wt-tamanho-botao, .preference-toggle, .restart-button):hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+html.high-contrast :is(button, .button):disabled {
+  opacity: 1;
+  border-style: dashed !important;
+  text-decoration: line-through;
+}
+html.high-contrast .wt-campo-senha .wt-botao-olho {
+  border: 0 !important;
+  background: transparent !important;
+}
+html.high-contrast .wt-olho-onda :is(.onda, .risco) {
+  stroke: currentColor;
+}
+
+/* Estados de seleção e página atual: invertidos, impossíveis de confundir */
+html.high-contrast :is(.segment.active, .segment[aria-pressed="true"], .preview-tab-btn.active, [role="tab"][aria-selected="true"]) {
+  color: var(--hc-on-accent) !important;
+  background: var(--hc-accent) !important;
+  border-color: var(--hc-accent) !important;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+html.high-contrast :is(.app-nav a[aria-current="page"], .desktop-nav a[aria-current="page"], .mobile-nav a[aria-current="page"]) {
+  color: var(--hc-on-accent) !important;
+  background: var(--hc-accent) !important;
+  outline: 2px solid var(--hc-line);
+}
+html.high-contrast :is(.app-nav a, .desktop-nav a, .mobile-nav a):not([aria-current="page"]) {
+  color: var(--hc-text) !important;
+}
+html.high-contrast :is(.app-nav a, .desktop-nav a, .mobile-nav a)::after,
+html.high-contrast :is(.app-nav a, .desktop-nav a, .mobile-nav a)::before {
+  background: var(--hc-on-accent) !important;
+}
+html.high-contrast .preference-toggle i {
+  background: var(--hc-surface) !important;
+  border: 2px solid var(--hc-line);
+}
+html.high-contrast .preference-toggle i::after {
+  top: 1px;
+  left: 1px;
+  background: var(--hc-text) !important;
+}
+html.high-contrast .preference-toggle[aria-pressed="true"] i {
+  background: var(--hc-accent) !important;
+  border-color: var(--hc-accent);
+}
+html.high-contrast .preference-toggle[aria-pressed="true"] i::after {
+  background: var(--hc-on-accent) !important;
+}
+html.high-contrast .preference-toggle[aria-pressed="true"] .preference-nome::after {
+  content: " (ligado)";
+  font-weight: 800;
+}
+
+/* Campos de formulário */
+html.high-contrast :is(input, select, textarea):not([type="checkbox"]):not([type="radio"]):not(.typing-input) {
+  color: var(--hc-text) !important;
+  background: var(--hc-surface) !important;
+  border: 2px solid var(--hc-line) !important;
+}
+html.high-contrast ::placeholder {
+  color: var(--hc-muted) !important;
+  opacity: 1;
+}
+html.high-contrast :is(input[type="checkbox"], input[type="radio"]) {
+  accent-color: var(--hc-accent);
+  outline: 1px solid var(--hc-line);
+}
+html.high-contrast .role-option:has(input:checked),
+html.high-contrast .situacao-opcao:has(input:checked) {
+  outline: 3px solid var(--hc-accent);
+  outline-offset: 1px;
+}
+
+/* Foco: contorno grosso com halo, visível em qualquer fundo */
+html.high-contrast :focus-visible {
+  outline: 3px solid var(--hc-focus) !important;
+  outline-offset: 2px !important;
+  box-shadow: 0 0 0 6px var(--hc-halo) !important;
+}
+html.high-contrast .typing-shell.focused .typing-stage,
+html.high-contrast .nivel-palco:focus-within {
+  border: 3px solid var(--hc-accent) !important;
+}
+
+/* Bloco de escrita: pendente, certo, errado e letra atual bem distintos */
+html.high-contrast .typing-stage {
+  background: var(--hc-surface) !important;
+  border: 2px solid var(--hc-line) !important;
+}
+html.high-contrast .words-wrapper {
+  color: var(--hc-pendente) !important;
+}
+html.high-contrast .letter.correct {
+  color: var(--hc-text) !important;
+}
+html.high-contrast .letter.incorrect,
+html.high-contrast .letter.bloqueada {
+  color: #ffffff !important;
+  background: var(--hc-danger) !important;
+  text-decoration: underline 2px;
+}
+html.high-contrast[data-theme="dark"] .letter.incorrect,
+html.high-contrast[data-theme="dark"] .letter.bloqueada {
+  color: #000000 !important;
+}
+html.high-contrast .letter.missed {
+  color: var(--hc-danger) !important;
+  opacity: 1;
+}
+html.high-contrast .letter.current {
+  color: var(--hc-on-marca) !important;
+  background: var(--hc-marca);
+}
+html.high-contrast .letter.current::before,
+html.high-contrast .word.caret-at-end::after {
+  width: 3px !important;
+  background: var(--hc-text) !important;
+}
+html.high-contrast .typing-shell::before {
+  background: var(--hc-line) !important;
+}
+html.high-contrast .focus-prompt {
+  background: color-mix(in srgb, var(--hc-surface) 82%, transparent) !important;
+  border: 2px dashed var(--hc-line);
+}
+html.high-contrast .focus-prompt strong::before {
+  filter: grayscale(1) contrast(4);
+}
+html.high-contrast .live-row .live-primary strong,
+html.high-contrast .wt-tamanho-botao b {
+  color: var(--hc-text) !important;
+}
+
+/* Tabelas */
+html.high-contrast :is(.data-table, table) :is(th, td) {
+  color: var(--hc-text) !important;
+  border-color: var(--hc-line) !important;
+}
+html.high-contrast :is(.data-table, table) th {
+  background: var(--hc-sunken) !important;
+}
+
+/* Selos, avisos e mensagens */
+html.high-contrast :is(.status, .badge, .tag, .preview-kpi-badge, .priority-tag, .preview-card-tag) {
+  color: var(--hc-text) !important;
+  background: var(--hc-surface) !important;
+  border: 1.5px solid var(--hc-line) !important;
+}
+html.high-contrast :is(.feedback, .auth-demo).is-erro,
+html.high-contrast .wt-senhas-iguais.diferentes {
+  color: var(--hc-danger) !important;
+}
+html.high-contrast :is(.feedback, .auth-demo) {
+  border: 2px solid currentColor !important;
+  background: var(--hc-surface) !important;
+}
+html.high-contrast .wt-aviso-caps {
+  color: var(--hc-on-marca);
+  background: var(--hc-marca);
+  border: 2px solid #000;
+}
+
+/* Decoração some: só o conteúdo fica */
+html.high-contrast :is(wave-background, .typing-rhythm, .wt-velocidade-brilho) {
+  display: none !important;
+}
+html.high-contrast wave-divider path {
+  fill: var(--hc-bg) !important;
+  stroke: var(--hc-line) !important;
+}
+html.high-contrast :is(.progress-track, .preview-xp-track, .preview-level-bar) {
+  background: var(--hc-surface) !important;
+  border: 2px solid var(--hc-line);
+}
+html.high-contrast :is(.progress-fill, .preview-xp-fill, .preview-level-fill, .p-bar-fill) {
+  background: var(--hc-accent) !important;
+}
+
+/* Painéis de cor (lado de marca do login, faixas de destaque) */
+html.high-contrast .auth-aside {
+  color: #ffffff !important;
+  background: #000000 !important;
+  background-image: none !important;
+  border-right: 2px solid var(--hc-line);
+}
+html.high-contrast .auth-aside :is(h1, p, span, li, strong) {
+  color: #ffffff !important;
+}
+html.high-contrast .auth-aside .auth-points li,
+html.high-contrast .app-sidebar-foot {
+  color: #ffffff !important;
+  background: #000000 !important;
+  background-image: none !important;
+  border: 2px solid #ffffff !important;
+}
+html.high-contrast .app-sidebar-foot :is(strong, small, a) {
+  color: #ffffff !important;
+}
+html.high-contrast .auth-aside .auth-points i {
+  background: #ffd60a !important;
+}
+html.high-contrast :is(.final-cta, .plain-cta, .hero-panel, .p-hero, [class*="hero"]) {
+  background-image: none !important;
+}
+
+/* Gráfico e onda de velocidade */
+html.high-contrast .wt-velocidade :is(.wt-velocidade-area, .wt-velocidade-tras) {
+  fill: none !important;
+}
+html.high-contrast .wt-velocidade .wt-velocidade-linha,
+html.high-contrast .result-chart-line {
+  stroke: var(--hc-text) !important;
+  stroke-width: 4px !important;
+}
+html.high-contrast .wt-velocidade-media line {
+  stroke: var(--hc-text) !important;
+}
+html.high-contrast .wt-velocidade-pico circle {
+  fill: var(--hc-accent) !important;
+  stroke: var(--hc-text) !important;
+}
+
+/* ==========================================================================
+   Reduzir movimentos (preferência da pessoa ou do sistema)
+   ========================================================================== */
+html.reduce-motion {
+  scroll-behavior: auto !important;
+}
+html.reduce-motion *,
+html.reduce-motion *::before,
+html.reduce-motion *::after {
+  animation: none !important;
+  transition: none !important;
+  scroll-behavior: auto !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto !important;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    animation-delay: 0ms !important;
+    transition-duration: 0.001ms !important;
+    transition-delay: 0ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+/* Nada fica escondido à espera de uma animação de entrada */
+html.reduce-motion [data-wt-reveal],
+html.reduce-motion .result-panel,
+html.reduce-motion .preview-tabpanel {
+  opacity: 1 !important;
+  transform: none !important;
+}
+/* Elementos não se deslocam ao passar o mouse */
+html.reduce-motion :is(.button, .experience-card, .entity-card, .metric-card, .panel, .practice-row, .preview-card,
+    .value-card, .mode-card, .audience-card, .purpose-card, .benefit-card, .step-item, .achievement, .cartao-acesso):hover {
+  transform: none !important;
+}
+html.reduce-motion .metric-card::after {
+  transform: none !important;
+}
+/* Ondas decorativas ficam paradas e mais discretas */
+html.reduce-motion wave-background .wt-onda-camada {
+  transform: none !important;
+}
+html.reduce-motion .typing-rhythm {
+  display: none;
+}
+/* O cursor de digitação fica fixo (sem piscar) */
+html.reduce-motion .letter.current::before,
+html.reduce-motion .word.caret-at-end::after {
+  opacity: 1 !important;
+}
+/* Carregando: em vez da onda correndo, três pontos parados */
+html.reduce-motion wave-loader path {
+  stroke-dasharray: none !important;
+}
+
+/* ==========================================================================
+   Impressão (geral da plataforma): só o conteúdo, a partir da 1ª página
+   ========================================================================== */
+@media print {
+  @page {
+    margin: 12mm;
+  }
+  html,
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+  html:not(.imprimindo-cartoes) :is(.app-sidebar, .app-topbar, .wt-menu-fundo, .site-header, .skip-link,
+      wave-background, wave-divider, .typing-rhythm, .wt-aviso-caps, .wt-rodape, .heading-actions,
+      .row-actions, .wt-tema, .theme-toggle) {
+    display: none !important;
+  }
+  html:not(.imprimindo-cartoes) .app-layout {
+    display: block !important;
+    min-height: 0 !important;
+  }
+  html:not(.imprimindo-cartoes) :is(.app-workspace, .app-main) {
+    display: block !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  :is(.panel, .entity-card, .practice-row, .metric-card, tr) {
+    break-inside: avoid;
+  }
+}
+
+/* Celular: o ajuste de tamanho e o "Recomeçar" descem para a linha de baixo */
+@media (max-width: 640px) {
+  .live-row {
+    flex-wrap: wrap;
+    row-gap: 10px;
+  }
+  .live-row .wt-ajuste-rapido {
+    order: 10;
+    margin-left: 0;
+  }
+  .live-row .restart-button {
+    order: 11;
+    margin-left: auto;
+  }
+  .live-row .wt-onda-viva {
+    flex-basis: 56px;
+    width: 56px;
+  }
+}

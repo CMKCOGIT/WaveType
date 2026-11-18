@@ -8,6 +8,11 @@
 // Não toca em dados, sessão nem formulários.
 
 import './onda.js';
+import './preferencias.js';
+import './caps-lock.js';
+import { ligarCamposDeSenha } from './campos-senha.js';
+import { montarRodape } from './rodape.js';
+import { ligarContadores } from './contador.js';
 import { ligarBotaoTema } from './tema-onda.js';
 
 const raiz = document.documentElement;
@@ -147,6 +152,9 @@ function nomearItensDoMenu() {
 }
 
 function montar() {
+  ligarCamposDeSenha();
+  ligarContadores();
+  montarRodape();
   montarMenuMovel();
   nomearItensDoMenu();
   rotularTabelas();

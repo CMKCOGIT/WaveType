@@ -1,4 +1,5 @@
 // js/pages/professor-turmas.js
+import { LIMITES, erroDeLimite } from '../regras.js';
 import { exigirPapel } from '../auth.js';
 import { listarMinhasTurmas, criarTurma, atualizarTurma, excluirTurma, modosDeErroDasTurmas } from '../api/turmas.js';
 import { TIPOS_DE_PERIODO, ANOS_A_FRENTE, anoAtual, montarAnoLetivo, lerAnoLetivo, validarAnoLetivo } from '../turmas/periodo.js';
@@ -17,6 +18,14 @@ async function iniciar() {
   const perfil = await exigirPapel('professor');
   if (!perfil) return;
   await carregarTurmas();
+  // Vindo do botão "Criar nova turma" (ex.: formulário de exercícios): abre o formulário.
+  const parametros = new URLSearchParams(location.search);
+  if (parametros.get('nova') === '1') {
+    parametros.delete('nova');
+    history.replaceState(null, '', location.pathname + (parametros.size ? `?${parametros}` : '') + location.hash);
+    abrirFormulario();
+    form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
 }
 
 botaoAbrir.addEventListener('click', () => abrirFormulario());
@@ -114,6 +123,12 @@ form.addEventListener('submit', async (evento) => {
   };
   if (campos.nome.length < 2) {
     feedbackForm.textContent = 'Informe o nome da turma.';
+    feedbackForm.hidden = false;
+    return;
+  }
+  const erroLimite = erroDeLimite(campos.nome, LIMITES.nomeTurma, 'O nome da turma') || erroDeLimite(campos.descricao, LIMITES.descricaoTurma, 'A descrição');
+  if (erroLimite) {
+    feedbackForm.textContent = erroLimite;
     feedbackForm.hidden = false;
     return;
   }

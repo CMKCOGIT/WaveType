@@ -88,11 +88,36 @@ export function ligarCopiar(area, obterContas) {
   });
 }
 
-/** Imprime só os cartões da área indicada. */
+/**
+ * Imprime só os cartões da área indicada.
+ * Os cartões são copiados para uma área própria, filha direta do <body>, e
+ * todo o resto da página sai do fluxo (display: none). Antes eles só ficavam
+ * invisíveis (visibility: hidden) e continuavam ocupando espaço: a impressão
+ * começava na segunda página, com a primeira em branco.
+ */
 export function imprimirCartoes(area) {
-  document.querySelectorAll('.cartoes-grid.imprimir').forEach((g) => g.classList.remove('imprimir'));
-  area.classList.add('imprimir');
+  document.querySelector('.impressao-cartoes')?.remove();
+  const folha = document.createElement('div');
+  folha.className = 'impressao-cartoes';
+  folha.setAttribute('aria-hidden', 'true');
+  const titulo = area.closest('section, .panel')?.querySelector('h2, h3')?.textContent?.trim();
+  folha.innerHTML = `<header class="impressao-topo"><strong>WaveType</strong>${titulo ? `<span>${titulo.replace(/[<>&]/g, '')}</span>` : ''}</header>`;
+  const grade = document.createElement('div');
+  grade.className = 'impressao-grade';
+  area.querySelectorAll('.cartao-acesso').forEach((cartao) => {
+    const copia = cartao.cloneNode(true);
+    copia.querySelectorAll('[data-nao-imprimir]').forEach((el) => el.remove());
+    copia.removeAttribute('data-cartao');
+    grade.append(copia);
+  });
+  folha.append(grade);
+  document.body.append(folha);
   document.documentElement.classList.add('imprimindo-cartoes');
   window.print();
 }
-window.addEventListener('afterprint', () => document.documentElement.classList.remove('imprimindo-cartoes'));
+
+function terminarImpressao() {
+  document.documentElement.classList.remove('imprimindo-cartoes');
+  document.querySelector('.impressao-cartoes')?.remove();
+}
+window.addEventListener('afterprint', terminarImpressao);

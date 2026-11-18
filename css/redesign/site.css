@@ -673,3 +673,26 @@ body.high-contrast .plain-cta {
     display: none;
   }
 }
+
+/* Demonstração do professor: sem o gráfico ilustrativo (não existe na
+   plataforma), o cartão de ações ocupa a largura toda, em duas colunas. */
+.preview-feature-grid--unico {
+  grid-template-columns: minmax(0, 1fr);
+}
+.preview-feature-grid--unico .priority-cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.preview-feature-grid--unico .priority-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.preview-feature-grid--unico .priority-card .priority-btn {
+  margin-top: auto;
+}
+@media (max-width: 640px) {
+  .preview-feature-grid--unico .priority-cards {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

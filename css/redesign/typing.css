@@ -328,3 +328,140 @@ body.high-contrast .typing-shell.focused .typing-stage {
 #result-title:focus {
   outline: none;
 }
+
+/* ==========================================================================
+   Onda da velocidade (js/ui/onda-velocidade.js)
+   ========================================================================== */
+#result-chart.wt-velocidade {
+  overflow: visible;
+}
+.wt-velocidade .chart-grid line {
+  stroke: var(--wt-line);
+  stroke-dasharray: none;
+}
+.wt-vel-cor-1 { stop-color: var(--wt-blue-600); }
+.wt-vel-cor-2 { stop-color: var(--wt-blue-500); }
+.wt-vel-cor-3 { stop-color: var(--wt-aqua-500); }
+.wt-vel-area-topo { stop-color: var(--wt-blue-500); stop-opacity: 0.26; }
+.wt-vel-area-base { stop-color: var(--wt-blue-500); stop-opacity: 0; }
+html[data-theme="dark"] .wt-vel-cor-1 { stop-color: var(--wt-blue-300); }
+html[data-theme="dark"] .wt-vel-cor-2 { stop-color: var(--wt-violet-300); }
+html[data-theme="dark"] .wt-vel-cor-3 { stop-color: var(--wt-aqua-300); }
+html[data-theme="dark"] .wt-vel-area-topo { stop-color: var(--wt-blue-300); stop-opacity: 0.3; }
+html[data-theme="dark"] .wt-vel-area-base { stop-color: var(--wt-blue-300); }
+
+.wt-velocidade .wt-velocidade-tras {
+  opacity: 0.45;
+}
+.wt-velocidade .wt-velocidade-eco {
+  fill: none;
+  stroke: var(--wt-violet-500);
+  stroke-width: 1.5;
+  stroke-opacity: 0.35;
+  stroke-linecap: round;
+}
+html[data-theme="dark"] .wt-velocidade .wt-velocidade-eco {
+  stroke: var(--wt-violet-300);
+}
+.wt-velocidade .wt-velocidade-linha {
+  fill: none;
+  stroke-width: 3.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.wt-velocidade-media line {
+  stroke: var(--wt-text-subtle);
+  stroke-width: 1;
+  stroke-dasharray: 3 5;
+}
+.wt-velocidade text {
+  fill: var(--wt-text-muted);
+  font-family: var(--wt-font-mono);
+  font-size: 12px;
+}
+.wt-velocidade-pico circle {
+  fill: var(--wt-surface);
+  stroke: var(--wt-accent);
+  stroke-width: 3;
+}
+.wt-velocidade-pico text {
+  fill: var(--wt-accent);
+  font-weight: 600;
+}
+.wt-velocidade-fim {
+  fill: var(--wt-aqua-500);
+}
+
+/* Desenho da onda ao aparecer: o traço corre da esquerda para a direita
+   e a área sobe como a maré. */
+@media (prefers-reduced-motion: no-preference) {
+  html:not(.reduce-motion) .wt-velocidade.wt-desenhando .wt-velocidade-linha {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: wt-vel-desenhar 1.2s var(--wt-ease-wave) 0.15s forwards;
+  }
+  html:not(.reduce-motion) .wt-velocidade.wt-desenhando :is(.wt-velocidade-area, .wt-velocidade-tras, .wt-velocidade-eco) {
+    transform-origin: 50% 100%;
+    transform-box: fill-box;
+    animation: wt-vel-mare 1s var(--wt-ease-out) both;
+  }
+  html:not(.reduce-motion) .wt-velocidade.wt-desenhando :is(.wt-velocidade-media, .wt-velocidade-pico, .wt-velocidade-fim) {
+    animation: wt-vel-surgir 0.4s var(--wt-ease-out) 1.1s both;
+  }
+}
+@keyframes wt-vel-desenhar {
+  to { stroke-dashoffset: 0; }
+}
+@keyframes wt-vel-mare {
+  from { opacity: 0; transform: scaleY(0.2); }
+}
+@keyframes wt-vel-surgir {
+  from { opacity: 0; }
+}
+
+/* Onda ao vivo ao lado do WPM */
+.wt-onda-viva {
+  width: 120px;
+  height: 28px;
+  flex: 0 1 120px;
+  min-width: 56px;
+  overflow: hidden;
+  color: var(--wt-accent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 18%, #000 82%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 18%, #000 82%, transparent);
+}
+.wt-onda-viva svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.wt-onda-viva path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+  transition: d 0.4s var(--wt-ease-out);
+}
+.wt-onda-viva:not(.em-movimento) {
+  opacity: 0.45;
+}
+@media (prefers-reduced-motion: no-preference) {
+  html:not(.reduce-motion) .wt-onda-viva.em-movimento .wt-onda-viva-faixa {
+    animation: wt-onda-viva-correr var(--wt-viva-duracao, 1.6s) linear infinite;
+  }
+}
+@keyframes wt-onda-viva-correr {
+  to { transform: translateX(calc(-2 * var(--wt-viva-passo, 40px))); }
+}
+@media (max-width: 480px) {
+  .wt-onda-viva {
+    width: 64px;
+    flex-basis: 64px;
+  }
+}
+html.high-contrast .wt-onda-viva {
+  color: var(--hc-text);
+  -webkit-mask-image: none;
+  mask-image: none;
+}
