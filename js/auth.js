@@ -301,6 +301,13 @@ export function traduzErro(error) {
     console.error('Banco de dados desatualizado:', error.message);
     return new Error('O banco de dados do WaveType ainda não foi atualizado para esta versão. Avise o administrador do site.');
   }
+  // Limite de frequência do banco (ex.: cadastro de alunos, migração 19)
+  if (error?.code === 'P0429') {
+    const erro = new Error(error.message);
+    erro.limite = true;
+    erro.esperaSeg = Number(/espera_seg=(\d+)/.exec(error.hint ?? '')?.[1]) || null;
+    return erro;
+  }
   // Mensagens das nossas RPCs já vêm em português e prontas para a pessoa.
   if (error?.code && /^(P0|22|23|28|42501)/.test(error.code) && error.message) return new Error(error.message);
   console.error(error);
