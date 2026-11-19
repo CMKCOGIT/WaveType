@@ -17,16 +17,16 @@ test('sem envios recentes, pode enviar', () => {
 
 test('clique duplo: espera curta entre um envio e outro', () => {
   registrarEnvio(1_000_000);
-  assert.equal(esperaParaEnviar(1_000_500), 2);
-  assert.equal(esperaParaEnviar(1_002_100), 0);
+  assert.equal(esperaParaEnviar(1_000_500), 1);
+  assert.equal(esperaParaEnviar(1_001_100), 0);
 });
 
-test('30 envios no minuto: o 31º espera até o mais antigo sair da janela', () => {
-  assert.equal(ENVIOS_POR_MINUTO, 30);
+test('50 envios no minuto: o 51º espera até o mais antigo sair da janela', () => {
+  assert.equal(ENVIOS_POR_MINUTO, 50);
   const inicio = 1_000_000;
-  for (let i = 0; i < ENVIOS_POR_MINUTO; i += 1) registrarEnvio(inicio + i * 1500);
-  const agora = inicio + 50_000;
-  assert.equal(esperaParaEnviar(agora), 10);
+  for (let i = 0; i < ENVIOS_POR_MINUTO; i += 1) registrarEnvio(inicio + i * 1000);
+  const agora = inicio + 52_000;
+  assert.equal(esperaParaEnviar(agora), 8);
   assert.equal(esperaParaEnviar(inicio + 60_001), 0);
 });
 

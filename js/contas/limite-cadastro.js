@@ -1,15 +1,15 @@
 // js/contas/limite-cadastro.js
 // Limite de frequência do cadastro de alunos, do lado da tela.
 // A regra que vale é a do banco (migração 20261118000019: 10 envios por
-// minuto — 30 desde a migração 20 —, 300 contas por hora e 1000 por dia,
+// minuto — 50 desde a migração 21 —, 300 contas por hora e 1000 por dia,
 // por professor). Aqui a tela:
-//  - recusa antes de enviar quando já houve 30 envios no último minuto
+//  - recusa antes de enviar quando já houve 50 envios no último minuto
 //    (economiza a ida ao servidor e avisa na hora);
 //  - trava o botão por alguns segundos entre um envio e outro (clique duplo);
 //  - quando o banco recusa por limite, mostra a contagem regressiva.
 
-export const ENVIOS_POR_MINUTO = 30;
-const INTERVALO_MINIMO_MS = 2000;
+export const ENVIOS_POR_MINUTO = 50;
+const INTERVALO_MINIMO_MS = 1000;
 const CHAVE = 'wavetype_cadastros_alunos';
 
 function lerEnvios(agora = Date.now()) {
