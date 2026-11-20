@@ -1,0 +1,32 @@
+@startuml level-1-context
+!include <C4/C4_Context>
+
+title WaveType — Nível 1: Diagrama de Contexto do Sistema
+
+LAYOUT_WITH_LEGEND()
+
+Person(visitante, "Visitante", "Pessoa sem conta. Faz o teste público de digitação e o nivelamento na landing page.")
+Person(usuario, "Usuário (conta pessoal)", "Treina digitação por conta própria: trilha oficial, prática livre, resultados e conquistas.")
+Person(aluno, "Aluno", "Conta criada pelo professor (login escolar) ou vinculada a uma turma. Faz atividades, treina e vê o ranking anônimo da turma.")
+Person(professor, "Professor", "Cria turmas, contas de alunos (em lote ou por planilha), atividades e acompanha relatórios.")
+
+System(wavetype, "WaveType", "Plataforma web de ensino de digitação: trilha progressiva em 5 níveis, nivelamento, gamificação (XP, sequência, conquistas) e gestão escolar.")
+
+System_Ext(supabase, "Supabase", "Backend-as-a-Service: Auth (GoTrue), PostgreSQL com RLS, API REST/RPC (PostgREST).")
+System_Ext(google, "Google OAuth 2.0", "Provedor de identidade para «Entrar com Google» e vinculação de conta.")
+System_Ext(smtp, "Servidor SMTP", "Entrega os e-mails transacionais (confirmar cadastro, recuperar senha, vincular e-mail) com os modelos em português.")
+System_Ext(vercel, "Vercel", "Build (Vite) e hospedagem estática / CDN do site, com deploys de Production e Preview.")
+
+Rel(visitante, wavetype, "Testa a digitação, cria conta", "HTTPS")
+Rel(usuario, wavetype, "Treina e acompanha a evolução", "HTTPS")
+Rel(aluno, wavetype, "Faz atividades e treinos", "HTTPS")
+Rel(professor, wavetype, "Gerencia turmas, alunos e atividades", "HTTPS")
+
+Rel(wavetype, supabase, "Autentica, lê e grava dados", "HTTPS / JSON (supabase-js)")
+Rel(supabase, google, "Delega o login social", "OAuth 2.0 / OIDC")
+Rel(supabase, smtp, "Envia e-mails de autenticação", "SMTP")
+Rel_U(vercel, wavetype, "Compila e serve os arquivos estáticos")
+
+Rel_Back(usuario, smtp, "Recebe links de confirmação/recuperação", "E-mail")
+
+@enduml

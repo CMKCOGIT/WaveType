@@ -1,0 +1,61 @@
+@startuml level-3-component
+!include <C4/C4_Component>
+
+title WaveType — Nível 3: Componentes da Aplicação Web (front-end)
+
+LAYOUT_TOP_DOWN()
+LAYOUT_WITH_LEGEND()
+
+Person(pessoa, "Usuário / Aluno / Professor")
+
+Container_Boundary(spa, "Aplicação Web (JavaScript ES Modules)") {
+
+  Component(pages, "Controladores de página", "js/pages/*.js", "Um módulo por tela (login, cadastro, treino, trilha, nivelamento, conquistas, professor-alunos, professor-atividade, relatórios...). Ligam o DOM aos serviços.")
+  Component(publico, "Site público", "js/site.js, js/pages/teste-publico.js, js/sessao/cabecalho.js", "Landing, teste aberto e cabeçalho que mostra o estado da sessão.")
+
+  Component(digitacao, "Motor de digitação", "js/digitacao/ (motor, metricas, config, textos) + js/script.js", "Motor sem DOM (teclas → estado, PPM, precisão, consistência, erros por tecla) e a tela que o desenha. Publica o evento wavetype:resultado.")
+  Component(nivel, "Nivelamento e sugestões", "js/nivelamento/ (config, avaliacao)", "Regras puras do teste de nivelamento e da recomendação de lição durante o treino.")
+  Component(regras, "Regras de domínio", "js/regras.js, js/exercicios-dados.js, js/turmas/periodo.js, js/analise/tentativa.js", "Precisão mínima da trilha, níveis, ano letivo e análise letra a letra das tentativas (espelho das regras do banco).")
+  Component(contas, "Contas escolares (regras)", "js/contas/ (credenciais, planilha)", "Gera logins/senhas, normaliza nomes, lê CSV/XLSX e monta a exportação da lista de alunos.")
+
+  Component(sessao, "Sessão e controle de acesso", "js/sessao/ (sessao, regras, local)", "Valida a sessão no servidor, exige papel (exigirPapel), expira por inatividade, redireciona e sincroniza logout entre abas.")
+  Component(auth, "Serviço de autenticação", "js/auth.js", "Cadastro, login (e-mail, Google, usuário da escola), vinculação de identidades, recuperação/troca de senha, concluir cadastro, tradução de erros.")
+
+  Component(apis, "Camada de acesso a dados", "js/api/ (turmas, exercicios, resultados, achievements, dashboard, nivelamento, contas-escolares)", "Funções assíncronas que encapsulam select/insert e RPCs do Supabase.")
+  Component(client, "Cliente Supabase", "js/supabaseClient.js (@supabase/supabase-js)", "Instância única com persistSession, autoRefreshToken e detectSessionInUrl.")
+
+  Component(ui, "Componentes de UI", "js/ui/ (onda, plataforma, tema-onda, toast-conquista, ranking-animais, cartoes-acesso, icones, motion)", "Web Components de onda (WaveMeter, WaveLoader...), tema claro/escuro, menu da plataforma, toasts e cartões de acesso.")
+  Component(export, "Exportação", "js/ui/pdf.js + import dinâmico de xlsx", "Gera PDF (jsPDF + autotable) e planilhas XLSX de relatórios e listas.")
+}
+
+ContainerDb(local, "localStorage", "Navegador")
+Container(auth_sb, "Supabase Auth", "GoTrue")
+Container(api_sb, "API de dados", "PostgREST")
+
+Rel(pessoa, pages, "Interage", "DOM")
+Rel(pessoa, publico, "Interage", "DOM")
+
+Rel(pages, sessao, "exigirPapel / protegerPaginaDeAcesso")
+Rel(pages, auth, "Ações de conta")
+Rel(pages, apis, "Busca e grava dados")
+Rel(pages, digitacao, "Envia exercício (wavetype:exercicio) / recebe wavetype:resultado", "CustomEvent")
+Rel(pages, nivel, "Recomenda lições")
+Rel(pages, regras, "Valida e formata")
+Rel(pages, contas, "Prepara importação/exportação")
+Rel(pages, ui, "Renderiza")
+Rel(pages, export, "Baixa PDF/XLSX")
+Rel(publico, digitacao, "Teste aberto")
+Rel(publico, sessao, "Mostra estado do login")
+
+Rel(auth, sessao, "irParaArea, atualizarPapelDaSessao")
+Rel(auth, client, "supabase.auth.*")
+Rel(sessao, client, "getSession, getUser, perfil")
+Rel(sessao, local, "Papel, atividade, redirect", "Storage API")
+Rel(apis, client, "from() / rpc()")
+Rel(apis, nivel, "licaoRecomendadaAtual")
+Rel(apis, contas, "gerarSenha, sugerirLogins")
+
+Rel(client, auth_sb, "Auth API", "HTTPS")
+Rel(client, api_sb, "REST / RPC", "HTTPS")
+
+@enduml

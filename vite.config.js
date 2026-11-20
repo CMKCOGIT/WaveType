@@ -1,9 +1,11 @@
 import { defineConfig, loadEnv } from 'vite';
 import { resolve } from 'path';
+import { readFileSync } from 'fs';
 import { globSync } from 'glob';
 
 // Site multi-página "cru": cada .html vira uma entrada de build.
-const paginas = globSync('{*.html,app/**/*.html}').reduce((entradas, arquivo) => {
+// A documentação de arquitetura (docs/c4-architecture) também é publicada.
+const paginas = globSync('{*.html,app/**/*.html,docs/c4-architecture/index.html}').reduce((entradas, arquivo) => {
   const nome = arquivo.replace(/\.html$/, '').replace(/\//g, '_');
   entradas[nome] = resolve(__dirname, arquivo);
   return entradas;
@@ -83,8 +85,19 @@ export default defineConfig(({ mode }) => {
     },
   };
 
+  // A página docs/c4-architecture/index.html lê os .puml por fetch em tempo de
+  // execução; o Vite não os enxerga como dependência, então são copiados aqui.
+  const publicarDiagramasC4 = {
+    name: 'wavetype-diagramas-c4',
+    generateBundle() {
+      for (const arquivo of globSync('docs/c4-architecture/*.puml')) {
+        this.emitFile({ type: 'asset', fileName: arquivo.replace(/\\/g, '/'), source: readFileSync(arquivo, 'utf8') });
+      }
+    },
+  };
+
   return {
-    plugins: [preconectarSupabase],
+    plugins: [preconectarSupabase, publicarDiagramasC4],
     define: {
       'import.meta.env.VITE_SUPABASE_URL': JSON.stringify(url),
       'import.meta.env.VITE_SUPABASE_ANON_KEY': JSON.stringify(chave),

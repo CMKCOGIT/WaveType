@@ -1,0 +1,40 @@
+@startuml level-2-container
+!include <C4/C4_Container>
+
+title WaveType — Nível 2: Diagrama de Containers
+
+LAYOUT_WITH_LEGEND()
+
+Person(visitante, "Visitante", "Sem conta")
+Person(estudante, "Usuário / Aluno", "Treina digitação")
+Person(professor, "Professor", "Gerencia turmas")
+
+System_Boundary(wt, "WaveType") {
+  Container(cdn, "Site estático", "Vercel CDN + Vite 5 (build multi-página)", "Serve ~30 páginas HTML (públicas e áreas /app/usuario, /app/aluno, /app/professor), CSS (design tokens) e bundles JS. O build embute apenas a URL e a chave anon do Supabase e falha se detectar a service_role.")
+  Container(spa, "Aplicação Web (front-end)", "JavaScript ES Modules no navegador", "Páginas multi-página: motor de digitação, sessão e proteção de rotas por papel, telas de treino, trilha, nivelamento, conquistas, gestão de alunos e relatórios. Exporta PDF (jsPDF) e planilhas (SheetJS).")
+  ContainerDb(local, "Armazenamento do navegador", "localStorage + eventos storage", "Sessão do Supabase, papel da sessão, última atividade (expiração por inatividade), redirect pós-login, tema e nivelamento pendente. Sincroniza o logout entre abas.")
+}
+
+System_Boundary(sb, "Supabase (BaaS)") {
+  Container(auth, "Supabase Auth", "GoTrue", "Cadastro e login por e-mail/senha, Google OAuth, vinculação de identidades, recuperação de senha. Emite o JWT usado pelo RLS.")
+  Container(api, "API de dados", "PostgREST", "Expõe tabelas (CRUD) e funções RPC (ex.: login_escolar, professor_criar_alunos, ranking_turma, salvar_atividade, progresso_conquistas).")
+  ContainerDb(db, "Banco de dados", "PostgreSQL + RLS", "13 tabelas (usuarios, turmas, matriculas, exercicios, resultados, conquistas, nivelamentos, contas_escolares...), triggers de validação/gamificação e funções SECURITY DEFINER. Fonte da verdade das regras de conclusão.")
+}
+
+System_Ext(google, "Google OAuth 2.0", "Identidade")
+System_Ext(smtp, "Servidor SMTP", "E-mails transacionais")
+
+Rel(visitante, cdn, "Acessa", "HTTPS")
+Rel(estudante, cdn, "Acessa", "HTTPS")
+Rel(professor, cdn, "Acessa", "HTTPS")
+Rel(cdn, spa, "Entrega HTML/CSS/JS")
+
+Rel(spa, local, "Lê/grava estado de sessão e preferências")
+Rel(spa, auth, "signUp, signInWithPassword, signInWithOAuth, linkIdentity, resetPassword", "HTTPS / JSON")
+Rel(spa, api, "select/insert e chamadas RPC com o JWT do usuário", "HTTPS / JSON")
+Rel(api, db, "Executa SQL sob as políticas RLS (auth.uid(), meu_tipo())", "SQL")
+Rel(auth, db, "Trigger on_auth_user_created cria o perfil em public.usuarios", "SQL")
+Rel(auth, google, "Redireciona e troca o código", "OAuth 2.0")
+Rel(auth, smtp, "Envia confirmar-cadastro, recuperar-senha, vincular-email", "SMTP")
+
+@enduml
