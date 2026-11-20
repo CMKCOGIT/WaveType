@@ -5,104 +5,300 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Arquitetura C4 · WaveType</title>
   <meta name="description" content="Diagramas C4 (contexto, containers, componentes e código) da plataforma WaveType, renderizados a partir dos arquivos .puml.">
+  <link rel="icon" type="image/svg+xml" href="../../assets/images/icons/favicon.svg">
+  <link rel="preload" href="../../assets/fonts/Manrope-Variable.ttf" as="font" type="font/ttf" crossorigin>
   <style>
+    /* Identidade visual WaveType (mesmos tokens de css/redesign/tokens.css). */
+    @font-face {
+      font-family: "Manrope"; font-style: normal; font-weight: 200 800; font-display: swap;
+      src: url("../../assets/fonts/Manrope-Variable.ttf") format("truetype");
+    }
+    @font-face {
+      font-family: "IBM Plex Mono"; font-style: normal; font-weight: 400; font-display: swap;
+      src: url("../../assets/fonts/IBMPlexMono-Regular.ttf") format("truetype");
+    }
     :root {
-      --bg: #f5f7fb;
+      --bg: #f5f8ff;
       --surface: #ffffff;
-      --surface-2: #eef2f9;
-      --text: #141b2d;
-      --muted: #5a6478;
-      --border: #d8deea;
-      --accent: #1e4fd8;
+      --surface-2: #eef2fc;
+      --tint: rgba(79, 124, 255, 0.07);
+      --text: #17233f;
+      --muted: #4a5571;
+      --subtle: #5a6480;
+      --border: rgba(23, 35, 63, 0.11);
+      --border-strong: rgba(49, 95, 214, 0.3);
+      --accent: #315fd6;
+      --accent-hover: #2a52bd;
       --accent-text: #ffffff;
-      --danger: #b42318;
-      --code-bg: #0f1525;
+      --danger: #c0353f;
+      --code-bg: #0e1730;
       --code-text: #dbe4ff;
       --diagram-bg: #ffffff;
+      --grid-dot: rgba(49, 95, 214, 0.14);
+      --wave: linear-gradient(100deg, #315fd6 0%, #4f7cff 48%, #6b5ce7 100%);
+      --tide: linear-gradient(90deg, #4f7cff, #2ecab6);
+      --glow: radial-gradient(60% 60% at 50% 40%, rgba(79, 124, 255, 0.16), transparent 70%);
+      --shadow-1: 0 1px 2px rgba(23, 35, 63, 0.05), 0 4px 14px rgba(23, 35, 63, 0.05);
+      --shadow-2: 0 2px 6px rgba(23, 35, 63, 0.05), 0 14px 36px rgba(23, 35, 63, 0.08);
+      --ring: 0 0 0 3px rgba(79, 124, 255, 0.28);
+      --focus: #4f7cff;
+      --radius-sm: 4px;
+      --radius-md: 8px;
       --radius: 12px;
+      --sans: "Manrope", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      --mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+      --dur: 160ms;
+      --ease: cubic-bezier(0.2, 0, 0, 1);
+      --wave-line: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 16'%3E%3Cpath d='M0 8c10 0 10-6 20-6s10 12 20 12 10-12 20-12 10 12 20 12 10-12 20-12 10 6 20 6' fill='none' stroke='%23000' stroke-width='2'/%3E%3C/svg%3E");
       color-scheme: light;
     }
     @media (prefers-color-scheme: dark) {
       :root:not([data-theme="light"]) {
-        --bg: #0b1020; --surface: #131a2e; --surface-2: #1b2440; --text: #e7ecf7; --muted: #9aa5bf;
-        --border: #2a3556; --accent: #6f95ff; --accent-text: #0b1020; --danger: #ff8a80;
-        --code-bg: #070b16; --code-text: #dbe4ff; --diagram-bg: #f7f9fd; color-scheme: dark;
+        --bg: #0e1730; --surface: #16213a; --surface-2: #121b33; --tint: rgba(120, 152, 255, 0.1);
+        --text: #f1f5ff; --muted: rgba(241, 245, 255, 0.78); --subtle: rgba(241, 245, 255, 0.66);
+        --border: rgba(241, 245, 255, 0.11); --border-strong: rgba(120, 152, 255, 0.38);
+        --accent: #7898ff; --accent-hover: #94adff; --accent-text: #17233f; --danger: #ff8a92;
+        --code-bg: #0a1126; --code-text: #dbe4ff; --diagram-bg: #f7f9fd; --grid-dot: rgba(120, 152, 255, 0.16);
+        --wave: linear-gradient(100deg, #7898ff 0%, #8aa6ff 45%, #9488ff 100%);
+        --glow: radial-gradient(60% 60% at 50% 40%, rgba(120, 152, 255, 0.18), transparent 70%);
+        --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.25), 0 4px 14px rgba(0, 0, 0, 0.18);
+        --shadow-2: 0 2px 6px rgba(0, 0, 0, 0.24), 0 14px 36px rgba(0, 0, 0, 0.28);
+        --ring: 0 0 0 3px rgba(120, 152, 255, 0.4); --focus: #7898ff;
+        color-scheme: dark;
       }
     }
     :root[data-theme="dark"] {
-      --bg: #0b1020; --surface: #131a2e; --surface-2: #1b2440; --text: #e7ecf7; --muted: #9aa5bf;
-      --border: #2a3556; --accent: #6f95ff; --accent-text: #0b1020; --danger: #ff8a80;
-      --code-bg: #070b16; --code-text: #dbe4ff; --diagram-bg: #f7f9fd; color-scheme: dark;
+      --bg: #0e1730; --surface: #16213a; --surface-2: #121b33; --tint: rgba(120, 152, 255, 0.1);
+      --text: #f1f5ff; --muted: rgba(241, 245, 255, 0.78); --subtle: rgba(241, 245, 255, 0.66);
+      --border: rgba(241, 245, 255, 0.11); --border-strong: rgba(120, 152, 255, 0.38);
+      --accent: #7898ff; --accent-hover: #94adff; --accent-text: #17233f; --danger: #ff8a92;
+      --code-bg: #0a1126; --code-text: #dbe4ff; --diagram-bg: #f7f9fd; --grid-dot: rgba(120, 152, 255, 0.16);
+      --wave: linear-gradient(100deg, #7898ff 0%, #8aa6ff 45%, #9488ff 100%);
+      --glow: radial-gradient(60% 60% at 50% 40%, rgba(120, 152, 255, 0.18), transparent 70%);
+      --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.25), 0 4px 14px rgba(0, 0, 0, 0.18);
+      --shadow-2: 0 2px 6px rgba(0, 0, 0, 0.24), 0 14px 36px rgba(0, 0, 0, 0.28);
+      --ring: 0 0 0 3px rgba(120, 152, 255, 0.4); --focus: #7898ff;
+      color-scheme: dark;
     }
+    @media (prefers-reduced-motion: reduce) { :root { --dur: 0ms; } }
 
     * { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
     body {
       margin: 0; background: var(--bg); color: var(--text);
-      font: 15px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      font: 15px/1.6 var(--sans); -webkit-font-smoothing: antialiased;
     }
-    header {
-      padding: 28px 16px 8px; max-width: 1280px; margin: 0 auto;
-      display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: end; justify-content: space-between;
-    }
-    h1 { margin: 0; font-size: 1.6rem; letter-spacing: -0.01em; }
-    header p { margin: 4px 0 0; color: var(--muted); max-width: 60ch; }
-    .controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
-    label.small { font-size: .85rem; color: var(--muted); display: flex; gap: 6px; align-items: center; }
-    select, button {
-      font: inherit; color: var(--text); background: var(--surface); border: 1px solid var(--border);
-      border-radius: 8px; padding: 6px 10px; cursor: pointer;
-    }
-    button:hover, select:hover { border-color: var(--accent); }
-    button:focus-visible, select:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    code { font-family: var(--mono); font-size: .88em; background: var(--tint); color: var(--text); padding: 1px 6px; border-radius: var(--radius-sm); }
+    a { color: var(--accent); text-underline-offset: 3px; }
+    a:hover { color: var(--accent-hover); }
+    :focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+    .shell { max-width: 1280px; margin: 0 auto; padding: 16px; }
 
+    /* ---------- barra superior ---------- */
+    .topbar {
+      display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; justify-content: space-between;
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+      box-shadow: var(--shadow-1); padding: 10px 12px 10px 18px;
+    }
+    .brand { display: inline-flex; align-items: center; height: 36px; }
+    .brand img { height: 40px; width: auto; display: block; }
+    .brand .logo-dark { display: none; }
+    :root[data-theme="dark"] .brand .logo-light { display: none; }
+    :root[data-theme="dark"] .brand .logo-dark { display: block; }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) .brand .logo-light { display: none; }
+      :root:not([data-theme="light"]) .brand .logo-dark { display: block; }
+    }
+    .controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    label.small { font-size: .82rem; font-weight: 600; color: var(--muted); display: flex; gap: 8px; align-items: center; }
+    select, button {
+      font: inherit; font-size: .875rem; font-weight: 600; color: var(--text); background: var(--surface);
+      border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 7px 12px; min-height: 36px; cursor: pointer;
+      transition: border-color var(--dur) var(--ease), background-color var(--dur) var(--ease), color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+    }
+    select {
+      appearance: none; -webkit-appearance: none; padding-right: 32px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5l5-5' fill='none' stroke='%234f7cff' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 11px center; background-size: 11px 8px;
+    }
+    select option { color: #17233f; background: #ffffff; }
+    button:hover, select:hover { border-color: var(--border-strong); background-color: var(--tint); }
+    button:focus-visible, select:focus-visible { outline: none; box-shadow: var(--ring); border-color: var(--focus); }
+    .theme-btn { display: inline-flex; align-items: center; gap: 8px; }
+    .theme-btn svg { width: 16px; height: 16px; flex: 0 0 auto; }
+
+    /* ---------- abertura ---------- */
+    .hero {
+      position: relative; overflow: hidden; margin-top: 16px;
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+      box-shadow: var(--shadow-1); padding: 32px 28px 40px;
+    }
+    .hero::before {
+      content: ""; position: absolute; inset: -40% -10% auto auto; width: 520px; height: 360px;
+      background: var(--glow); pointer-events: none;
+    }
+    .hero::after {
+      content: ""; position: absolute; right: 0; bottom: 14px; width: min(46%, 380px); height: 16px;
+      background: var(--tide); -webkit-mask: var(--wave-line) repeat-x left center / 60px 16px; mask: var(--wave-line) repeat-x left center / 60px 16px;
+      opacity: .55; pointer-events: none;
+    }
+    .hero > * { position: relative; }
+    h1 {
+      margin: 0; font-size: clamp(1.75rem, 3vw, 2.4rem); line-height: 1.12; font-weight: 800; letter-spacing: -0.035em;
+    }
+    h1::before {
+      content: ""; display: block; width: 28px; height: 3px; border-radius: 3px; background: var(--tide); margin-bottom: 16px;
+    }
+    .hero p { margin: 12px 0 0; color: var(--muted); max-width: 66ch; font-size: 1rem; }
+
+    /* ---------- abas dos níveis ---------- */
     nav.tabs {
-      max-width: 1280px; margin: 16px auto 0; padding: 0 16px;
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 8px;
+      margin-top: 16px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px;
     }
     nav.tabs button {
-      text-align: left; padding: 12px 14px; border-radius: var(--radius); background: var(--surface);
+      position: relative; overflow: hidden; text-align: left; display: grid; grid-template-columns: auto 1fr; align-items: center;
+      column-gap: 14px; padding: 16px 18px; border-radius: var(--radius); background: var(--surface);
+      border: 1px solid var(--border); box-shadow: var(--shadow-1); min-height: 76px; font-weight: 400;
     }
-    nav.tabs button[aria-selected="true"] { background: var(--accent); color: var(--accent-text); border-color: var(--accent); }
-    nav.tabs .lvl { display: block; font-size: .75rem; text-transform: uppercase; letter-spacing: .08em; opacity: .8; }
-    nav.tabs .name { font-weight: 600; }
+    nav.tabs button:hover { border-color: var(--border-strong); background: var(--surface); box-shadow: var(--shadow-2); }
+    nav.tabs .ico {
+      grid-row: span 2; width: 42px; height: 42px; border-radius: 999px; display: grid; place-items: center;
+      color: #fff; background: var(--ico, #4f7cff); box-shadow: 0 6px 16px -6px var(--ico, #4f7cff);
+    }
+    nav.tabs .ico svg { width: 20px; height: 20px; }
+    nav.tabs button:nth-child(1) { --ico: #4f7cff; }
+    nav.tabs button:nth-child(2) { --ico: #2ecab6; }
+    nav.tabs button:nth-child(3) { --ico: #6b5ce7; }
+    nav.tabs button:nth-child(4) { --ico: #315fd6; }
+    nav.tabs .lvl {
+      display: block; font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .14em; color: var(--subtle);
+    }
+    nav.tabs .name { font-weight: 700; font-size: 1.05rem; letter-spacing: -0.01em; color: var(--text); }
+    nav.tabs button[aria-selected="true"] {
+      border-color: var(--border-strong);
+      background: linear-gradient(180deg, var(--tint), transparent 80%), var(--surface);
+    }
+    nav.tabs button[aria-selected="true"] .lvl { color: var(--accent); }
+    nav.tabs button::after {
+      content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: var(--tide);
+      transform: scaleX(0); transform-origin: left; transition: transform 240ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    nav.tabs button[aria-selected="true"]::after { transform: scaleX(1); }
 
-    main { max-width: 1280px; margin: 16px auto 40px; padding: 0 16px; }
-    .panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+    /* ---------- painel do diagrama ---------- */
+    main { margin: 16px 0 24px; }
+    .panel {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+      box-shadow: var(--shadow-1); overflow: hidden;
+    }
     .panel-head {
-      display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; justify-content: space-between;
-      padding: 12px 16px; border-bottom: 1px solid var(--border); background: var(--surface-2);
+      display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; justify-content: space-between;
+      padding: 20px 24px; border-bottom: 1px solid var(--border);
     }
-    .panel-head h2 { margin: 0; font-size: 1.05rem; }
-    .panel-head p { margin: 2px 0 0; color: var(--muted); font-size: .9rem; }
-    .actions { display: flex; flex-wrap: wrap; gap: 6px; }
+    .panel-head h2 { margin: 0; font-size: 1.2rem; font-weight: 700; letter-spacing: -0.015em; }
+    .panel-head p { margin: 4px 0 0; color: var(--muted); font-size: .9rem; }
+    .actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    .actions .grupo { display: inline-flex; }
+    .actions .grupo > * { border-radius: 0; margin-left: -1px; }
+    .actions .grupo > :first-child { border-radius: var(--radius-sm) 0 0 var(--radius-sm); margin-left: 0; }
+    .actions .grupo > :last-child { border-radius: 0 var(--radius-sm) var(--radius-sm) 0; }
+    .actions .grupo > :hover, .actions .grupo > :focus-visible { position: relative; z-index: 1; }
     .actions a, .actions button {
-      font-size: .85rem; text-decoration: none; color: var(--text); background: var(--surface);
-      border: 1px solid var(--border); border-radius: 8px; padding: 5px 10px;
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+      font-size: .82rem; font-weight: 700; text-decoration: none; color: var(--accent); background: var(--surface);
+      border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 6px 12px; min-height: 34px;
+      transition: border-color var(--dur) var(--ease), background-color var(--dur) var(--ease);
     }
-    .stage { background: var(--diagram-bg); overflow: auto; max-height: 78vh; min-height: 320px; position: relative; }
-    .stage .canvas { padding: 16px; transform-origin: 0 0; }
-    .stage svg { display: block; max-width: none; height: auto; }
+    .actions [data-zoom] { min-width: 36px; font-size: 1rem; color: var(--text); }
+    .actions a:hover, .actions button:hover { border-color: var(--border-strong); background: var(--tint); color: var(--accent-hover); }
+    .actions a:focus-visible { outline: none; box-shadow: var(--ring); border-color: var(--focus); }
+    .actions #link-fonte { background: var(--accent); border-color: var(--accent); color: var(--accent-text); }
+    .actions #link-fonte:hover { background: var(--accent-hover); border-color: var(--accent-hover); color: var(--accent-text); }
+    .actions svg { width: 14px; height: 14px; flex: 0 0 auto; }
+
+    .stage-wrap {
+      padding: 20px; background-color: var(--surface-2);
+      background-image: radial-gradient(var(--grid-dot) 1px, transparent 1.2px); background-size: 18px 18px;
+    }
+    .stage {
+      background: var(--diagram-bg); overflow: auto; max-height: 78vh; min-height: 320px; position: relative;
+      border: 1px solid var(--border); border-radius: var(--radius-md); box-shadow: var(--shadow-1);
+    }
+    .stage .canvas { padding: 20px; transform-origin: 0 0; }
+    .stage svg { display: block; max-width: none; height: auto; margin: 0 auto; }
     .stage.fit svg { max-width: 100%; }
-    .status { padding: 48px 16px; text-align: center; color: #5a6478; }
-    .status.error { color: var(--danger); text-align: left; max-width: 70ch; margin: 0 auto; }
-    .status.error code { background: #f1f3f8; color: #141b2d; padding: 1px 5px; border-radius: 4px; }
-    details.source { border-top: 1px solid var(--border); }
-    details.source summary { padding: 10px 16px; cursor: pointer; color: var(--muted); }
-    details.source pre {
-      margin: 0; padding: 16px; background: var(--code-bg); color: var(--code-text); overflow: auto; max-height: 50vh;
-      font: 12.5px/1.5 ui-monospace, "IBM Plex Mono", Menlo, Consolas, monospace;
+    .status { padding: 56px 16px; text-align: center; color: #4a5571; font-weight: 600; }
+    .status:not(.error)::before {
+      content: ""; display: block; width: 120px; height: 16px; margin: 0 auto 14px;
+      background: linear-gradient(90deg, #4f7cff, #2ecab6, #6b5ce7, #4f7cff) 0 0 / 240px 100%;
+      -webkit-mask: var(--wave-line) repeat-x left center / 60px 16px; mask: var(--wave-line) repeat-x left center / 60px 16px;
+      animation: onda 1.4s linear infinite;
     }
-    footer { max-width: 1280px; margin: 0 auto 32px; padding: 0 16px; color: var(--muted); font-size: .85rem; }
-    footer code { font-size: .8rem; }
+    @keyframes onda { to { background-position: 240px 0; } }
+    @media (prefers-reduced-motion: reduce) { .status::before { animation: none; } }
+    .status.error {
+      color: #c0353f; text-align: left; max-width: 70ch; margin: 24px auto; padding: 18px 20px;
+      background: #fff5f5; border: 1px solid rgba(192, 53, 63, 0.25); border-left: 3px solid #c0353f; border-radius: var(--radius-md); font-weight: 500;
+    }
+    .status.error code { background: #f1f3f8; color: #17233f; }
+
+    details.source { border-top: 1px solid var(--border); }
+    details.source summary {
+      display: flex; align-items: center; gap: 10px; padding: 14px 24px; cursor: pointer; color: var(--text);
+      font-weight: 700; font-size: .9rem; list-style: none;
+    }
+    details.source summary::-webkit-details-marker { display: none; }
+    details.source summary::before {
+      content: ""; width: 8px; height: 8px; border-right: 2px solid var(--accent); border-bottom: 2px solid var(--accent);
+      transform: rotate(-45deg); transition: transform var(--dur) var(--ease); margin-right: 2px;
+    }
+    details.source[open] summary::before { transform: rotate(45deg); }
+    details.source summary:hover { background: var(--tint); }
+    details.source summary:focus-visible { outline: none; box-shadow: inset var(--ring); }
+    details.source pre {
+      margin: 0; padding: 20px 24px; background: var(--code-bg); color: var(--code-text); overflow: auto; max-height: 50vh;
+      font: 12.5px/1.6 var(--mono); tab-size: 2;
+    }
+
+    footer {
+      margin: 0 0 32px; padding: 18px 22px; color: var(--muted); font-size: .85rem;
+      border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface);
+    }
+    footer p { margin: 0; }
+    footer p + p { margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--border); }
+    footer code { font-size: .8rem; word-break: break-word; }
     .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+    @media (max-width: 900px) {
+      nav.tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 560px) {
+      .shell { padding: 12px 16px; }
+      .topbar { padding: 10px 12px; }
+      .controls { width: 100%; flex-wrap: nowrap; justify-content: space-between; }
+      label.small { min-width: 0; }
+      select { padding-left: 10px; }
+      .theme-btn svg { display: none; }
+      .hero { padding: 24px 20px 36px; }
+      nav.tabs { gap: 8px; }
+      nav.tabs button { grid-template-columns: 1fr; row-gap: 8px; padding: 14px; min-height: 0; }
+      nav.tabs .ico { grid-row: auto; width: 34px; height: 34px; }
+      nav.tabs .ico svg { width: 17px; height: 17px; }
+      .panel-head { padding: 16px; }
+      .stage-wrap { padding: 10px; }
+      .stage .canvas { padding: 12px; }
+      details.source summary { padding: 14px 16px; }
+      details.source pre { padding: 16px; }
+    }
   </style>
 </head>
 <body>
-  <header>
-    <div>
-      <h1>WaveType · Arquitetura C4</h1>
-      <p>Os diagramas são lidos dos arquivos <code>.puml</code> desta pasta e renderizados na hora. Edite um <code>.puml</code> e recarregue a página para ver a mudança.</p>
-    </div>
+  <div class="shell">
+  <div class="topbar">
+    <span class="brand" aria-hidden="true">
+      <img class="logo-light" src="../../assets/images/brand/wavetype-logo.svg" alt="" width="126" height="34">
+      <img class="logo-dark" src="../../assets/images/brand/wavetype-logo-white.svg" alt="" width="126" height="34">
+    </span>
     <div class="controls">
       <label class="small">Renderizador
         <select id="servidor">
@@ -110,8 +306,13 @@
           <option value="kroki">kroki.io</option>
         </select>
       </label>
-      <button id="tema" type="button" aria-label="Alternar tema">Tema</button>
+      <button id="tema" class="theme-btn" type="button" aria-label="Alternar tema"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>Tema</button>
     </div>
+  </div>
+
+  <header class="hero">
+    <h1>WaveType · Arquitetura C4</h1>
+    <p>Os diagramas são lidos dos arquivos <code>.puml</code> desta pasta e renderizados na hora. Edite um <code>.puml</code> e recarregue a página para ver a mudança.</p>
   </header>
 
   <nav class="tabs" role="tablist" aria-label="Níveis do modelo C4" id="abas"></nav>
@@ -124,15 +325,21 @@
           <p id="resumo"></p>
         </div>
         <div class="actions">
-          <button type="button" id="ajustar">Ajustar à largura</button>
-          <button type="button" data-zoom="-0.2" aria-label="Diminuir zoom">−</button>
-          <button type="button" data-zoom="0.2" aria-label="Aumentar zoom">+</button>
-          <a id="link-svg" target="_blank" rel="noopener">Abrir SVG</a>
-          <a id="link-png" target="_blank" rel="noopener">Abrir PNG</a>
-          <a id="link-fonte" download>Baixar .puml</a>
+          <div class="grupo">
+            <button type="button" id="ajustar">Ajustar à largura</button>
+            <button type="button" data-zoom="-0.2" aria-label="Diminuir zoom">−</button>
+            <button type="button" data-zoom="0.2" aria-label="Aumentar zoom">+</button>
+          </div>
+          <div class="grupo">
+            <a id="link-svg" target="_blank" rel="noopener">Abrir SVG</a>
+            <a id="link-png" target="_blank" rel="noopener">Abrir PNG</a>
+          </div>
+          <a id="link-fonte" download><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M5 20h14"/></svg>Baixar .puml</a>
         </div>
       </div>
-      <div class="stage fit" id="palco"><div class="canvas" id="canvas"><div class="status">Carregando…</div></div></div>
+      <div class="stage-wrap">
+        <div class="stage fit" id="palco"><div class="canvas" id="canvas"><div class="status">Carregando…</div></div></div>
+      </div>
       <details class="source">
         <summary>Código-fonte PlantUML</summary>
         <pre id="fonte"></pre>
@@ -144,8 +351,9 @@
     <p>Modelo C4 (Simon Brown) com a biblioteca <a href="https://github.com/plantuml-stdlib/C4-PlantUML">C4-PlantUML</a>. Para abrir localmente, sirva a pasta por HTTP (por exemplo <code>npm run dev</code> e acesse <code>/docs/c4-architecture/</code>, ou <code>npx serve docs/c4-architecture</code>): abrindo como <code>file://</code>, o navegador bloqueia a leitura dos <code>.puml</code>.</p>
     <p>Atenção: o texto dos diagramas é enviado ao renderizador escolhido (plantuml.com ou kroki.io) para gerar o SVG.</p>
   </footer>
+  </div>
 
-  <script>
+<script>
     const DIAGRAMAS = [
       { arquivo: 'level-1-context.puml',   nivel: 'Nível 1', nome: 'Contexto',    resumo: 'O WaveType, as pessoas que o usam e os sistemas externos (Supabase, Google, SMTP, Vercel).' },
       { arquivo: 'level-2-container.puml', nivel: 'Nível 2', nome: 'Containers',  resumo: 'Site estático, aplicação no navegador, armazenamento local e os serviços do Supabase (Auth, PostgREST, PostgreSQL).' },
@@ -157,6 +365,67 @@
       plantuml: { svg: (c) => `https://www.plantuml.com/plantuml/svg/${c}`, png: (c) => `https://www.plantuml.com/plantuml/png/${c}`, codificar: codificarPlantUml },
       kroki:    { svg: (c) => `https://kroki.io/plantuml/svg/${c}`,         png: (c) => `https://kroki.io/plantuml/png/${c}`,         codificar: codificarKroki },
     };
+
+    // ---------- visual WaveType nos diagramas ----------
+    // Só cores e traços: o .puml (e o código-fonte exibido) não muda; o tema é
+    // acrescentado apenas ao texto enviado ao renderizador.
+    const TEMA_C4 = [
+      'skinparam shadowing false',
+      'skinparam ArrowThickness 1.3',
+      'skinparam TitleFontColor #17233F',
+      'skinparam TitleFontSize 18',
+      'UpdateElementStyle("person", $bgColor="#17233F", $fontColor="#FFFFFF", $borderColor="#17233F")',
+      'UpdateElementStyle("external_person", $bgColor="#5A6480", $fontColor="#FFFFFF", $borderColor="#5A6480")',
+      'UpdateElementStyle("system", $bgColor="#315FD6", $fontColor="#FFFFFF", $borderColor="#2A52BD")',
+      'UpdateElementStyle("external_system", $bgColor="#EEF2FC", $fontColor="#17233F", $borderColor="#7898FF")',
+      'UpdateElementStyle("container", $bgColor="#315FD6", $fontColor="#FFFFFF", $borderColor="#2A52BD")',
+      'UpdateElementStyle("external_container", $bgColor="#EEF2FC", $fontColor="#17233F", $borderColor="#7898FF")',
+      'UpdateElementStyle("component", $bgColor="#6B5CE7", $fontColor="#FFFFFF", $borderColor="#5A4BD6")',
+      'UpdateElementStyle("external_component", $bgColor="#EEF2FC", $fontColor="#17233F", $borderColor="#9488FF")',
+      'UpdateBoundaryStyle($bgColor="#F5F8FF", $fontColor="#315FD6", $borderColor="#4F7CFF")',
+      'UpdateRelStyle($textColor="#4A5571", $lineColor="#7A869F")',
+    ].join('\n');
+    const TEMA_CLASSES = [
+      'skinparam shadowing false',
+      'skinparam TitleFontColor #17233F',
+      'skinparam TitleFontSize 18',
+      'skinparam class {',
+      '  BackgroundColor #FFFFFF',
+      '  HeaderBackgroundColor #EEF3FF',
+      '  BorderColor #315FD6',
+      '  ArrowColor #4A5571',
+      '  FontColor #17233F',
+      '  StereotypeFontColor #6B5CE7',
+      '}',
+      'skinparam package {',
+      '  BorderColor #7898FF',
+      '  BackgroundColor #F5F8FF',
+      '  FontColor #315FD6',
+      '}',
+      'skinparam note {',
+      '  BackgroundColor #EEF2FC',
+      '  BorderColor #7898FF',
+      '}',
+    ].join('\n');
+    function comTemaWave(fonte) {
+      const linhas = fonte.split('\n');
+      const inc = linhas.findIndex((l) => /^\s*!include\s+<C4\//.test(l));
+      if (inc >= 0) {
+        linhas.splice(inc + 1, 0, TEMA_C4);
+        return linhas.join('\n');
+      }
+      const fim = linhas.map((l) => l.trim()).lastIndexOf('@enduml');
+      if (fim < 0) return fonte;
+      linhas.splice(fim, 0, TEMA_CLASSES);
+      return linhas.join('\n');
+    }
+
+    const ICONES = [
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.5"/><path d="M5 20a7 7 0 0 1 14 0"/></svg>',
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 8 4.5-8 4.5-8-4.5L12 3Z"/><path d="m4 12 8 4.5 8-4.5"/><path d="m4 16.5 8 4.5 8-4.5"/></svg>',
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg>',
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m8 7-5 5 5 5"/><path d="m16 7 5 5-5 5"/><path d="m14 4-4 16"/></svg>',
+    ];
 
     const $ = (id) => document.getElementById(id);
     const cacheFonte = new Map();
@@ -231,7 +500,7 @@
 
       const servidor = SERVIDORES[$('servidor').value];
       try {
-        const codigo = await servidor.codificar(fonte);
+        const codigo = await servidor.codificar(comTemaWave(fonte));
         const urlSvg = servidor.svg(codigo);
         $('link-svg').href = urlSvg;
         $('link-png').href = servidor.png(codigo);
@@ -260,7 +529,7 @@
         b.role = 'tab';
         b.id = `aba-${i}`;
         b.setAttribute('aria-controls', 'painel');
-        b.innerHTML = `<span class="lvl">${d.nivel}</span><span class="name">${d.nome}</span>`;
+        b.innerHTML = `<span class="ico" aria-hidden="true">${ICONES[i] || ''}</span><span class="lvl">${d.nivel}</span><span class="name">${d.nome}</span>`;
         b.addEventListener('click', () => selecionar(i));
         b.addEventListener('keydown', (e) => {
           if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
