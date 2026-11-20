@@ -341,15 +341,9 @@ html.wt-trocando-tema *::after {
 .auth-points:has(> li:nth-child(4)) li {
   min-height: 92px;
 }
-.auth-points li:first-child {
-  color: #17233f;
-  background: #ffffff;
-  border-color: #ffffff;
-}
+/* Todos os cartões com o mesmo vidro: nenhum fica em destaque branco */
 .auth-points li:hover {
   transform: translateY(-3px);
-}
-.auth-points li:not(:first-child):hover {
   background: rgba(255, 255, 255, 0.18);
 }
 .auth-points i {
@@ -368,10 +362,6 @@ html.wt-trocando-tema *::after {
 }
 .auth-points i::before {
   content: counter(passo);
-}
-.auth-points li:first-child i {
-  background: #2a55c9;
-  border-color: #2a55c9;
 }
 
 /* Lado do formulário */
@@ -1911,4 +1901,79 @@ body[data-page="treinar"] .typing-shell {
     flex-direction: column;
     align-items: stretch;
   }
+}
+
+/* Convite do teste de nivelamento (primeiro acesso) */
+.convite-nivelamento {
+  width: min(520px, calc(100vw - 32px));
+  padding: 28px;
+}
+.convite-nivelamento .eyebrow {
+  display: inline-block;
+  margin-bottom: 10px;
+}
+.convite-nivelamento h2 {
+  font-size: clamp(1.4rem, 2.6vw, 1.8rem);
+}
+.convite-nivelamento p {
+  margin: 0 0 14px;
+  color: var(--p-muted, var(--muted));
+  line-height: 1.55;
+}
+.convite-nivelamento-lista {
+  display: grid;
+  gap: 8px;
+  margin: 0 0 22px;
+  padding: 0;
+  list-style: none;
+}
+.convite-nivelamento-lista li {
+  position: relative;
+  padding-left: 24px;
+  font-size: 0.92rem;
+}
+.convite-nivelamento-lista li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.35em;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--wt-aqua-500, #2bc2a8);
+}
+.dialogo .form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 18px;
+}
+.perfil-nivelamento .panel-title {
+  margin-bottom: 0;
+  align-items: center;
+}
+
+/* Estado vazio genérico (filtros sem resultado, listas sem itens) */
+.estado-vazio {
+  margin: 18px 0 0;
+  padding: 22px 20px;
+  color: var(--p-muted, var(--muted));
+  background: var(--p-surface-2, var(--surface-soft));
+  border: 1px dashed var(--p-line, var(--line));
+  border-radius: var(--radius-md, 14px);
+  text-align: center;
+  line-height: 1.55;
+}
+.estado-vazio[hidden] {
+  display: none;
+}
+.conquista-filtro-total {
+  display: inline-grid;
+  min-width: 1.6em;
+  margin-left: 4px;
+  padding: 1px 6px;
+  place-items: center;
+  border-radius: 999px;
+  background: var(--p-surface-2, var(--surface-soft));
+  font-size: 0.72rem;
 }

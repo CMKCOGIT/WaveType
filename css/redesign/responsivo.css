@@ -629,8 +629,29 @@
     height: calc(100dvh - 2 * var(--auth-margem));
     min-height: 0;
   }
+  /* A página não rola: os dois painéis ficam parados na moldura e só o
+     conteúdo do formulário rola por dentro do painel branco (antes o painel
+     inteiro subia e "quebrava" o desenho no topo). */
+  html:has(.auth-page),
+  body:has(> .auth-page) {
+    height: 100%;
+    overflow: hidden;
+  }
+  .auth-page {
+    height: 100dvh;
+    overflow: hidden;
+  }
   .auth-main {
-    min-height: calc(100dvh - 2 * var(--auth-margem));
+    height: calc(100dvh - 2 * var(--auth-margem));
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-gutter: stable;
+    justify-content: flex-start;
+  }
+  /* Centraliza quando cabe; quando não cabe, começa do topo sem cortar */
+  .auth-main > .auth-card {
+    margin-block: auto;
   }
 }
 @media (max-width: 820px) {

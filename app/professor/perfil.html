@@ -10,20 +10,20 @@
                     <section class="panel panel-pad" aria-labelledby="titulo-dados">
                         <div class="panel-title"><div><h2 id="titulo-dados">Dados da conta</h2><p>Seu nome aparece para os professores das suas turmas. Os dados de acesso servem só para entrar na conta.</p></div></div>
                         <form class="perfil-form" data-form-dados novalidate>
-                            <label class="field"><span>Nome completo</span><input name="nome" autocomplete="name" minlength="2" maxlength="120" required></label>
-                            <label class="field" data-campo-email><span data-rotulo-email>E-mail de acesso</span><input name="email" type="email" readonly aria-describedby="ajuda-email"><small class="field-hint" id="ajuda-email" data-ajuda-email>Você usa este e-mail para entrar e para receber o link de “Esqueci a senha”. Ele não pode ser alterado aqui.</small></label>
-                            <label class="field"><span>Tipo de conta</span><input name="tipo" readonly></label>
+                            <label class="field"><span>Nome completo</span><input name="nome" autocomplete="name" minlength="2" maxlength="120" required placeholder="Ex.: Maria da Silva"></label>
+                            <label class="field" data-campo-email><span data-rotulo-email>E-mail de acesso</span><input name="email" type="email" readonly aria-describedby="ajuda-email" placeholder="Seu e-mail de acesso"><small class="field-hint" id="ajuda-email" data-ajuda-email>Você usa este e-mail para entrar e para receber o link de “Esqueci a senha”. Ele não pode ser alterado aqui.</small></label>
+                            <label class="field"><span>Tipo de conta</span><input name="tipo" readonly placeholder="Tipo da sua conta"></label>
                             <div class="field" data-campo-id hidden><span>Seu código de aluno</span><div class="id-box"><span class="perfil-codigo" data-meu-id></span><button type="button" class="copiar" data-copiar-id>Copiar</button></div></div>
                             <button class="button" type="submit">Salvar dados</button>
                             <p class="feedback" data-feedback-dados hidden role="status"></p>
                         </form>
                     </section>
                     <section class="panel panel-pad" aria-labelledby="titulo-senha">
-                        <div class="panel-title"><div><h2 id="titulo-senha" data-titulo-senha>Alterar senha</h2><p data-texto-senha>Use 8 ou mais caracteres, com letras e números.</p></div></div>
+                        <div class="panel-title"><div><h2 id="titulo-senha" data-titulo-senha>Alterar senha</h2><p data-texto-senha>Use 8 ou mais caracteres, com letras, números e um caractere especial.</p></div></div>
                         <form class="perfil-form" data-form-senha novalidate>
-                            <label class="field" data-campo-atual><span>Senha atual</span><input type="password" name="atual" autocomplete="current-password"></label>
-                            <label class="field"><span>Nova senha</span><input type="password" name="nova" autocomplete="new-password" minlength="8" required data-requisitos></label>
-                            <label class="field"><span>Repita a nova senha</span><input type="password" name="confirmacao" autocomplete="new-password" minlength="8" required data-confirma="nova"></label>
+                            <label class="field" data-campo-atual><span>Senha atual</span><input type="password" name="atual" autocomplete="current-password" maxlength="72" placeholder="Digite sua senha atual"></label>
+                            <label class="field"><span>Nova senha</span><input type="password" name="nova" autocomplete="new-password" minlength="8" maxlength="72" placeholder="8+ caracteres, com letra, número e símbolo" required data-requisitos></label>
+                            <label class="field"><span>Repita a nova senha</span><input type="password" name="confirmacao" autocomplete="new-password" minlength="8" maxlength="72" placeholder="Digite a nova senha de novo" required data-confirma="nova"></label>
                             <button class="button" type="submit" data-botao-senha>Alterar senha</button>
                             <p class="feedback" data-feedback-senha hidden role="status"></p>
                         </form>

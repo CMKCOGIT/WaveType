@@ -8,7 +8,7 @@ const ALVOS = [
   '.content-heading',
   '.experience-card',
   '.step-item',
-  '.product-browser',
+  '.vitrine',
   '.purpose-card',
   '.value-card',
   '.mode-card',

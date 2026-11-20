@@ -1683,7 +1683,8 @@ body.single-line #words-wrapper {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 20px;
-  align-items: start;
+  /* "Dados da conta" e "Alterar senha" lado a lado com a mesma altura */
+  align-items: stretch;
 }
 .perfil-form {
   display: grid;

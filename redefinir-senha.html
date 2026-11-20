@@ -33,10 +33,10 @@
                 <div class="auth-carregando" role="status" aria-live="polite"><wave-loader></wave-loader>Validando o link…</div>
                 <a class="eyebrow" href="login.html">← Voltar ao login</a>
                 <h2 id="titulo-pagina">Crie uma nova senha</h2>
-                <p data-instrucao>Escolha uma senha com 8 ou mais caracteres, com letras e números.</p>
+                <p data-instrucao>Escolha uma senha com 8 ou mais caracteres, com letras, números e um caractere especial.</p>
                 <form class="auth-form" data-form-nova-senha novalidate hidden>
-                    <label class="field"><span>Nova senha</span><input type="password" name="senha" autocomplete="new-password" minlength="8" placeholder="8+ caracteres, com letra e número" required data-requisitos></label>
-                    <label class="field"><span>Repita a nova senha</span><input type="password" name="confirmacao" autocomplete="new-password" minlength="8" required data-confirma="senha"></label>
+                    <label class="field"><span>Nova senha</span><input type="password" name="senha" autocomplete="new-password" minlength="8" maxlength="72" placeholder="8+ caracteres, com letra, número e símbolo" required data-requisitos></label>
+                    <label class="field"><span>Repita a nova senha</span><input type="password" name="confirmacao" autocomplete="new-password" minlength="8" maxlength="72" placeholder="Digite a senha de novo" required data-confirma="senha"></label>
                     <button class="button auth-submit" type="submit">Salvar nova senha</button>
                 </form>
                 <p class="auth-demo" data-form-feedback hidden role="status" aria-live="polite"></p>

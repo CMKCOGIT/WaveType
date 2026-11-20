@@ -218,21 +218,38 @@ async function salvarOuConvidar(r) {
     salvo.textContent = 'Crie uma conta grátis para salvar este resultado e começar a trilha pelo ponto certo. Ele fica guardado neste navegador por 7 dias.';
     acoes.innerHTML = `<a class="button" href="cadastro.html">Criar conta grátis</a><a class="button button-secondary" href="login.html">Já tenho conta</a>${refazer}`;
   } else {
-    salvo.textContent = 'Salvando seu resultado…';
+    salvo.textContent = 'Conferindo sua conta…';
     try {
-      const [{ validarSessao }, api, { listarExercicios }] = await Promise.all([
+      const [{ validarSessao }, api, { listarExercicios }, { NIVEIS_RECOMENDADOS }] = await Promise.all([
         import('../sessao/sessao.js'),
         import('../api/nivelamento.js'),
         import('../api/exercicios.js'),
+        import('../nivelamento/config.js'),
       ]);
       const { estado, perfil } = await validarSessao();
       if (estado !== 'valida' || !perfil) throw new Error('sessao');
-      await api.salvarNivelamento(r, resumos);
-      salvo.textContent = 'Resultado salvo na sua conta.';
       const area = ['aluno', 'usuario'].includes(perfil.tipo) ? perfil.tipo : null;
+      const inicio = area ? `app/${area}/index.html` : 'index.html';
+
+      // Já existe um nível salvo: a pessoa escolhe se o novo resultado o substitui.
+      const anterior = await api.ultimoNivelamento();
+      if (anterior) {
+        const rotuloAnterior = NIVEIS_RECOMENDADOS[anterior.nivel]?.rotulo ?? anterior.nivel;
+        const substituir = await perguntarSubstituicao(salvo, acoes, rotuloAnterior, r.rotulo);
+        if (!substituir) {
+          salvo.textContent = `Tudo certo: seu nível ${rotuloAnterior} foi mantido e este resultado não foi salvo.`;
+          acoes.innerHTML = `<a class="button" href="${inicio}">Voltar ao início</a>${refazer}`;
+          ligarRefazer(acoes);
+          return;
+        }
+      }
+
+      salvo.textContent = 'Salvando seu resultado…';
+      await api.salvarNivelamento(r, resumos);
+      salvo.textContent = anterior ? 'Pronto: o novo nível substituiu o anterior na sua conta.' : 'Resultado salvo na sua conta.';
       const exercicio = area ? (await listarExercicios()).find((e) => e.nivel === r.licao.nivel && e.ordem === r.licao.ordem) : null;
       acoes.innerHTML = exercicio
-        ? `<a class="button" href="app/${area}/treinar.html?id=${exercicio.id}">Começar pela lição recomendada</a>${refazer}`
+        ? `<a class="button" href="app/${area}/treinar.html?id=${encodeURIComponent(exercicio.id)}">Começar pela lição recomendada</a>${refazer}`
         : `<a class="button" href="${area ? `app/${area}/exercicios.html` : 'index.html'}">Ir para os exercícios</a>${refazer}`;
     } catch (erro) {
       if (erro.message !== 'sessao') console.error('Falha ao salvar o nivelamento:', erro);
@@ -240,9 +257,25 @@ async function salvarOuConvidar(r) {
       acoes.innerHTML = `<a class="button" href="login.html">Entrar</a>${refazer}`;
     }
   }
+  ligarRefazer(acoes);
+}
+
+function ligarRefazer(acoes) {
   acoes.querySelector('[data-refazer]')?.addEventListener('click', () => {
     indiceEtapa = 0;
     resumos = [];
     mostrarTela('inicio');
+  });
+}
+
+/** Mostra "Substituir" x "Manter o anterior" e espera a escolha. */
+function perguntarSubstituicao(salvo, acoes, rotuloAnterior, rotuloNovo) {
+  salvo.textContent = `Você já tem o nível ${rotuloAnterior} salvo. Quer substituí-lo por este novo resultado (nível ${rotuloNovo})?`;
+  acoes.innerHTML = '<button class="button" type="button" data-substituir>Substituir pelo novo nível</button>'
+    + `<button class="button button-secondary" type="button" data-manter>Manter o nível ${escapar(rotuloAnterior)}</button>`;
+  return new Promise((resolver) => {
+    acoes.querySelector('[data-substituir]').addEventListener('click', () => resolver(true), { once: true });
+    acoes.querySelector('[data-manter]').addEventListener('click', () => resolver(false), { once: true });
+    acoes.querySelector('[data-substituir]').focus();
   });
 }
