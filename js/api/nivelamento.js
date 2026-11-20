@@ -61,9 +61,15 @@ export async function enviarNivelamentoPendente() {
 }
 
 export async function ultimoNivelamento() {
+  // Filtra pelo próprio id além da RLS (defesa em profundidade: um professor
+  // também enxerga os nivelamentos dos alunos dele).
+  const { data: sessao } = await supabase.auth.getSession();
+  const usuarioId = sessao.session?.user.id;
+  if (!usuarioId) return null;
   const { data, error } = await supabase
     .from('nivelamentos')
     .select('nivel, licao_nivel, licao_ordem, teclas_frageis, criado_em')
+    .eq('usuario_id', usuarioId)
     .order('criado_em', { ascending: false })
     .limit(1);
   if (error) {

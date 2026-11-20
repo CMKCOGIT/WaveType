@@ -32,41 +32,48 @@ document.addEventListener('DOMContentLoaded', () => {
         link.addEventListener('click', (event) => event.preventDefault());
     });
 
-    // Alternar abas da demonstração da plataforma (Visão do Aluno / Visão do Professor)
-    const previewTabButtons = document.querySelectorAll('.preview-tab-btn');
-    const previewPanels = document.querySelectorAll('.preview-tabpanel');
-    const browserAddress = document.getElementById('browser-address-url');
+    // Carrossel com as telas reais da plataforma (aluno, professor, usuário)
+    const vitrine = document.querySelector('[data-vitrine]');
+    const slides = vitrine ? [...vitrine.querySelectorAll('[data-vitrine-slide]')] : [];
+    const abas = vitrine ? [...vitrine.querySelectorAll('[data-vitrine-ir]')] : [];
+    let atual = 0;
 
-    function switchPreviewTab(targetTab) {
-        if (!targetTab) return;
-        previewTabButtons.forEach((btn) => {
-            const isTarget = btn.getAttribute('data-tab') === targetTab;
-            btn.setAttribute('aria-selected', String(isTarget));
-            btn.classList.toggle('active', isTarget);
+    function irPara(indice, { focar = false } = {}) {
+        if (!slides.length) return;
+        atual = (indice + slides.length) % slides.length;
+        slides.forEach((slide, i) => {
+            slide.hidden = i !== atual;
+            slide.classList.toggle('is-ativo', i === atual);
         });
-        previewPanels.forEach((panel) => {
-            const isTarget = panel.getAttribute('data-tab-panel') === targetTab;
-            panel.hidden = !isTarget;
-            panel.classList.toggle('active', isTarget);
-            panel.style.display = isTarget ? '' : 'none';
+        abas.forEach((aba, i) => {
+            aba.setAttribute('aria-selected', String(i === atual));
+            aba.tabIndex = i === atual ? 0 : -1;
         });
-        if (browserAddress) {
-            browserAddress.textContent = targetTab === 'professor' 
-                ? 'wavetype.com.br/app/professor' 
-                : 'wavetype.com.br/app/aluno';
-        }
+        if (focar) abas[atual]?.focus();
     }
+    const indiceDe = (chave) => slides.findIndex((s) => s.dataset.vitrineSlide === chave);
 
-    if (previewTabButtons.length > 0) {
-        switchPreviewTab('aluno');
-    }
-
-    previewTabButtons.forEach((btn) => {
-        btn.addEventListener('click', () => {
-            const tab = btn.getAttribute('data-tab');
-            switchPreviewTab(tab);
-        });
+    vitrine?.querySelector('[data-vitrine-anterior]')?.addEventListener('click', () => irPara(atual - 1));
+    vitrine?.querySelector('[data-vitrine-proxima]')?.addEventListener('click', () => irPara(atual + 1));
+    abas.forEach((aba) => aba.addEventListener('click', () => irPara(indiceDe(aba.dataset.vitrineIr))));
+    // Setas do teclado nas abas (padrão de tablist)
+    vitrine?.querySelector('[role="tablist"]')?.addEventListener('keydown', (evento) => {
+        const mapa = { ArrowLeft: atual - 1, ArrowRight: atual + 1, Home: 0, End: slides.length - 1 };
+        if (!(evento.key in mapa)) return;
+        evento.preventDefault();
+        irPara(mapa[evento.key], { focar: true });
     });
+    // Toque: arrastar para o lado troca de tela
+    let inicioX = null;
+    const trilho = vitrine?.querySelector('[data-vitrine-trilho]');
+    trilho?.addEventListener('pointerdown', (e) => { inicioX = e.clientX; });
+    trilho?.addEventListener('pointerup', (e) => {
+        if (inicioX == null) return;
+        const delta = e.clientX - inicioX;
+        inicioX = null;
+        if (Math.abs(delta) > 50) irPara(atual + (delta < 0 ? 1 : -1));
+    });
+    const switchPreviewTab = (chave) => { const i = indiceDe(chave); if (i >= 0) irPara(i); };
 
     // Links dos cards de experiência (Aluno / Professor)
     document.querySelectorAll('[data-target-tab]').forEach((trigger) => {
@@ -75,7 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (tab) {
                 e.preventDefault();
                 switchPreviewTab(tab);
-                const targetEl = document.getElementById('preview-title') || document.querySelector('.product-browser');
+                const targetEl = document.getElementById('preview-title') || vitrine;
                 targetEl?.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
         });

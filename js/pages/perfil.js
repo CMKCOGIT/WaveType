@@ -40,6 +40,9 @@ async function iniciar() {
   }
 
   prepararTrocaDeTipo(perfil);
+  if (perfil.tipo === 'aluno' || perfil.tipo === 'usuario') {
+    montarNivelamento().catch((erro) => console.error('Falha ao carregar o nivelamento:', erro));
+  }
   montarVinculos(perfil).catch((erro) => console.error('Falha ao carregar as formas de entrar:', erro));
   if (perfil.tipo === 'professor') {
     import('./professor-perfil-alunos.js')
@@ -108,7 +111,7 @@ formSenha.addEventListener('submit', async (evento) => {
       temSenha = true;
       campoAtual.hidden = false;
       document.querySelector('[data-titulo-senha]').textContent = 'Alterar senha';
-      document.querySelector('[data-texto-senha]').textContent = 'Use 8 ou mais caracteres, com letras e números.';
+      document.querySelector('[data-texto-senha]').textContent = 'Use 8 ou mais caracteres, com letras, números e um caractere especial.';
       document.querySelector('.perfil-ajuda').hidden = false;
       botaoSenha.textContent = 'Alterar senha';
       return;
@@ -160,4 +163,36 @@ function mostrar(elemento, mensagem, erro = false) {
   elemento.textContent = mensagem;
   elemento.hidden = false;
   elemento.classList.toggle('is-erro', erro);
+}
+
+// Teste de nivelamento: depois de feito, só pode ser refeito por aqui, e a
+// pessoa confirma antes que o novo resultado vai substituir o nível atual.
+async function montarNivelamento() {
+  const painel = document.querySelector('[data-painel-nivelamento]');
+  if (!painel) return;
+  const texto = painel.querySelector('[data-texto-nivelamento]');
+  const botao = painel.querySelector('[data-refazer-nivelamento]');
+  const [{ ultimoNivelamento }, { NIVEIS_RECOMENDADOS }, { confirmarRefazerNivelamento }] = await Promise.all([
+    import('../api/nivelamento.js'),
+    import('../nivelamento/config.js'),
+    import('../ui/convite-nivelamento.js'),
+  ]);
+  const ultimo = await ultimoNivelamento();
+  const destino = '../../nivelamento.html';
+  botao.hidden = false;
+  if (!ultimo) {
+    texto.textContent = 'Você ainda não fez o teste. Em 2 a 4 minutos ele mostra o melhor ponto de partida na trilha.';
+    botao.textContent = 'Fazer o teste';
+    botao.addEventListener('click', () => window.location.assign(destino));
+    return;
+  }
+  const nivel = NIVEIS_RECOMENDADOS[ultimo.nivel]?.rotulo ?? ultimo.nivel;
+  const data = new Date(ultimo.criado_em).toLocaleDateString('pt-BR');
+  texto.textContent = `Seu ponto de partida atual: nível ${nivel}, começando pelo Nível ${ultimo.licao_nivel} da trilha, lição ${ultimo.licao_ordem} (teste de ${data}).`;
+  botao.textContent = 'Refazer o teste';
+  botao.addEventListener('click', async () => {
+    if (await confirmarRefazerNivelamento({ nivelAtual: nivel, dataAtual: data })) {
+      window.location.assign(`${destino}?refazer=1`);
+    }
+  });
 }

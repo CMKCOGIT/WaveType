@@ -72,34 +72,60 @@ function desenharResumo(conquistas) {
     <span class="mono">${formatar(proxima.atual)}/${formatar(proxima.alvo)}</span>`;
 }
 
+// Situação de cada conquista, usada nos filtros:
+//  - desbloqueada: já conquistada;
+//  - andamento: ainda bloqueada, mas com algum progresso (atual > 0);
+//  - nao-iniciada: bloqueada e sem nenhum progresso ainda.
+export function situacaoDaConquista(c) {
+  if (c.desbloqueada) return 'desbloqueada';
+  return Number(c.atual) > 0 ? 'andamento' : 'nao-iniciada';
+}
+
+const FILTROS = [
+  { valor: 'todas', rotulo: 'Todas', vazio: 'Nenhuma conquista disponível no momento.' },
+  { valor: 'desbloqueada', rotulo: 'Desbloqueadas', vazio: 'Você ainda não desbloqueou nenhuma conquista. Conclua um exercício para ganhar a primeira!' },
+  { valor: 'andamento', rotulo: 'Em andamento', vazio: 'Nenhuma conquista em andamento. Assim que você fizer progresso em alguma, ela aparece aqui.' },
+  { valor: 'nao-iniciada', rotulo: 'Não iniciadas', vazio: 'Você já começou todas as conquistas. Continue praticando!' },
+];
+
 function desenharFiltros(conquistas) {
   const filtros = document.querySelector('[data-filtros]');
-  const opcoes = [
-    ['todas', 'Todas'],
-    ['desbloqueadas', 'Desbloqueadas'],
-    ['bloqueadas', 'Em andamento'],
-  ];
-  filtros.innerHTML = opcoes
-    .map(([valor, rotulo], i) => `<button type="button" data-filtro="${valor}" aria-pressed="${i === 0}">${rotulo}</button>`)
+  const contagem = (valor) => (valor === 'todas' ? conquistas.length : conquistas.filter((c) => situacaoDaConquista(c) === valor).length);
+  filtros.innerHTML = FILTROS
+    .map((f, i) => `<button type="button" data-filtro="${f.valor}" aria-pressed="${i === 0}">${f.rotulo} <span class="conquista-filtro-total">${contagem(f.valor)}</span></button>`)
     .join('');
+
+  const vazio = document.createElement('p');
+  vazio.className = 'estado-vazio';
+  vazio.setAttribute('role', 'status');
+  vazio.hidden = true;
+  document.querySelector('[data-grid-conquistas]').after(vazio);
+
   filtros.addEventListener('click', (evento) => {
     const botao = evento.target.closest('[data-filtro]');
     if (!botao) return;
     filtros.querySelectorAll('[data-filtro]').forEach((b) => b.setAttribute('aria-pressed', String(b === botao)));
     const filtro = botao.dataset.filtro;
     document.querySelectorAll('.achievement').forEach((card) => {
-      const desbloqueada = !card.classList.contains('locked');
-      card.hidden = (filtro === 'desbloqueadas' && !desbloqueada) || (filtro === 'bloqueadas' && desbloqueada);
+      card.hidden = filtro !== 'todas' && card.dataset.situacao !== filtro;
     });
+    let algumaVisivel = false;
     document.querySelectorAll('[data-categoria]').forEach((secao) => {
       secao.hidden = !secao.querySelector('.achievement:not([hidden])');
+      if (!secao.hidden) algumaVisivel = true;
     });
+    vazio.hidden = algumaVisivel;
+    vazio.textContent = algumaVisivel ? '' : FILTROS.find((f) => f.valor === filtro)?.vazio ?? 'Nada por aqui ainda.';
   });
   if (!conquistas.length) filtros.hidden = true;
 }
 
 function desenharGrade(conquistas, vistas) {
   const container = document.querySelector('[data-grid-conquistas]');
+  if (!conquistas.length) {
+    container.innerHTML = '<p class="estado-vazio" role="status">Nenhuma conquista disponível no momento. Volte depois de praticar!</p>';
+    return;
+  }
   const grupos = new Map();
   conquistas.forEach((c) => {
     const chave = CATEGORIAS[c.categoria] ? c.categoria : 'marcos';
@@ -129,7 +155,7 @@ function cartao(c, vistas) {
       : '<small>Bloqueada</small>';
 
   return `
-    <article class="achievement${c.desbloqueada ? '' : ' locked'}${nova ? ' is-new' : ''}">
+    <article class="achievement${c.desbloqueada ? '' : ' locked'}${nova ? ' is-new' : ''}" data-situacao="${situacaoDaConquista(c)}">
       <span class="achievement-icon">${c.desbloqueada ? iconeConquista(c.icone) : iconeBloqueado()}</span>
       <h3>${escapar(c.titulo)}</h3>
       <p>${escapar(c.descricao)}</p>

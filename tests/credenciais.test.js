@@ -74,3 +74,16 @@ test('troca de usuário: normaliza o que o professor digitou', async () => {
   assert.equal(normalizarLoginEscolhido('ab'), '');
   assert.equal(normalizarLoginEscolhido('!!!'), '');
 });
+
+import { validarSenha } from '../js/contas/regras-senha.js';
+
+test('senha própria exige letra, número e caractere especial', () => {
+  assert.ok(validarSenha('abc12345'), 'sem especial é recusada');
+  assert.ok(validarSenha('a1!'), 'curta é recusada');
+  assert.ok(validarSenha('abcdefg!'), 'sem número é recusada');
+  assert.ok(validarSenha('1234567!'), 'sem letra é recusada');
+  assert.ok(validarSenha('ação1234'), 'acento não conta como especial');
+  assert.equal(validarSenha('abc123!@'), null);
+  assert.equal(validarSenha('Mãe-2026'), null);
+  assert.ok(validarSenha('a1!'.padEnd(73, 'x')), 'acima de 72 é recusada');
+});

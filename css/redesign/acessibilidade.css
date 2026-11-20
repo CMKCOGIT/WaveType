@@ -56,10 +56,11 @@
   min-width: 40px;
   min-height: 36px;
   display: inline-flex;
-  align-items: baseline;
+  /* "A" e o sinal centralizados no quadrado (antes ficavam no topo) */
+  align-items: center;
   justify-content: center;
-  gap: 1px;
-  padding: 4px 8px;
+  gap: 2px;
+  padding: 0 8px;
   color: var(--wt-text, var(--ink));
   background: transparent;
   border: 1px solid var(--wt-line, var(--line));
@@ -68,6 +69,11 @@
   font-weight: 800;
   line-height: 1;
   cursor: pointer;
+}
+.wt-tamanho-botao span,
+.wt-tamanho-botao b {
+  display: block;
+  line-height: 1;
 }
 .wt-tamanho-botao span {
   font-size: 0.82rem;

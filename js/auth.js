@@ -220,7 +220,7 @@ export async function definirSenhaDaConta(senha) {
   // Nova tentativa depois de uma falha no passo seguinte: a senha já é esta.
   if (/different from the old password/i.test(error.message)) return;
   if (error.code === 'weak_password' || /weak|at least/i.test(error.message)) {
-    throw new Error('Escolha uma senha mais forte: 8+ caracteres, com letra e número.');
+    throw new Error('Escolha uma senha mais forte: 8+ caracteres, com letra, número e um caractere especial.');
   }
   if (error.code === 'reauthentication_needed' || /reauthenticat/i.test(error.message)) {
     throw new Error('Por segurança, entre de novo com o Google e conclua o cadastro.');
@@ -236,13 +236,8 @@ export async function contaTemSenha() {
   return providers.includes('email') || usuario?.user_metadata?.senha_definida === true;
 }
 
-/** Regras de senha do cadastro (8+ caracteres, com letra e número). */
-export function validarSenha(senha) {
-  if (senha.length < 8 || !/[a-zA-Z]/.test(senha) || !/[0-9]/.test(senha)) {
-    return 'A senha precisa ter 8+ caracteres, com letra e número.';
-  }
-  return null;
-}
+/** Regras de senha (8+ caracteres, letra, número e caractere especial). */
+export { validarSenha } from './contas/regras-senha.js';
 
 /**
  * Grava tipo e nome de um cadastro incompleto (RPC concluir_cadastro) e

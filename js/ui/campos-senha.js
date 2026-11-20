@@ -8,6 +8,8 @@
 //  - data-confirma="nome-do-outro-campo": diz, enquanto se digita, se as
 //    duas senhas são iguais (e marca o campo como inválido se não forem).
 
+import { REGRAS_SENHA } from '../contas/regras-senha.js';
+
 const OLHO = `<svg class="wt-olho-onda" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
   <path class="palpebra" d="M2.5 12.2C5 7.9 8.3 5.8 12 5.8s7 2.1 9.5 6.4"/>
   <path class="onda" d="M2.5 12.2c1.6 1.5 3.2 1.5 4.75 0s3.15-1.5 4.75 0 3.2 1.5 4.75 0 3.15-1.5 4.75 0"/>
@@ -15,11 +17,7 @@ const OLHO = `<svg class="wt-olho-onda" viewBox="0 0 24 24" aria-hidden="true" f
   <path class="risco" d="M4.2 4.4c1.1.4 1.5 1.5 2.4 2.4s2 1.3 2.4 2.4.9 2 2.4 2.4 1.5 1.3 2.4 2.4 1.3 2 2.4 2.4 1.3 1.5 2.4 2.4 1.3 1.6 2.2 2.2"/>
 </svg>`;
 
-const REGRAS = [
-  { id: 'tamanho', texto: '8 ou mais caracteres', ok: (s) => s.length >= 8 },
-  { id: 'letra', texto: 'pelo menos uma letra', ok: (s) => /[a-zA-Z]/.test(s) },
-  { id: 'numero', texto: 'pelo menos um número', ok: (s) => /[0-9]/.test(s) },
-];
+const REGRAS = REGRAS_SENHA;
 
 let sequencia = 0;
 const novoId = (prefixo) => `${prefixo}-${(sequencia += 1)}`;

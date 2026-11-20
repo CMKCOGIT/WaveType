@@ -22,8 +22,8 @@ function preencherMetricas(turmas) {
 
   set('[data-metric="turmas-ativas"]', ativas.length);
   set('[data-metric="total-alunos"]', `${totalAlunos} aluno${totalAlunos === 1 ? '' : 's'} matriculados`);
-  set('[data-metric="wpm-geral"]', wpms.length ? media(wpms) : '—');
-  set('[data-metric="precisao-geral"]', precisoes.length ? `${media(precisoes)}%` : '—');
+  set('[data-metric="wpm-geral"]', wpms.length ? numero(media(wpms)) : '—');
+  set('[data-metric="precisao-geral"]', precisoes.length ? `${numero(media(precisoes))}%` : '—');
   set('[data-metric="turmas-encerradas"]', turmas.filter((t) => t.status === 'encerrada').length);
 }
 
@@ -40,13 +40,16 @@ function preencherTabela(turmas) {
         <td class="table-name"><strong>${escapar(t.nome)}</strong></td>
         <td><span class="status${t.status === 'encerrada' ? ' closed' : ''}">${t.status === 'ativa' ? 'Ativa' : 'Encerrada'}</span></td>
         <td class="mono">${t.alunos}</td>
-        <td class="mono">${t.ppmMedio || '—'}</td>
-        <td class="mono">${t.precisaoMedia ? `${t.precisaoMedia}%` : '—'}</td>
+        <td class="mono">${t.ppmMedio ? numero(t.ppmMedio) : '—'}</td>
+        <td class="mono">${t.precisaoMedia ? `${numero(t.precisaoMedia)}%` : '—'}</td>
       </tr>`
     )
     .join('');
 }
 
+function numero(valor) {
+  return Number(valor).toLocaleString('pt-BR', { maximumFractionDigits: 1 });
+}
 function media(numeros) {
   return Math.round((numeros.reduce((a, b) => a + b, 0) / numeros.length) * 10) / 10;
 }
