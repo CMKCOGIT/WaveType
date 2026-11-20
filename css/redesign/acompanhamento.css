@@ -450,12 +450,55 @@
   background: var(--p-tint-blue);
   border-color: var(--wt-blue-500);
 }
-.situacao-opcao input {
+/* Bolinha própria: o estilo de ".field input" (fundo, borda, sombra de foco
+   e transição) vazava para o rádio e criava um anel animado estranho. */
+.situacao-opcao input[type="radio"] {
   flex: 0 0 auto;
-  width: 18px;
-  height: 18px;
+  appearance: none;
+  -webkit-appearance: none;
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  min-height: 0;
   margin: 0;
-  accent-color: var(--wt-blue-500);
+  padding: 0;
+  background: var(--p-surface);
+  border: 2px solid var(--p-line-strong, var(--wt-line-strong, #9aa6c2));
+  border-radius: 50%;
+  box-shadow: none;
+  cursor: pointer;
+  transition: border-color 120ms ease;
+}
+.situacao-opcao input[type="radio"]::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--wt-blue-500);
+  transform: scale(0);
+  transition: transform 140ms ease-out;
+}
+.situacao-opcao input[type="radio"]:hover,
+.situacao-opcao input[type="radio"]:focus {
+  background: var(--p-surface);
+  box-shadow: none;
+}
+.situacao-opcao input[type="radio"]:checked {
+  border-color: var(--wt-blue-500);
+}
+.situacao-opcao input[type="radio"]:checked::before {
+  transform: scale(1);
+}
+.situacao-opcao input[type="radio"]:focus-visible {
+  outline: 2px solid var(--wt-blue-500);
+  outline-offset: 2px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .situacao-opcao input[type="radio"],
+  .situacao-opcao input[type="radio"]::before {
+    transition: none;
+  }
 }
 .situacao-texto {
   display: grid;
