@@ -1,11 +1,44 @@
 {
   "headers": [
     {
-      "source": "/(.*)",
+      "source": "/((?!docs/c4-architecture/).*)",
       "headers": [
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; script-src 'self' 'sha256-hXE+/JtCVOBRrobMV9JDvymCcH0zbpoac0qt0udnvSg=' 'sha256-7tJzW6nZJm2MyGvNKK6gjoe1w+GJJiTYjDOZjq9DHEE=' 'sha256-rbH2NVIj/XJ8aP6r70QGMvM+HIDMrKm4+EEhc9nNHgg=' 'sha256-YfHKcQQqyt1vN2nnw3uRzyBBh2XsjHRIvuhSTLo8pro=' 'sha256-DDWlcxmpj/2B2c4aKcmw+mUp8oAnFgCMl2WRmrJq7sc=' 'sha256-E9RCypQD+K2GuD5La/w5X40k0lVHSAo/N+23Xg2DCK0=' 'sha256-1c4bYGKnlCLGv+SQ56tJTYRU8Cf1l+IuCUr0h8XxBCc=' 'sha256-9G5BaZEkcOWvmk70idJRD19vSNPJHB7ueIlEkPD+6t0=' 'sha256-owyTuwbTgPfhgf3y9//3qvqziRiCLkjgDUqRB6iZa/U='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' https://*.supabase.co wss://*.supabase.co; worker-src 'self' blob:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests"
+          "value": "default-src 'self'; script-src 'self' 'sha256-hXE+/JtCVOBRrobMV9JDvymCcH0zbpoac0qt0udnvSg=' 'sha256-7tJzW6nZJm2MyGvNKK6gjoe1w+GJJiTYjDOZjq9DHEE=' 'sha256-rbH2NVIj/XJ8aP6r70QGMvM+HIDMrKm4+EEhc9nNHgg=' 'sha256-YfHKcQQqyt1vN2nnw3uRzyBBh2XsjHRIvuhSTLo8pro=' 'sha256-DDWlcxmpj/2B2c4aKcmw+mUp8oAnFgCMl2WRmrJq7sc=' 'sha256-E9RCypQD+K2GuD5La/w5X40k0lVHSAo/N+23Xg2DCK0=' 'sha256-1c4bYGKnlCLGv+SQ56tJTYRU8Cf1l+IuCUr0h8XxBCc=' 'sha256-9G5BaZEkcOWvmk70idJRD19vSNPJHB7ueIlEkPD+6t0='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' https://*.supabase.co wss://*.supabase.co; worker-src 'self' blob:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests"
+        },
+        {
+          "key": "Strict-Transport-Security",
+          "value": "max-age=63072000; includeSubDomains; preload"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()"
+        },
+        {
+          "key": "Cross-Origin-Opener-Policy",
+          "value": "same-origin-allow-popups"
+        }
+      ]
+    },
+    {
+      "source": "/docs/c4-architecture/(.*)",
+      "headers": [
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; script-src 'self' 'sha256-m23O1sx2MtI441XhbK9CaYM0PKYKMNf+d617Sp6se9s='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' https://www.plantuml.com https://kroki.io; worker-src 'self' blob:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests"
         },
         {
           "key": "Strict-Transport-Security",
