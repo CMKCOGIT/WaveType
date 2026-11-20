@@ -52,34 +52,6 @@
       --wave-line: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 16'%3E%3Cpath d='M0 8c10 0 10-6 20-6s10 12 20 12 10-12 20-12 10 12 20 12 10-12 20-12 10 6 20 6' fill='none' stroke='%23000' stroke-width='2'/%3E%3C/svg%3E");
       color-scheme: light;
     }
-    @media (prefers-color-scheme: dark) {
-      :root:not([data-theme="light"]) {
-        --bg: #0e1730; --surface: #16213a; --surface-2: #121b33; --tint: rgba(120, 152, 255, 0.1);
-        --text: #f1f5ff; --muted: rgba(241, 245, 255, 0.78); --subtle: rgba(241, 245, 255, 0.66);
-        --border: rgba(241, 245, 255, 0.11); --border-strong: rgba(120, 152, 255, 0.38);
-        --accent: #7898ff; --accent-hover: #94adff; --accent-text: #17233f; --danger: #ff8a92;
-        --code-bg: #0a1126; --code-text: #dbe4ff; --diagram-bg: #f7f9fd; --grid-dot: rgba(120, 152, 255, 0.16);
-        --wave: linear-gradient(100deg, #7898ff 0%, #8aa6ff 45%, #9488ff 100%);
-        --glow: radial-gradient(60% 60% at 50% 40%, rgba(120, 152, 255, 0.18), transparent 70%);
-        --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.25), 0 4px 14px rgba(0, 0, 0, 0.18);
-        --shadow-2: 0 2px 6px rgba(0, 0, 0, 0.24), 0 14px 36px rgba(0, 0, 0, 0.28);
-        --ring: 0 0 0 3px rgba(120, 152, 255, 0.4); --focus: #7898ff;
-        color-scheme: dark;
-      }
-    }
-    :root[data-theme="dark"] {
-      --bg: #0e1730; --surface: #16213a; --surface-2: #121b33; --tint: rgba(120, 152, 255, 0.1);
-      --text: #f1f5ff; --muted: rgba(241, 245, 255, 0.78); --subtle: rgba(241, 245, 255, 0.66);
-      --border: rgba(241, 245, 255, 0.11); --border-strong: rgba(120, 152, 255, 0.38);
-      --accent: #7898ff; --accent-hover: #94adff; --accent-text: #17233f; --danger: #ff8a92;
-      --code-bg: #0a1126; --code-text: #dbe4ff; --diagram-bg: #f7f9fd; --grid-dot: rgba(120, 152, 255, 0.16);
-      --wave: linear-gradient(100deg, #7898ff 0%, #8aa6ff 45%, #9488ff 100%);
-      --glow: radial-gradient(60% 60% at 50% 40%, rgba(120, 152, 255, 0.18), transparent 70%);
-      --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.25), 0 4px 14px rgba(0, 0, 0, 0.18);
-      --shadow-2: 0 2px 6px rgba(0, 0, 0, 0.24), 0 14px 36px rgba(0, 0, 0, 0.28);
-      --ring: 0 0 0 3px rgba(120, 152, 255, 0.4); --focus: #7898ff;
-      color-scheme: dark;
-    }
     @media (prefers-reduced-motion: reduce) { :root { --dur: 0ms; } }
 
     * { box-sizing: border-box; }
@@ -102,13 +74,6 @@
     }
     .brand { display: inline-flex; align-items: center; height: 36px; }
     .brand img { height: 40px; width: auto; display: block; }
-    .brand .logo-dark { display: none; }
-    :root[data-theme="dark"] .brand .logo-light { display: none; }
-    :root[data-theme="dark"] .brand .logo-dark { display: block; }
-    @media (prefers-color-scheme: dark) {
-      :root:not([data-theme="light"]) .brand .logo-light { display: none; }
-      :root:not([data-theme="light"]) .brand .logo-dark { display: block; }
-    }
     .controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
     label.small { font-size: .82rem; font-weight: 600; color: var(--muted); display: flex; gap: 8px; align-items: center; }
     select, button {
@@ -124,8 +89,6 @@
     select option { color: #17233f; background: #ffffff; }
     button:hover, select:hover { border-color: var(--border-strong); background-color: var(--tint); }
     button:focus-visible, select:focus-visible { outline: none; box-shadow: var(--ring); border-color: var(--focus); }
-    .theme-btn { display: inline-flex; align-items: center; gap: 8px; }
-    .theme-btn svg { width: 16px; height: 16px; flex: 0 0 auto; }
 
     /* ---------- abertura ---------- */
     .hero {
@@ -278,7 +241,6 @@
       .controls { width: 100%; flex-wrap: nowrap; justify-content: space-between; }
       label.small { min-width: 0; }
       select { padding-left: 10px; }
-      .theme-btn svg { display: none; }
       .hero { padding: 24px 20px 36px; }
       nav.tabs { gap: 8px; }
       nav.tabs button { grid-template-columns: 1fr; row-gap: 8px; padding: 14px; min-height: 0; }
@@ -297,7 +259,6 @@
   <div class="topbar">
     <span class="brand" aria-hidden="true">
       <img class="logo-light" src="../../assets/images/brand/wavetype-logo.svg" alt="" width="126" height="34">
-      <img class="logo-dark" src="../../assets/images/brand/wavetype-logo-white.svg" alt="" width="126" height="34">
     </span>
     <div class="controls">
       <label class="small">Renderizador
@@ -306,7 +267,6 @@
           <option value="kroki">kroki.io</option>
         </select>
       </label>
-      <button id="tema" class="theme-btn" type="button" aria-label="Alternar tema"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>Tema</button>
     </div>
   </div>
 
@@ -520,7 +480,7 @@
       }
     }
 
-    // ---------- abas, zoom e tema ----------
+    // ---------- abas e zoom ----------
     function montarAbas() {
       const nav = $('abas');
       DIAGRAMAS.forEach((d, i) => {
@@ -578,17 +538,8 @@
       renderizar(atual);
     });
 
-    $('tema').addEventListener('click', () => {
-      const raiz = document.documentElement;
-      const escuroAgora = raiz.dataset.theme ? raiz.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
-      raiz.dataset.theme = escuroAgora ? 'light' : 'dark';
-      try { localStorage.setItem('c4_tema', raiz.dataset.theme); } catch {}
-    });
-
     // ---------- início ----------
     try {
-      const tema = localStorage.getItem('c4_tema');
-      if (tema) document.documentElement.dataset.theme = tema;
       const servidor = localStorage.getItem('c4_servidor');
       if (servidor && SERVIDORES[servidor]) $('servidor').value = servidor;
     } catch {}
